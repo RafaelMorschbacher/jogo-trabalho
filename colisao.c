@@ -14,13 +14,21 @@ int main()
 
     SetTargetFPS(60);
 
-    Rectangle personagem = { larguraTela/2, alturaTela/2, 50, 50 };
+    Rectangle personagem = { larguraTela/2, alturaTela/2, 30, 30 };
     Rectangle obstaculo = {400, 300, 100, 100};
     Rectangle obstaculo2 = {100, 100, 50, 100};
 
 /////////Variáveis auxiliares////////////
 
     int velocidade = 8;
+
+////////Imagens//////////
+
+    Texture2D personagemUp = LoadTexture("./assets/personagem_up30x30.png");
+    Texture2D personagemDown = LoadTexture("./assets/personagem_down30x30.png");
+    Texture2D personagemLeft = LoadTexture("./assets/personagem_left30x30.png");
+    Texture2D personagemRight = LoadTexture("./assets/personagem_right30x30.png");
+    Texture2D texturaAtual = personagemUp;
 
 
 /////////Loop do Jogo////////////
@@ -31,10 +39,33 @@ int main()
 
     ///////Update//////////
 
-        if(IsKeyDown(KEY_RIGHT)) personagem.x += velocidade;
-        if(IsKeyDown(KEY_LEFT)) personagem.x -= velocidade;
-        if(IsKeyDown(KEY_UP)) personagem.y -= velocidade;
-        if(IsKeyDown(KEY_DOWN)) personagem.y += velocidade;
+        if(IsKeyDown(KEY_RIGHT))
+        {
+            personagem.x += velocidade;
+            texturaAtual = personagemRight;
+        }
+
+
+        if(IsKeyDown(KEY_LEFT))
+        {
+            personagem.x -= velocidade;
+            texturaAtual = personagemLeft;
+        }
+
+        if(IsKeyDown(KEY_UP))
+        {
+            personagem.y -= velocidade;
+            texturaAtual = personagemUp;
+        }
+
+
+        if(IsKeyDown(KEY_DOWN))
+        {
+            personagem.y += velocidade;
+            texturaAtual = personagemDown;
+        }
+
+        DrawTexture(texturaAtual, (personagem.x ), (personagem.y ), RAYWHITE);
 
 
     ///////Desenho/////////
@@ -46,9 +77,12 @@ int main()
             ClearBackground(RAYWHITE);
             DrawText("Mexa com as setas", 10, 10, 30, LIGHTGRAY);
 
+
+
+
         ///////Blocos////////////
 
-            DrawRectangleRec(personagem, GREEN);
+            DrawRectangleRec(personagem, BLANK);
             DrawRectangleRec(obstaculo, RED);
             DrawRectangleRec(obstaculo2, RED);
 
