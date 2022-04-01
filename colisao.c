@@ -54,15 +54,15 @@ int main()
 
         /////Colisao Obstaculos/////////////
 
-        bool colisao = CheckCollisionRecs(personagem,obstaculo) || CheckCollisionRecs(personagem,obstaculo2);
+       bool colisao = CheckCollisionRecs(personagem,obstaculo) || CheckCollisionRecs(personagem,obstaculo2);
 
-        if(colisao)
-            {
+       if(colisao)
+       {
                 if(IsKeyDown(KEY_RIGHT)) personagem.x -= velocidade;
                 if(IsKeyDown(KEY_LEFT)) personagem.x += velocidade;
                 if(IsKeyDown(KEY_UP)) personagem.y += velocidade;
                 if(IsKeyDown(KEY_DOWN)) personagem.y -= velocidade;
-            }
+       }
 
 
         /////Colisao Cenario///////
@@ -72,6 +72,7 @@ int main()
         if(personagem.x <0) personagem.x += velocidade;
         if(personagem.y > alturaTela - personagem.height) personagem.y -= velocidade;
         if(personagem.y <0) personagem.y += velocidade;
+
 
 
         EndDrawing();
