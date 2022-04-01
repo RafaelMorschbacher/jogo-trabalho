@@ -7,8 +7,8 @@ int main()
 //////////Iniciando////////////
 
 
-    const int larguraTela = 800;
-    const int alturaTela = 450;
+    const int larguraTela = 1000;
+    const int alturaTela = 600;
 
     InitWindow(larguraTela, alturaTela, "primeiraJanela");
 
@@ -52,7 +52,7 @@ int main()
             DrawRectangleRec(obstaculo, RED);
             DrawRectangleRec(obstaculo2, RED);
 
-        /////Colisao/////////////
+        /////Colisao Obstaculos/////////////
 
         bool colisao = CheckCollisionRecs(personagem,obstaculo) || CheckCollisionRecs(personagem,obstaculo2);
 
@@ -63,6 +63,16 @@ int main()
                 if(IsKeyDown(KEY_UP)) personagem.y += velocidade;
                 if(IsKeyDown(KEY_DOWN)) personagem.y -= velocidade;
             }
+
+
+        /////Colisao Cenario///////
+
+
+        if(personagem.x > larguraTela - personagem.width) personagem.x -= velocidade;
+        if(personagem.x <0) personagem.x += velocidade;
+        if(personagem.y > alturaTela - personagem.height) personagem.y -= velocidade;
+        if(personagem.y <0) personagem.y += velocidade;
+
 
         EndDrawing();
 
