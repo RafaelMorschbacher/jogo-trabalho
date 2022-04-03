@@ -1,4 +1,5 @@
 #include "raylib.h"
+#define VELOCIDADE_INICIAL 4
 
 
 int main()
@@ -18,17 +19,24 @@ int main()
     Rectangle obstaculo = {400, 300, 100, 100};
     Rectangle obstaculo2 = {100, 100, 50, 100};
 
+    Rectangle booster = {500, 500, 25, 25};
+
 /////////Variáveis auxiliares////////////
 
-    int velocidade = 8;
+    int velocidade = VELOCIDADE_INICIAL;
 
-////////Imagens//////////
+////////Imagens e Texturas//////////
 
     Texture2D personagemUp = LoadTexture("./assets/personagem_up30x30.png");
     Texture2D personagemDown = LoadTexture("./assets/personagem_down30x30.png");
     Texture2D personagemLeft = LoadTexture("./assets/personagem_left30x30.png");
     Texture2D personagemRight = LoadTexture("./assets/personagem_right30x30.png");
+    //Textura inicial do personagem é virado para cima
     Texture2D texturaAtual = personagemUp;
+
+    //Textura do Booster
+
+    Texture2D boosterTextura = LoadTexture("./assets/booster25x25.png");
 
 
 /////////Loop do Jogo////////////
@@ -101,6 +109,10 @@ int main()
             DrawRectangleRec(personagem, BLANK);
             DrawRectangleRec(obstaculo, RED);
             DrawRectangleRec(obstaculo2, RED);
+
+
+            DrawRectangleRec(booster, BLANK);
+            DrawTexture(boosterTextura, booster.x, booster.y, RAYWHITE);
 
 
 
