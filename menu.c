@@ -1,17 +1,17 @@
  #include <stdio.h>
-#include <raylib.h> 
+#include <raylib.h>
 #include <string.h>
 
 const int screenWidth = 1000;
 const int screenHeight = 600;
-typedef enum gameScreen {MENU = 0, NOVOJOGO, CONTINUAR} gameScreen; 
+typedef enum gameScreen {MENU = 0, NOVOJOGO, CONTINUAR} gameScreen;
 
 //função para alinhar
 float alignCenterFont (char *v, int i, int fontSize, Font arcade) {
-    float width; 
-    Vector2 tamText = MeasureTextEx(arcade, v, fontSize, 1); 
+    float width;
+    Vector2 tamText = MeasureTextEx(arcade, v, fontSize, 1);
     width = ((screenWidth-tamText.x)/2);
-    return width; 
+    return width;
 }
 
 
@@ -19,23 +19,23 @@ int main(void) {
 
     // variaveis
     char menuOptions[3][10] =  {"Novo Jogo", "Continuar","Sair"};
-    int estadoChave = 1; 
+    int estadoChave = 1;
     float u;
 
 
-    // Init 
+    // Init
     InitWindow(screenWidth, screenHeight, "Battle INF - MENU");
 
-    gameScreen currentScreen = MENU; 
+    gameScreen currentScreen = MENU;
 
     // Load
-    Image titulo = LoadImage("../sourceImage/battleInf.png");
+    Image titulo = LoadImage("./assets/battleInf.png");
     Texture2D tituloTex = LoadTextureFromImage(titulo);
-    Font arcade = LoadFont("../sourceFont/ARCADECLASSIC.ttf");                                                            
-    
+    Font arcade = LoadFont("./assets/ARCADECLASSIC.ttf");
 
- 
-    SetTargetFPS(60); 
+
+
+    SetTargetFPS(60);
     while (!WindowShouldClose()) { // detecta se vai fechar
 
         // Update
@@ -43,8 +43,8 @@ int main(void) {
             case MENU:
                 //da posição da chave, pra saber onde deve estar amarelo
                 if (IsKeyPressed(KEY_DOWN))
-                    estadoChave++;      
-                if (IsKeyPressed(KEY_UP)) 
+                    estadoChave++;
+                if (IsKeyPressed(KEY_UP))
                     estadoChave--;
 
                 if (estadoChave == 4)
@@ -57,66 +57,66 @@ int main(void) {
                 }
                 if (estadoChave == 2 && IsKeyPressed(KEY_ENTER)) {
                     currentScreen = CONTINUAR;
-                }  
-                break;             
-                    
+                }
+                break;
+
             case NOVOJOGO: break;;
-            case CONTINUAR: break;; 
+            case CONTINUAR: break;;
         }
 
-       
+
         // Draw
         BeginDrawing();
 
             ClearBackground(RAYWHITE);
             switch (currentScreen) {
                 case MENU: //to do
-                    
+
                     DrawRectangle(0, 0, screenWidth, screenHeight, BLACK);
                     DrawTexture(tituloTex, 0, 20 , WHITE);
 
                     //escreve menu
-                    u = 0; 
+                    u = 0;
                     for (int i = 0; i < 3; i++) {
-                        DrawTextEx(arcade, menuOptions[i], (Vector2){(alignCenterFont(menuOptions[i],i,40, arcade)),(250 + u) }, 40, 1,GRAY);    
+                        DrawTextEx(arcade, menuOptions[i], (Vector2){(alignCenterFont(menuOptions[i],i,40, arcade)),(250 + u) }, 40, 1,GRAY);
                         u+= 50.0;
                     }
                     // deixa amarelo
                     switch (estadoChave) {
-                        case 1: 
-                            DrawTextEx(arcade, menuOptions[0], (Vector2){(alignCenterFont(menuOptions[0],0,40, arcade)),250 }, 40, 1,YELLOW); 
+                        case 1:
+                            DrawTextEx(arcade, menuOptions[0], (Vector2){(alignCenterFont(menuOptions[0],0,40, arcade)),250 }, 40, 1,YELLOW);
                             break;
-                        case 2: 
-                            DrawTextEx(arcade, menuOptions[1], (Vector2){(alignCenterFont(menuOptions[1],1,40, arcade)),(300) }, 40, 1,YELLOW); 
+                        case 2:
+                            DrawTextEx(arcade, menuOptions[1], (Vector2){(alignCenterFont(menuOptions[1],1,40, arcade)),(300) }, 40, 1,YELLOW);
                             break;
-                        case 3: 
-                            DrawTextEx(arcade, menuOptions[2], (Vector2){(alignCenterFont(menuOptions[2],2,40, arcade)),(350) }, 40, 1,YELLOW); 
+                        case 3:
+                            DrawTextEx(arcade, menuOptions[2], (Vector2){(alignCenterFont(menuOptions[2],2,40, arcade)),(350) }, 40, 1,YELLOW);
                             break;
                         default: break;
-                    }          
+                    }
                     break;
 
-                case NOVOJOGO:       
+                case NOVOJOGO:
                     DrawRectangle(0, 0, screenWidth, screenHeight, BLACK);
-                    DrawTextEx(arcade, "Novo Jogo", (Vector2){200,350}, 75, 1,WHITE); 
+                    DrawTextEx(arcade, "Novo Jogo", (Vector2){200,350}, 75, 1,WHITE);
                     break;
-                    
+
                 case CONTINUAR:
                     DrawRectangle(0, 0, screenWidth, screenHeight, BLACK);
-                    DrawTextEx(arcade, "Continuar", (Vector2){200,350}, 75, 1,WHITE);  
+                    DrawTextEx(arcade, "Continuar", (Vector2){200,350}, 75, 1,WHITE);
                     break;
                 default: break;
             }
 
 
-        EndDrawing(); 
+        EndDrawing();
         //----------------------------------------------------------------------------------
     }
 
     //Unload
-    UnloadTexture(tituloTex); 
+    UnloadTexture(tituloTex);
 
 
-    CloseWindow(); 
-    return 0;  
+    CloseWindow();
+    return 0;
 }
