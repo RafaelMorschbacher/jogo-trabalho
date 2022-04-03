@@ -39,6 +39,8 @@ int main()
 
     ///////Update//////////
 
+        Rectangle posicaoInicial = personagem;
+
         //Atualização da posição e textura do jogador
 
         if(IsKeyDown(KEY_RIGHT))
@@ -72,11 +74,14 @@ int main()
 
         /////Colisao Cenario///////
 
+        bool ultrapassaCenario = (personagem.x > larguraTela - personagem.width) || (personagem.x <0) || (personagem.y > alturaTela - personagem.height) || (personagem.y <0);
+        if(ultrapassaCenario) personagem = posicaoInicial;
 
-        if(personagem.x > larguraTela - personagem.width) personagem.x -= velocidade;
-        if(personagem.x <0) personagem.x += velocidade;
-        if(personagem.y > alturaTela - personagem.height) personagem.y -= velocidade;
-        if(personagem.y <0) personagem.y += velocidade;
+        /////Colisao Obstaculos/////////////
+
+       bool colide = CheckCollisionRecs(personagem,obstaculo) || CheckCollisionRecs(personagem,obstaculo2);
+
+       if(colide) personagem = posicaoInicial;
 
 
     ///////Desenho/////////
@@ -96,18 +101,6 @@ int main()
             DrawRectangleRec(personagem, BLANK);
             DrawRectangleRec(obstaculo, RED);
             DrawRectangleRec(obstaculo2, RED);
-
-        /////Colisao Obstaculos/////////////
-
-       bool colisao = CheckCollisionRecs(personagem,obstaculo) || CheckCollisionRecs(personagem,obstaculo2);
-
-       if(colisao)
-       {
-                if(IsKeyDown(KEY_RIGHT)) personagem.x -= velocidade;
-                if(IsKeyDown(KEY_LEFT)) personagem.x += velocidade;
-                if(IsKeyDown(KEY_UP)) personagem.y += velocidade;
-                if(IsKeyDown(KEY_DOWN)) personagem.y -= velocidade;
-       }
 
 
 
