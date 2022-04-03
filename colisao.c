@@ -14,7 +14,7 @@ int main()
 
     SetTargetFPS(60);
 
-    Rectangle personagem = { larguraTela/2, alturaTela/2, 30, 30 };
+    Rectangle personagem = { larguraTela/2, alturaTela/2, 25, 25 };
     Rectangle obstaculo = {400, 300, 100, 100};
     Rectangle obstaculo2 = {100, 100, 50, 100};
 
@@ -38,6 +38,8 @@ int main()
     {
 
     ///////Update//////////
+
+        //Atualização da posição e textura do jogador
 
         if(IsKeyDown(KEY_RIGHT))
         {
@@ -66,6 +68,15 @@ int main()
         }
 
         DrawTexture(texturaAtual, (personagem.x ), (personagem.y ), RAYWHITE);
+
+
+        /////Colisao Cenario///////
+
+
+        if(personagem.x > larguraTela - personagem.width) personagem.x -= velocidade;
+        if(personagem.x <0) personagem.x += velocidade;
+        if(personagem.y > alturaTela - personagem.height) personagem.y -= velocidade;
+        if(personagem.y <0) personagem.y += velocidade;
 
 
     ///////Desenho/////////
@@ -98,14 +109,6 @@ int main()
                 if(IsKeyDown(KEY_DOWN)) personagem.y -= velocidade;
        }
 
-
-        /////Colisao Cenario///////
-
-
-        if(personagem.x > larguraTela - personagem.width) personagem.x -= velocidade;
-        if(personagem.x <0) personagem.x += velocidade;
-        if(personagem.y > alturaTela - personagem.height) personagem.y -= velocidade;
-        if(personagem.y <0) personagem.y += velocidade;
 
 
 
