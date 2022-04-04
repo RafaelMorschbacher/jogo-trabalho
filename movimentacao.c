@@ -19,7 +19,7 @@ int main()
     Rectangle obstaculo = {400, 300, 100, 100};
     Rectangle obstaculo2 = {100, 100, 50, 100};
 
-    Rectangle booster = {500, 500, 25, 25};
+    Rectangle booster = {GetRandomValue(25, larguraTela-25),GetRandomValue(25, alturaTela-25) , 25, 25};
 
 /////////Variáveis auxiliares////////////
 
@@ -111,8 +111,21 @@ int main()
             DrawRectangleRec(obstaculo2, RED);
 
 
-            DrawRectangleRec(booster, BLANK);
-            DrawTexture(boosterTextura, booster.x, booster.y, RAYWHITE);
+            bool coletouBooster = CheckCollisionRecs(personagem, booster);
+            if(coletouBooster)
+            {
+                velocidade += velocidade/2;
+                booster.x = GetRandomValue(0+booster.width, larguraTela-booster.width);
+                booster.y = GetRandomValue(0+booster.height,alturaTela-booster.height);
+            }
+            else
+            {
+                DrawRectangleRec(booster, BLANK);
+                DrawTexture(boosterTextura, booster.x, booster.y, RAYWHITE);
+            }
+
+
+
 
 
 
