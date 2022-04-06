@@ -1,4 +1,5 @@
 #include "raylib.h"
+#define VELOCIDADE_INICIAL 4
 
 
 int main()
@@ -18,17 +19,24 @@ int main()
     Rectangle obstaculo = {400, 300, 100, 100};
     Rectangle obstaculo2 = {100, 100, 50, 100};
 
+    Rectangle booster = {GetRandomValue(25, larguraTela-25),GetRandomValue(25, alturaTela-25) , 25, 25};
+
 /////////Variáveis auxiliares////////////
 
-    int velocidade = 8;
+    int velocidade = VELOCIDADE_INICIAL;
 
-////////Imagens//////////
+////////Imagens e Texturas//////////
 
     Texture2D personagemUp = LoadTexture("./assets/personagem_up30x30.png");
     Texture2D personagemDown = LoadTexture("./assets/personagem_down30x30.png");
     Texture2D personagemLeft = LoadTexture("./assets/personagem_left30x30.png");
     Texture2D personagemRight = LoadTexture("./assets/personagem_right30x30.png");
+    //Textura inicial do personagem é virado para cima
     Texture2D texturaAtual = personagemUp;
+
+    //Textura do Booster
+
+    Texture2D boosterTextura = LoadTexture("./assets/booster25x25.png");
 
 
 /////////Loop do Jogo////////////
@@ -101,6 +109,20 @@ int main()
             DrawRectangleRec(personagem, BLANK);
             DrawRectangleRec(obstaculo, RED);
             DrawRectangleRec(obstaculo2, RED);
+
+
+            bool coletouBooster = CheckCollisionRecs(personagem, booster);
+            if(coletouBooster)
+            {
+                velocidade += velocidade/2;
+                booster.x = GetRandomValue(booster.width, larguraTela-booster.width);
+                booster.y = GetRandomValue(booster.height,alturaTela-booster.height);
+            }
+            else
+            {
+                DrawRectangleRec(booster, BLANK);
+                DrawTexture(boosterTextura, booster.x, booster.y, RAYWHITE);
+            }
 
 
 
