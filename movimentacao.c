@@ -115,17 +115,14 @@ int main()
             if(coletouBooster)
             {
                 velocidade += velocidade/2;
-                booster.x = GetRandomValue(0+booster.width, larguraTela-booster.width);
-                booster.y = GetRandomValue(0+booster.height,alturaTela-booster.height);
+                booster.x = GetRandomValue(booster.width, larguraTela-booster.width);
+                booster.y = GetRandomValue(booster.height,alturaTela-booster.height);
             }
             else
             {
                 DrawRectangleRec(booster, BLANK);
                 DrawTexture(boosterTextura, booster.x, booster.y, RAYWHITE);
             }
-
-
-
 
 
 
