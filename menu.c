@@ -29,9 +29,9 @@ int main(void) {
     gameScreen currentScreen = MENU;
 
     // Load
-    Image titulo = LoadImage("./assets/battleInf.png");
+    Image titulo = LoadImage("../assets/battleInf.png");
     Texture2D tituloTex = LoadTextureFromImage(titulo);
-    Font arcade = LoadFont("./assets/ARCADECLASSIC.ttf");
+    Font arcade = LoadFont("../assets/ARCADECLASSIC.ttf");
 
 
 
