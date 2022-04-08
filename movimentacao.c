@@ -27,16 +27,16 @@ int main()
 
 ////////Imagens e Texturas//////////
 
-    Texture2D personagemUp = LoadTexture("../assets/personagem_up30x30.png");
-    Texture2D personagemDown = LoadTexture("../assets/personagem_down30x30.png");
-    Texture2D personagemLeft = LoadTexture("../assets/personagem_left30x30.png");
-    Texture2D personagemRight = LoadTexture("../assets/personagem_right30x30.png");
+    Texture2D personagemUp = LoadTexture("assets/personagem_up30x30.png");
+    Texture2D personagemDown = LoadTexture("assets/personagem_down30x30.png");
+    Texture2D personagemLeft = LoadTexture("assets/personagem_left30x30.png");
+    Texture2D personagemRight = LoadTexture("assets/personagem_right30x30.png");
     //Textura inicial do personagem � virado para cima
     Texture2D texturaAtual = personagemUp;
 
     //Textura do Booster
 
-    Texture2D boosterTextura = LoadTexture("../assets/booster25x25.png");
+    Texture2D boosterTextura = LoadTexture("assets/booster25x25.png");
 
 
 /////////Loop do Jogo////////////
