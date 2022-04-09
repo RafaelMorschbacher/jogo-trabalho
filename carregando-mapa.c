@@ -62,12 +62,12 @@ int main(void) {
 
     //Load
 
-    Image brick = LoadImage("assets/brick_texture2.png");
+    Image brick = LoadImage("./assets/brick_texture2.png");
     ImageResize(&brick, 25, 40);
     Texture2D brickTexture = LoadTextureFromImage(brick);
 
     FILE *fileLevel;
-    fileLevel = fopen("levels/nivel1.txt", "r");
+    fileLevel = fopen("./levels/nivel1.txt", "r");
 
     while (readLevel(fileLevel, &positionX, &positionY,&tipo) == 0) {
         printf ("posicao x: %i, posicao y: %i\n", positionX, positionY);
