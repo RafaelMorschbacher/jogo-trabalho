@@ -1,6 +1,28 @@
 #include "raylib.h"
 #define VELOCIDADE_INICIAL 4
+#define NUM_OBSTACULOS 5
 
+void checaColisao(Rectangle *personagem, Rectangle *obstaculo, Rectangle posicaoInicial)
+{
+    if(CheckCollisionRecs(*personagem,*obstaculo))
+        *personagem = posicaoInicial;
+}
+
+//void coletaBooster(Rectangle *booster, Rectangle *personagem, int *velocidade, int larguraTela, int alturaTela)
+//{
+//    bool coletouBooster = CheckCollisionRecs(*personagem, *booster);
+//    if(coletouBooster)
+//    {
+//        *velocidade += *velocidade/2;
+//        *booster.x = GetRandomValue(*booster.width, larguraTela-booster.width);
+//        *booster.y = GetRandomValue(*booster.height,alturaTela-booster.height);
+//        }
+//        else
+//        {
+//            DrawRectangleRec(*booster, BLANK);
+//            DrawTexture(boosterTextura, *booster.x, *booster.y, RAYWHITE);
+//    }
+//}
 
 int main()
 {
@@ -16,8 +38,9 @@ int main()
     SetTargetFPS(60);
 
     Rectangle personagem = { larguraTela/2, alturaTela/2, 25, 25 };
-    Rectangle obstaculo = {400, 300, 100, 100};
-    Rectangle obstaculo2 = {100, 100, 50, 100};
+    Rectangle obstaculos[NUM_OBSTACULOS] ={{400, 300, 100, 100},{100, 100, 50, 100}, {600,100,40,40} };
+    //Rectangle obstaculo = {400, 300, 100, 100};
+    //Rectangle obstaculo2 = {100, 100, 50, 100};
 
     Rectangle booster = {GetRandomValue(25, larguraTela-25),GetRandomValue(25, alturaTela-25) , 25, 25};
 
@@ -87,9 +110,11 @@ int main()
 
         /////Colisao Obstaculos/////////////
 
-       bool colide = CheckCollisionRecs(personagem,obstaculo) || CheckCollisionRecs(personagem,obstaculo2);
+        for(int i=0; i<NUM_OBSTACULOS-1; i++)
+        {
+            checaColisao(&personagem, &obstaculos[i], posicaoInicial);
+        }
 
-       if(colide) personagem = posicaoInicial;
 
 
     ///////Desenho/////////
@@ -107,9 +132,17 @@ int main()
         ///////Blocos////////////
 
             DrawRectangleRec(personagem, BLANK);
-            DrawRectangleRec(obstaculo, RED);
-            DrawRectangleRec(obstaculo2, RED);
 
+            //Desenhando cada bloco da lista de obstaculos
+           for(int i=0; i<NUM_OBSTACULOS-1; i++)
+           {
+               DrawRectangleRec(obstaculos[i], RED);
+           }
+
+
+           //BOOSTER (poderzinho)
+
+           //coletaBooster(&booster, &personagem, &velocidade, alturaTela, larguraTela);
 
             bool coletouBooster = CheckCollisionRecs(personagem, booster);
             if(coletouBooster)
