@@ -17,21 +17,20 @@ void checaColisaoArray(Rectangle *personagem, Rectangle *obstaculos, int numObst
 
 }
 
-//void coletaBooster(Rectangle *booster, Rectangle *personagem, int *velocidade, int larguraTela, int alturaTela)
-//{
-//    bool coletouBooster = CheckCollisionRecs(*personagem, *booster);
-//    if(coletouBooster)
-//    {
-//        *velocidade += *velocidade/2;
-//        *booster.x = GetRandomValue(*booster.width, larguraTela-booster.width);
-//        *booster.y = GetRandomValue(*booster.height,alturaTela-booster.height);
-//        }
-//        else
-//        {
-//            DrawRectangleRec(*booster, BLANK);
-//            DrawTexture(boosterTextura, *booster.x, *booster.y, RAYWHITE);
-//    }
-//}
+void administraBooster(Rectangle *booster, Texture2D boosterTextura, Rectangle *personagem, int *velocidade, int larguraTela, int alturaTela)
+{
+    if(CheckCollisionRecs(*personagem, *booster))
+    {
+        *velocidade += *velocidade/2;
+        (*booster).x = GetRandomValue((*booster).width, larguraTela-(*booster).width);
+        (*booster).y = GetRandomValue((*booster).height,alturaTela-(*booster).height);
+        }
+        else
+        {
+            DrawRectangleRec(*booster, BLANK);
+            DrawTexture(boosterTextura, (*booster).x, (*booster).y, RAYWHITE);
+    }
+}
 
 int main()
 {
@@ -147,21 +146,7 @@ int main()
 
            //BOOSTER (poderzinho)
 
-           //coletaBooster(&booster, &personagem, &velocidade, alturaTela, larguraTela);
-
-            bool coletouBooster = CheckCollisionRecs(personagem, booster);
-            if(coletouBooster)
-            {
-                velocidade += velocidade/2;
-                booster.x = GetRandomValue(booster.width, larguraTela-booster.width);
-                booster.y = GetRandomValue(booster.height,alturaTela-booster.height);
-            }
-            else
-            {
-                DrawRectangleRec(booster, BLANK);
-                DrawTexture(boosterTextura, booster.x, booster.y, RAYWHITE);
-            }
-
+           administraBooster(&booster, boosterTextura, &personagem, &velocidade, alturaTela, larguraTela);
 
 
 
