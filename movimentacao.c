@@ -8,6 +8,15 @@ void checaColisao(Rectangle *personagem, Rectangle *obstaculo, Rectangle posicao
         *personagem = posicaoInicial;
 }
 
+void checaColisaoArray(Rectangle *personagem, Rectangle *obstaculos, int numObstaculos, Rectangle posicaoInicial)
+{
+        for(int i=0; i<numObstaculos-1; i++)
+        {
+            checaColisao(personagem, &obstaculos[i], posicaoInicial);
+        }
+
+}
+
 //void coletaBooster(Rectangle *booster, Rectangle *personagem, int *velocidade, int larguraTela, int alturaTela)
 //{
 //    bool coletouBooster = CheckCollisionRecs(*personagem, *booster);
@@ -110,11 +119,7 @@ int main()
 
         /////Colisao Obstaculos/////////////
 
-        for(int i=0; i<NUM_OBSTACULOS-1; i++)
-        {
-            checaColisao(&personagem, &obstaculos[i], posicaoInicial);
-        }
-
+        checaColisaoArray(&personagem, obstaculos,NUM_OBSTACULOS,posicaoInicial);
 
 
     ///////Desenho/////////
