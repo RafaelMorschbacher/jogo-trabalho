@@ -45,6 +45,7 @@ int main()
 
     SetTargetFPS(60);
 
+
     Rectangle personagem = { larguraTela/2, alturaTela/2, 25, 25 };
     Rectangle obstaculos[NUM_OBSTACULOS] ={{400, 300, 100, 100},{100, 100, 50, 100}, {600,100,40,40} };
 
@@ -67,6 +68,22 @@ int main()
 
     Texture2D boosterTextura = LoadTexture("assets/booster25x25.png");
 
+
+        //Estrutura Personagem
+    typedef struct personagem{
+        Rectangle posicao;
+        Texture2D textura;
+        int velocidade;
+    }PERSONAGEM;
+
+    PERSONAGEM personagemTeste = {
+        100, 600, 25, 25,
+        personagemUp,
+        VELOCIDADE_INICIAL,
+    };
+
+    printf("%d", personagemTeste.posicao.x);
+    DrawTexture(personagemTeste.textura, 500, 300, RAYWHITE);
 
 /////////Loop do Jogo////////////
 
@@ -127,7 +144,6 @@ int main()
 
             ClearBackground(RAYWHITE);
             DrawText("Mexa com as setas", 10, 10, 30, LIGHTGRAY);
-
 
 
 
