@@ -62,7 +62,7 @@ int main(void) {
 
     //Load
 
-    Image brick = LoadImage("assets/brick_texture2.png");
+    Image brick = LoadImage("./assets/brick_texture2.png");
     ImageResize(&brick, 25, 40);
     Texture2D brickTexture = LoadTextureFromImage(brick);
 
