@@ -47,8 +47,6 @@ int main()
 
     Rectangle personagem = { larguraTela/2, alturaTela/2, 25, 25 };
     Rectangle obstaculos[NUM_OBSTACULOS] ={{400, 300, 100, 100},{100, 100, 50, 100}, {600,100,40,40} };
-    //Rectangle obstaculo = {400, 300, 100, 100};
-    //Rectangle obstaculo2 = {100, 100, 50, 100};
 
     Rectangle booster = {GetRandomValue(25, larguraTela-25),GetRandomValue(25, alturaTela-25) , 25, 25};
 
