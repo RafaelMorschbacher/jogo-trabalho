@@ -49,7 +49,7 @@ int readLevel (FILE *level, int *x, int *y, char *tipo) {
 int main(void) {
     // variaveis
     const int screenWidth = 1040;
-    const int screenHeight = 600;
+    const int screenHeight = 640;
     int positionX = 0;
     int positionY = 1;
     int brickWall[600][2] = {0};
@@ -62,12 +62,12 @@ int main(void) {
 
     //Load
 
-    Image brick = LoadImage("./assets/brick_texture2.png");
+    Image brick = LoadImage("../assets/brick_texture2.png");
     ImageResize(&brick, 25, 40);
     Texture2D brickTexture = LoadTextureFromImage(brick);
 
     FILE *fileLevel;
-    fileLevel = fopen("levels/nivel1.txt", "r");
+    fileLevel = fopen("../levels/nivel1.txt", "r");
 
     while (readLevel(fileLevel, &positionX, &positionY,&tipo) == 0) {
         printf ("posicao x: %i, posicao y: %i\n", positionX, positionY);
@@ -103,7 +103,7 @@ int main(void) {
 
             for (int j = 0; j < i; j++ ) {
                 int xvec = ((brickWall[j][0]-1)*25);
-                int yvec = ((brickWall[j][1]-1)*40);
+                int yvec = ((brickWall[j][1]-1)*40)+40;
                 //DrawRectangle(xvec,yvec,25,40,ORANGE);
 
                 DrawTexture(brickTexture, xvec, yvec, WHITE);
