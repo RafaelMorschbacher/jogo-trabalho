@@ -8,6 +8,7 @@ typedef struct personagem{
     Texture2D textura;
     int velocidadeBase;
     int velocidadeAtual;
+    int vidas;
     }PERSONAGEM;
 
 void checaColisao(Rectangle *personagem, Rectangle *obstaculo, Rectangle posicaoInicial)
@@ -70,6 +71,21 @@ void atualizaPosicao(PERSONAGEM *personagem , Texture personagemRight, Texture p
         }
 
 }
+void desenhaCabecalho(PERSONAGEM *personagem, Texture2D iconeVidas)
+{
+        DrawText("Vidas: ", 100, 15, 20, LIGHTGRAY);
+
+        int espacamento = 0;
+        if((*personagem).vidas>0)
+        {
+            for(int i= (*personagem).vidas; i>0; i--)
+            {
+                DrawTexture(iconeVidas, (180 + espacamento), 10 , RAYWHITE);
+                espacamento +=40;
+            }
+        }
+
+}
 int main()
 {
 
@@ -112,6 +128,7 @@ int main()
     personagem.velocidadeBase = VELOCIDADE_INICIAL;
     personagem.velocidadeAtual = personagem.velocidadeBase;
     personagem.textura = personagemUp;
+    personagem.vidas = 3;
 
 /////////Loop do Jogo////////////
 
@@ -142,10 +159,13 @@ int main()
 
         BeginDrawing();
 
+        ////Cabeçalho (vidas)///////
+
+        desenhaCabecalho(&personagem, personagemUp);
+
         ///////Cenario///////////
 
-            ClearBackground(RAYWHITE);
-            DrawText("Mexa com as setas", 10, 10, 30, LIGHTGRAY);
+        ClearBackground(RAYWHITE);
 
         ///////Obstáculos////////////
 
