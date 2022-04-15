@@ -2,6 +2,14 @@
 #define VELOCIDADE_INICIAL 4
 #define NUM_OBSTACULOS 5
 
+        //Estrutura Personagem
+typedef struct personagem{
+    Rectangle posicao;
+    Texture2D textura;
+    int velocidadeBase;
+    int velocidadeAtual;
+    }PERSONAGEM;
+
 void checaColisao(Rectangle *personagem, Rectangle *obstaculo, Rectangle posicaoInicial)
 {
     if(CheckCollisionRecs(*personagem,*obstaculo))
@@ -17,11 +25,11 @@ void checaColisaoArray(Rectangle *personagem, Rectangle *obstaculos, int numObst
 
 }
 
-void administraBooster(Rectangle *booster, Texture2D boosterTextura, Rectangle *personagem, int *velocidade, int larguraTela, int alturaTela)
+void administraBooster(Rectangle *booster, Texture2D boosterTextura, PERSONAGEM *personagem, int larguraTela, int alturaTela)
 {
-    if(CheckCollisionRecs(*personagem, *booster))
+    if(CheckCollisionRecs((*personagem).posicao, *booster))
     {
-        *velocidade += *velocidade/2;
+        (*personagem).velocidadeAtual += (*personagem).velocidadeBase;
         (*booster).x = GetRandomValue((*booster).width, larguraTela-(*booster).width);
         (*booster).y = GetRandomValue((*booster).height,alturaTela-(*booster).height);
         }
@@ -32,6 +40,36 @@ void administraBooster(Rectangle *booster, Texture2D boosterTextura, Rectangle *
     }
 }
 
+void atualizaPosicao(PERSONAGEM *personagem , Texture personagemRight, Texture personagemLeft, Texture personagemUp, Texture personagemDown)
+{
+
+    if(IsKeyDown(KEY_RIGHT))
+        {
+            (*personagem).posicao.x += (*personagem).velocidadeAtual;
+             (*personagem).textura = personagemRight;
+        }
+
+
+        if(IsKeyDown(KEY_LEFT))
+        {
+             (*personagem).posicao.x -=  (*personagem).velocidadeAtual;
+             (*personagem).textura = personagemLeft;
+        }
+
+        if(IsKeyDown(KEY_UP))
+        {
+             (*personagem).posicao.y -=  (*personagem).velocidadeAtual;
+             (*personagem).textura = personagemUp;
+        }
+
+
+        if(IsKeyDown(KEY_DOWN))
+        {
+             (*personagem).posicao.y +=  (*personagem).velocidadeAtual;
+             (*personagem).textura = personagemDown;
+        }
+
+}
 int main()
 {
 
@@ -46,14 +84,10 @@ int main()
     SetTargetFPS(60);
 
 
-    Rectangle personagem = { larguraTela/2, alturaTela/2, 25, 25 };
+    //Rectangle personagem = { larguraTela/2, alturaTela/2, 25, 25 };
     Rectangle obstaculos[NUM_OBSTACULOS] ={{400, 300, 100, 100},{100, 100, 50, 100}, {600,100,40,40} };
 
     Rectangle booster = {GetRandomValue(25, larguraTela-25),GetRandomValue(25, alturaTela-25) , 25, 25};
-
-/////////Vari�veis auxiliares////////////
-
-    int velocidade = VELOCIDADE_INICIAL;
 
 ////////Imagens e Texturas//////////
 
@@ -61,29 +95,23 @@ int main()
     Texture2D personagemDown = LoadTexture("assets/personagem_down30x30.png");
     Texture2D personagemLeft = LoadTexture("assets/personagem_left30x30.png");
     Texture2D personagemRight = LoadTexture("assets/personagem_right30x30.png");
-    //Textura inicial do personagem � virado para cima
-    Texture2D texturaAtual = personagemUp;
 
     //Textura do Booster
 
     Texture2D boosterTextura = LoadTexture("assets/booster25x25.png");
 
+/////////Inicialização do Personagem/////////////
 
-        //Estrutura Personagem
-    typedef struct personagem{
-        Rectangle posicao;
-        Texture2D textura;
-        int velocidade;
-    }PERSONAGEM;
+    PERSONAGEM personagem = {0};
 
-    PERSONAGEM personagemTeste = {
-        100, 600, 25, 25,
-        personagemUp,
-        VELOCIDADE_INICIAL,
-    };
+    personagem.posicao.x = larguraTela/2;
+    personagem.posicao.y = alturaTela/2;
+    personagem.posicao.width = 25;
+    personagem.posicao.height = 25;
 
-    printf("%d", personagemTeste.posicao.x);
-    DrawTexture(personagemTeste.textura, 500, 300, RAYWHITE);
+    personagem.velocidadeBase = VELOCIDADE_INICIAL;
+    personagem.velocidadeAtual = personagem.velocidadeBase;
+    personagem.textura = personagemUp;
 
 /////////Loop do Jogo////////////
 
@@ -91,49 +119,23 @@ int main()
     while(!WindowShouldClose())
     {
 
-    ///////Update//////////
+    ///////Update da posicao e textura do personagem//////////
 
-        Rectangle posicaoInicial = personagem;
+        Rectangle posicaoInicial = personagem.posicao;// Guardando posicao inicial antes de colisoes, etc
 
-        //Atualiza��o da posi��o e textura do jogador
+        atualizaPosicao(&personagem, personagemRight, personagemLeft, personagemUp, personagemDown);
 
-        if(IsKeyDown(KEY_RIGHT))
-        {
-            personagem.x += velocidade;
-            texturaAtual = personagemRight;
-        }
-
-
-        if(IsKeyDown(KEY_LEFT))
-        {
-            personagem.x -= velocidade;
-            texturaAtual = personagemLeft;
-        }
-
-        if(IsKeyDown(KEY_UP))
-        {
-            personagem.y -= velocidade;
-            texturaAtual = personagemUp;
-        }
-
-
-        if(IsKeyDown(KEY_DOWN))
-        {
-            personagem.y += velocidade;
-            texturaAtual = personagemDown;
-        }
-
-        DrawTexture(texturaAtual, (personagem.x ), (personagem.y ), RAYWHITE);
+        DrawTexture(personagem.textura, (personagem.posicao.x ), (personagem.posicao.y ), RAYWHITE);
 
 
         /////Colisao Cenario///////
 
-        bool ultrapassaCenario = (personagem.x > larguraTela - personagem.width) || (personagem.x <0) || (personagem.y > alturaTela - personagem.height) || (personagem.y <0);
-        if(ultrapassaCenario) personagem = posicaoInicial;
+        bool ultrapassaCenario = (personagem.posicao.x > larguraTela - personagem.posicao.width) || (personagem.posicao.x <0) || (personagem.posicao.y > alturaTela - personagem.posicao.height) || (personagem.posicao.y <0);
+        if(ultrapassaCenario) personagem.posicao = posicaoInicial;
 
         /////Colisao Obstaculos/////////////
 
-        checaColisaoArray(&personagem, obstaculos,NUM_OBSTACULOS,posicaoInicial);
+        checaColisaoArray(&personagem.posicao, obstaculos,NUM_OBSTACULOS,posicaoInicial);
 
 
     ///////Desenho/////////
@@ -145,11 +147,7 @@ int main()
             ClearBackground(RAYWHITE);
             DrawText("Mexa com as setas", 10, 10, 30, LIGHTGRAY);
 
-
-
-        ///////Blocos////////////
-
-            DrawRectangleRec(personagem, BLANK);
+        ///////Obstáculos////////////
 
             //Desenhando cada bloco da lista de obstaculos
            for(int i=0; i<NUM_OBSTACULOS-1; i++)
@@ -160,7 +158,7 @@ int main()
 
            //BOOSTER (poderzinho)
 
-           administraBooster(&booster, boosterTextura, &personagem, &velocidade, alturaTela, larguraTela);
+           administraBooster(&booster, boosterTextura, &personagem, alturaTela, larguraTela);
 
 
 
