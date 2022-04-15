@@ -1,94 +1,80 @@
+/*
+esse programa lê um arquivo de texto com o mapa, e a partir disso, cria um array com as posições dos tijolos e do jogador
+*/
+
 #include <stdio.h>
 #include <raylib.h>
 
+#define screenWidth 1040
+#define screenHeight 640
 
-int readLevel (FILE *level, int *x, int *y, char *tipo) {
-
-    int conteudoX = *x;
-    int conteudoY = *y;
+int readLevel (FILE *level, int *positionX, int *positionY, char *tipo) { // função que le arquivo, 1 caractere por vez, e descobre qual é
+    int xFuncao = *positionX;
+    int yFuncao = *positionY;
     char conteudoTipo = *tipo;
     char leitura;
-
     do {
         fscanf(level,"%c",&leitura);
         switch(leitura) {
 
-          case '\n':leitura = '-';
+          case '\n':leitura = '-'; // para não ser contabilizados os ENTER do arquivo
                     break;
-          case '-': conteudoX++;
-                    conteudoTipo = '-';
+          case '-': xFuncao++;
                     break;
-          case 'T': conteudoX++;
+          case 'T': xFuncao++;
                     conteudoTipo = 'T';
                     break;
-          case '#': conteudoX++;
+          case '#': xFuncao++;
+                    conteudoTipo = '#';
                     break;
           default:  break;
         }
-        if (conteudoX == 41) {
-            conteudoX = 1;
-            conteudoY++;
+        if (xFuncao == 41) {
+            xFuncao = 1;
+            yFuncao++;
         }
 
-    } while (leitura == '-' && (feof(level) == 0) );
-
-
-  // sai da função quando leitura não é mais '-'
-
-    *x = conteudoX;
-    *y = conteudoY;
+    } while (leitura == '-' && (feof(level) == 0) ); // sai da função quando leitura não é mais '-'. enquanto for, continua lendo
+                                                     // só vai sair no caso de # ou T. a funçao só para nesses dois casos, e a execução retorna pro main
+    
+    *positionX = xFuncao;  //muda a coordenada x do prox objeto
+    *positionY = yFuncao;  //muda a coordenada y do prox objeto
     *tipo = conteudoTipo;
-
-   // printf("feof %i", feof(level));
     return feof(level);
-
-
 }
-
 
 int main(void) {
     // variaveis
-    const int screenWidth = 1040;
-    const int screenHeight = 640;
-    int positionX = 0;
-    int positionY = 1;
+    int positionX = 0; //coordenada x de um objeto na tela
+    int positionY = 1; //coordenada y de um objeto na tela
     int brickWall[600][2] = {0};
-    int i = 0;
+    int positionPlayer[1][2] = {0};
+    int nroBlocos = 0;
     char tipo = ' ';
-    int positionPlayer[1][2];
 
     //init
     InitWindow(screenWidth, screenHeight, "Nome da Janela");
 
-    //Load
+    //Arquivo 
+    FILE *fileLevel;
+    fileLevel = fopen("../levels/nivel1.txt", "r");
 
+    //Load
     Image brick = LoadImage("../assets/brick_texture2.png");
     ImageResize(&brick, 25, 40);
     Texture2D brickTexture = LoadTextureFromImage(brick);
 
-    FILE *fileLevel;
-    fileLevel = fopen("../levels/nivel1.txt", "r");
-
-    while (readLevel(fileLevel, &positionX, &positionY,&tipo) == 0) {
-        printf ("posicao x: %i, posicao y: %i\n", positionX, positionY);
-
-        if (tipo == '-') {
-            brickWall[i][0] = positionX;
-            brickWall[i][1] = positionY;
-            i++;
+    while (readLevel(fileLevel, &positionX, &positionY,&tipo) == 0) { // enquanto tiver coisas para ler
+        if (tipo == '#') { // se a função parou num #, desenha o bloco
+            brickWall[nroBlocos][0] = positionX;
+            brickWall[nroBlocos][1] = positionY;
+            nroBlocos++;
         }
-        else if (tipo == 'T') {
+        else if (tipo == 'T') { // se parou num T, encontra a posição do jogador
             positionPlayer[0][0] = positionX;
             positionPlayer[0][1] = positionY;
-            printf ("entrei no tipo T");
         }
     }
-    // teste printando posições
-    for ( int j = 0; j < i; j++) {
-        printf("bloco numero %i, x = %i; y = %i\n",j, brickWall[j][0], brickWall[j][1]);
-    }
-    printf("posicao player = %i, %i", positionPlayer[0][0], positionPlayer[0][1]);
-    // fim do teste
 
     SetTargetFPS(60);
     while (!WindowShouldClose()) {
@@ -101,23 +87,16 @@ int main(void) {
             DrawRectangle(0,0,screenWidth,screenHeight,BLACK);
             DrawRectangle(0,0,screenWidth,40,GRAY);
 
-            for (int j = 0; j < i; j++ ) {
+            for (int j = 0; j < nroBlocos; j++ ) {
                 int xvec = ((brickWall[j][0]-1)*25);
                 int yvec = ((brickWall[j][1]-1)*40)+40;
-                //DrawRectangle(xvec,yvec,25,40,ORANGE);
-
                 DrawTexture(brickTexture, xvec, yvec, WHITE);
-                //printf("vecs %i, %i\n", xvec,yvec);
-                //printf (" j vale %i, i vale %i\n", j, i);
-                //printf ("coor x = %i, coor y = %i\n",brickWall[i][0],brickWall[i][1] );
             }
 
         EndDrawing();
         //----------------------------------------------------------------------------------
 
     }
-
-
     //Unload
     fclose (fileLevel);
     CloseWindow();
