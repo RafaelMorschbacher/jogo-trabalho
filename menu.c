@@ -1,19 +1,17 @@
- #include <stdio.h>
+#include <stdio.h>
 #include <raylib.h>
 #include <string.h>
 
-const int screenWidth = 1000;
-const int screenHeight = 600;
+#define screenWidth 1000
+#define screenHeight 600
 typedef enum gameScreen {MENU = 0, NOVOJOGO, CONTINUAR} gameScreen;
 
-//função para alinhar
-float alignCenterFont (char *v, int i, int fontSize, Font arcade) {
+float alignCenterFont (char *v, int i, int fontSize, Font arcade) { //função para alinhar
     float width;
     Vector2 tamText = MeasureTextEx(arcade, v, fontSize, 1);
     width = ((screenWidth-tamText.x)/2);
     return width;
 }
-
 
 int main(void) {
 
@@ -22,10 +20,8 @@ int main(void) {
     int estadoChave = 1;
     float u;
 
-
     // Init
     InitWindow(screenWidth, screenHeight, "Battle INF - MENU");
-
     gameScreen currentScreen = MENU;
 
     // Load
@@ -46,18 +42,14 @@ int main(void) {
                     estadoChave++;
                 if (IsKeyPressed(KEY_UP))
                     estadoChave--;
-
                 if (estadoChave == 4)
                     estadoChave = 1;
                 if (estadoChave == 0)
                     estadoChave = 3;
-
-                if (estadoChave == 1 && IsKeyPressed(KEY_ENTER)) {
+                if (estadoChave == 1 && IsKeyPressed(KEY_ENTER)) 
                     currentScreen = NOVOJOGO;
-                }
-                if (estadoChave == 2 && IsKeyPressed(KEY_ENTER)) {
+                if (estadoChave == 2 && IsKeyPressed(KEY_ENTER))
                     currentScreen = CONTINUAR;
-                }
                 break;
 
             case NOVOJOGO: break;;
