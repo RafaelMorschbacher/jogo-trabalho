@@ -29,7 +29,7 @@ void checaColisaoArray(Rectangle *personagem, Rectangle *obstaculos, int numObst
 
 }
 
-void administraBooster(POWERUP *powerUp, Texture2D boosterTextura, PERSONAGEM *personagem, int larguraTela, int alturaTela)
+void administraPowerUp(POWERUP *powerUp, Texture2D boosterTextura, PERSONAGEM *personagem, int larguraTela, int alturaTela)
 {
     if(CheckCollisionRecs((*personagem).posicao, (*powerUp).posicao))
     {
@@ -194,7 +194,7 @@ int main()
 
            //BOOSTER (poderzinho)
 
-           administraBooster(&powerUp, energyCellTextura, &personagem, alturaTela, larguraTela);
+           administraPowerUp(&powerUp, energyCellTextura, &personagem, alturaTela, larguraTela);
 
 
 
