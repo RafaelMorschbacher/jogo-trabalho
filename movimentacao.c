@@ -12,7 +12,9 @@ typedef struct personagem{
     }PERSONAGEM;
 typedef struct powerUp{
     Rectangle posicao;
+    int ativo;
     int cooldown;
+    Texture2D textura;
     }POWERUP;
 void checaColisao(Rectangle *personagem, Rectangle *obstaculo, Rectangle posicaoInicial)
 {
@@ -29,18 +31,37 @@ void checaColisaoArray(Rectangle *personagem, Rectangle *obstaculos, int numObst
 
 }
 
-void administraPowerUp(POWERUP *powerUp, Texture2D boosterTextura, PERSONAGEM *personagem, int larguraTela, int alturaTela)
+void administraPowerUp(POWERUP *powerUp, PERSONAGEM *personagem, int larguraTela, int alturaTela)
 {
     if(CheckCollisionRecs((*personagem).posicao, (*powerUp).posicao))
     {
-        (*personagem).velocidadeAtual += (*personagem).velocidadeBase;
+        //Power-up coletado
+        personagem->velocidadeAtual = personagem->velocidadeBase * 1.5;
+        (*powerUp).cooldown = 5*60;
+        (*powerUp).ativo = 1;
         (*powerUp).posicao.x = GetRandomValue((*powerUp).posicao.width, larguraTela-(*powerUp).posicao.width);
         (*powerUp).posicao.y = GetRandomValue((*powerUp).posicao.height,alturaTela-(*powerUp).posicao.height);
         }
         else
         {
-            DrawRectangleRec((*powerUp).posicao, BLANK);
-            DrawTexture(boosterTextura, (*powerUp).posicao.x, (*powerUp).posicao.y, RAYWHITE);
+            if(!powerUp->ativo)
+            {
+                DrawRectangleRec((*powerUp).posicao, BLANK);
+                DrawTexture(powerUp->textura, (*powerUp).posicao.x, (*powerUp).posicao.y, RAYWHITE);
+            }
+            else
+            {
+                powerUp->cooldown--;
+            }
+
+            if(powerUp->cooldown <=0)
+            {
+                powerUp->ativo = 0;
+                personagem->velocidadeAtual = personagem->velocidadeBase;
+            }
+
+
+
     }
 }
 
@@ -105,17 +126,6 @@ int main()
 
     Rectangle obstaculos[NUM_OBSTACULOS] ={{400, 300, 100, 100},{100, 100, 50, 100}, {600,100,40,40} };
 
-    //Rectangle booster = {GetRandomValue(25, larguraTela-25),GetRandomValue(25, alturaTela-25) , 25, 25};
-
-    //Inicializando PowerUp
-
-    POWERUP powerUp = {0};
-    powerUp.posicao.x = GetRandomValue(25, larguraTela-25);
-    powerUp.posicao.y = GetRandomValue(25, alturaTela-25);
-    powerUp.posicao.width = 25;
-    powerUp.posicao.height = 25;
-    powerUp.cooldown = 0;
-
 
 ////////Imagens e Texturas//////////
 
@@ -124,13 +134,14 @@ int main()
     Texture2D personagemLeft = LoadTexture("assets/personagem_left30x30.png");
     Texture2D personagemRight = LoadTexture("assets/personagem_right30x30.png");
 
+    Texture2D energyCellTextura = LoadTexture("assets/booster25x25.png");
+
     Image escudo = LoadImage("assets/shield.png");
     ImageResize(&escudo, 40, 40);
     Texture2D escudoTextura = LoadTextureFromImage(escudo);
 
-    //Textura do Power Up
 
-    Texture2D energyCellTextura = LoadTexture("assets/booster25x25.png");
+
 
 /////////Inicialização do Personagem/////////////
 
@@ -145,6 +156,15 @@ int main()
     personagem.velocidadeAtual = personagem.velocidadeBase;
     personagem.textura = personagemUp;
     personagem.vidas = 3;
+
+    //Inicializando PowerUp
+
+    POWERUP powerUp = {0};
+    powerUp.posicao.x = GetRandomValue(25, larguraTela-25);
+    powerUp.posicao.y = GetRandomValue(25, alturaTela-25);
+    powerUp.posicao.width = 25;
+    powerUp.posicao.height = 25;
+    powerUp.textura = energyCellTextura;
 
 /////////Loop do Jogo////////////
 
@@ -194,7 +214,7 @@ int main()
 
            //BOOSTER (poderzinho)
 
-           administraPowerUp(&powerUp, energyCellTextura, &personagem, alturaTela, larguraTela);
+           administraPowerUp(&powerUp, &personagem, alturaTela, larguraTela);
 
 
 
