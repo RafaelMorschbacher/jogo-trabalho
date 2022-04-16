@@ -113,6 +113,10 @@ int main()
     Texture2D personagemLeft = LoadTexture("assets/personagem_left30x30.png");
     Texture2D personagemRight = LoadTexture("assets/personagem_right30x30.png");
 
+    Image escudo = LoadImage("assets/shield.png");
+    ImageResize(&escudo, 40, 40);
+    Texture2D escudoTextura = LoadTextureFromImage(escudo);
+
     //Textura do Booster
 
     Texture2D boosterTextura = LoadTexture("assets/booster25x25.png");
@@ -162,7 +166,7 @@ int main()
 
         ////Cabeçalho (vidas)///////
 
-        desenhaCabecalho(&personagem, personagemUp);
+        desenhaCabecalho(&personagem, escudoTextura);
 
         ///////Cenario///////////
 
