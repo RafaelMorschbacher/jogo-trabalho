@@ -85,6 +85,7 @@ void desenhaCabecalho(PERSONAGEM *personagem, Texture2D iconeVidas)
             }
         }
 
+         DrawText("FASE 1", 440, 15, 30, LIGHTGRAY);
 }
 int main()
 {
