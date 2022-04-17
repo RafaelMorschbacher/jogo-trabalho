@@ -2,7 +2,6 @@
 #define VELOCIDADE_INICIAL 4
 #define NUM_OBSTACULOS 5
 
-//Estrutura Personagem
 typedef struct personagem{
     Rectangle posicao;
     int inclinacao;
@@ -27,28 +26,28 @@ void checaColisaoArray(Rectangle *personagem, Rectangle *obstaculos, int numObst
 {
         for(int i=0; i<numObstaculos-1; i++)
         {
-            checaColisao(personagem, &obstaculos[i], posicaoInicial);
+            checaColisao(&(*personagem), &obstaculos[i], posicaoInicial);
         }
 
 }
 
 void administraPowerUp(POWERUP *powerUp, PERSONAGEM *personagem, int larguraTela, int alturaTela)
 {
-    if(CheckCollisionRecs((*personagem).posicao, (*powerUp).posicao))
+    if(CheckCollisionRecs(personagem->posicao, powerUp->posicao))
     {
         //Power-up coletado
         personagem->velocidadeAtual = personagem->velocidadeBase * 1.5;
-        (*powerUp).cooldown = 5*60;
-        (*powerUp).ativo = 1;
-        (*powerUp).posicao.x = GetRandomValue((*powerUp).posicao.width, larguraTela-(*powerUp).posicao.width);
-        (*powerUp).posicao.y = GetRandomValue((*powerUp).posicao.height,alturaTela-(*powerUp).posicao.height);
+        powerUp->cooldown = 5*60;
+        powerUp->ativo = 1;
+        powerUp->posicao.x = GetRandomValue((*powerUp).posicao.width, larguraTela-(*powerUp).posicao.width);
+        powerUp->posicao.y = GetRandomValue((*powerUp).posicao.height,alturaTela-(*powerUp).posicao.height);
         }
         else
         {
             if(!powerUp->ativo)
             {
-                DrawRectangleRec((*powerUp).posicao, BLANK);
-                DrawTexture(powerUp->textura, (*powerUp).posicao.x, (*powerUp).posicao.y, RAYWHITE);
+                DrawRectangleRec(powerUp->posicao, BLANK);
+                DrawTexture(powerUp->textura, powerUp->posicao.x, powerUp->posicao.y, RAYWHITE);
             }
             else
             {
@@ -71,31 +70,31 @@ void atualizaPosicao(PERSONAGEM *personagem , Texture personagemRight, Texture p
 
     if(IsKeyDown(KEY_RIGHT))
         {
-            (*personagem).posicao.x += (*personagem).velocidadeAtual;
-            (*personagem).textura = personagemRight;
+            personagem->posicao.x += (*personagem).velocidadeAtual;
+            personagem->textura = personagemRight;
             personagem->inclinacao = 0;
         }
 
 
         if(IsKeyDown(KEY_LEFT))
         {
-             (*personagem).posicao.x -=  (*personagem).velocidadeAtual;
-             (*personagem).textura = personagemLeft;
+             personagem->posicao.x -=  (*personagem).velocidadeAtual;
+             personagem->textura = personagemLeft;
              personagem->inclinacao = 180;
         }
 
         if(IsKeyDown(KEY_UP))
         {
-             (*personagem).posicao.y -=  (*personagem).velocidadeAtual;
-             (*personagem).textura = personagemUp;
+             personagem->posicao.y -=  (*personagem).velocidadeAtual;
+             personagem->textura = personagemUp;
              personagem->inclinacao = 0;
         }
 
 
         if(IsKeyDown(KEY_DOWN))
         {
-             (*personagem).posicao.y +=  (*personagem).velocidadeAtual;
-             (*personagem).textura = personagemDown;
+             personagem->posicao.y +=  (*personagem).velocidadeAtual;
+             personagem->textura = personagemDown;
              personagem->inclinacao = 270;
         }
 
@@ -105,9 +104,9 @@ void desenhaCabecalho(PERSONAGEM *personagem, Texture2D iconeVidas)
         DrawText("Vidas: ", 100, 15, 20, LIGHTGRAY);
 
         int espacamento = 0;
-        if((*personagem).vidas>0)
+        if(personagem->vidas>0)
         {
-            for(int i= (*personagem).vidas; i>0; i--)
+            for(int i= personagem->vidas; i>0; i--)
             {
                 DrawTexture(iconeVidas, (180 + espacamento), 10 , RAYWHITE);
                 espacamento +=40;
