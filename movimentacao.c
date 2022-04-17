@@ -5,6 +5,7 @@
 //Estrutura Personagem
 typedef struct personagem{
     Rectangle posicao;
+    int inclinacao;
     Texture2D textura;
     int velocidadeBase;
     int velocidadeAtual;
@@ -71,7 +72,8 @@ void atualizaPosicao(PERSONAGEM *personagem , Texture personagemRight, Texture p
     if(IsKeyDown(KEY_RIGHT))
         {
             (*personagem).posicao.x += (*personagem).velocidadeAtual;
-             (*personagem).textura = personagemRight;
+            (*personagem).textura = personagemRight;
+            personagem->inclinacao = 0;
         }
 
 
@@ -79,12 +81,14 @@ void atualizaPosicao(PERSONAGEM *personagem , Texture personagemRight, Texture p
         {
              (*personagem).posicao.x -=  (*personagem).velocidadeAtual;
              (*personagem).textura = personagemLeft;
+             personagem->inclinacao = 180;
         }
 
         if(IsKeyDown(KEY_UP))
         {
              (*personagem).posicao.y -=  (*personagem).velocidadeAtual;
              (*personagem).textura = personagemUp;
+             personagem->inclinacao = 0;
         }
 
 
@@ -92,6 +96,7 @@ void atualizaPosicao(PERSONAGEM *personagem , Texture personagemRight, Texture p
         {
              (*personagem).posicao.y +=  (*personagem).velocidadeAtual;
              (*personagem).textura = personagemDown;
+             personagem->inclinacao = 270;
         }
 
 }
@@ -152,6 +157,7 @@ int main()
     personagem.posicao.width = 25;
     personagem.posicao.height = 25;
 
+    personagem.inclinacao = 90;
     personagem.velocidadeBase = VELOCIDADE_INICIAL;
     personagem.velocidadeAtual = personagem.velocidadeBase;
     personagem.textura = personagemUp;
