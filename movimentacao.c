@@ -2,9 +2,9 @@
 #define VELOCIDADE_INICIAL 4
 #define NUM_OBSTACULOS 5
 
-//Estrutura Personagem
 typedef struct personagem{
     Rectangle posicao;
+    int inclinacao;
     Texture2D textura;
     int velocidadeBase;
     int velocidadeAtual;
@@ -26,28 +26,47 @@ void checaColisaoArray(Rectangle *personagem, Rectangle *obstaculos, int numObst
 {
         for(int i=0; i<numObstaculos-1; i++)
         {
-            checaColisao(personagem, &obstaculos[i], posicaoInicial);
+            checaColisao(&(*personagem), &obstaculos[i], posicaoInicial);
         }
 
 }
-
-void administraPowerUp(POWERUP *powerUp, PERSONAGEM *personagem, int larguraTela, int alturaTela)
+int spawnParede(POWERUP *powerUp, Rectangle obstaculos[], int numObstaculos)
 {
-    if(CheckCollisionRecs((*personagem).posicao, (*powerUp).posicao))
+    int colisao = 0;
+    for(int i=0; i<numObstaculos-1; i++)
+    {
+        if(CheckCollisionRecs(obstaculos[i], powerUp->posicao))
+        {
+            colisao = 1;
+            printf("bateu");
+        }
+
+    }
+    return colisao;
+}
+void administraPowerUp(POWERUP *powerUp, PERSONAGEM *personagem, Rectangle *obstaculos, int numObstaculos, int larguraTela, int alturaTela)
+{
+    if(CheckCollisionRecs(personagem->posicao, powerUp->posicao))
     {
         //Power-up coletado
         personagem->velocidadeAtual = personagem->velocidadeBase * 1.5;
-        (*powerUp).cooldown = 5*60;
-        (*powerUp).ativo = 1;
-        (*powerUp).posicao.x = GetRandomValue((*powerUp).posicao.width, larguraTela-(*powerUp).posicao.width);
-        (*powerUp).posicao.y = GetRandomValue((*powerUp).posicao.height,alturaTela-(*powerUp).posicao.height);
+        powerUp->cooldown = 1*60;
+        powerUp->ativo = 1;
+        do{
+            powerUp->posicao.x = GetRandomValue(powerUp->posicao.width, larguraTela-powerUp->posicao.width);
+            //powerUp->posicao.x = GetRandomValue(0, larguraTela);
+            powerUp->posicao.y = GetRandomValue(powerUp->posicao.height,alturaTela- powerUp->posicao.height);
+            //powerUp->posicao.y = GetRandomValue(0, alturaTela);
+            if(powerUp->posicao.x>larguraTela || powerUp->posicao.y>alturaTela) printf("Saiu da tela");
+        }while(spawnParede(powerUp, obstaculos, numObstaculos));
+
         }
         else
         {
             if(!powerUp->ativo)
             {
-                DrawRectangleRec((*powerUp).posicao, BLANK);
-                DrawTexture(powerUp->textura, (*powerUp).posicao.x, (*powerUp).posicao.y, RAYWHITE);
+                DrawRectangleRec(powerUp->posicao, BLANK);
+                DrawTexture(powerUp->textura, powerUp->posicao.x, powerUp->posicao.y, RAYWHITE);
             }
             else
             {
@@ -70,28 +89,32 @@ void atualizaPosicao(PERSONAGEM *personagem , Texture personagemRight, Texture p
 
     if(IsKeyDown(KEY_RIGHT))
         {
-            (*personagem).posicao.x += (*personagem).velocidadeAtual;
-             (*personagem).textura = personagemRight;
+            personagem->posicao.x += (*personagem).velocidadeAtual;
+            personagem->textura = personagemRight;
+            personagem->inclinacao = 0;
         }
 
 
         if(IsKeyDown(KEY_LEFT))
         {
-             (*personagem).posicao.x -=  (*personagem).velocidadeAtual;
-             (*personagem).textura = personagemLeft;
+             personagem->posicao.x -=  (*personagem).velocidadeAtual;
+             personagem->textura = personagemLeft;
+             personagem->inclinacao = 180;
         }
 
         if(IsKeyDown(KEY_UP))
         {
-             (*personagem).posicao.y -=  (*personagem).velocidadeAtual;
-             (*personagem).textura = personagemUp;
+             personagem->posicao.y -=  (*personagem).velocidadeAtual;
+             personagem->textura = personagemUp;
+             personagem->inclinacao = 0;
         }
 
 
         if(IsKeyDown(KEY_DOWN))
         {
-             (*personagem).posicao.y +=  (*personagem).velocidadeAtual;
-             (*personagem).textura = personagemDown;
+             personagem->posicao.y +=  (*personagem).velocidadeAtual;
+             personagem->textura = personagemDown;
+             personagem->inclinacao = 270;
         }
 
 }
@@ -100,9 +123,9 @@ void desenhaCabecalho(PERSONAGEM *personagem, Texture2D iconeVidas)
         DrawText("Vidas: ", 100, 15, 20, LIGHTGRAY);
 
         int espacamento = 0;
-        if((*personagem).vidas>0)
+        if(personagem->vidas>0)
         {
-            for(int i= (*personagem).vidas; i>0; i--)
+            for(int i= personagem->vidas; i>0; i--)
             {
                 DrawTexture(iconeVidas, (180 + espacamento), 10 , RAYWHITE);
                 espacamento +=40;
@@ -152,6 +175,7 @@ int main()
     personagem.posicao.width = 25;
     personagem.posicao.height = 25;
 
+    personagem.inclinacao = 90;
     personagem.velocidadeBase = VELOCIDADE_INICIAL;
     personagem.velocidadeAtual = personagem.velocidadeBase;
     personagem.textura = personagemUp;
@@ -177,8 +201,6 @@ int main()
         Rectangle posicaoInicial = personagem.posicao;// Guardando posicao inicial antes de colisoes, etc
 
         atualizaPosicao(&personagem, personagemRight, personagemLeft, personagemUp, personagemDown);
-
-        DrawTexture(personagem.textura, (personagem.posicao.x ), (personagem.posicao.y ), RAYWHITE);
 
 
         /////Colisao Cenario///////
@@ -212,9 +234,11 @@ int main()
            }
 
 
-           //BOOSTER (poderzinho)
+        //////PERSONAGEM//////
+        DrawTexture(personagem.textura, (personagem.posicao.x ), (personagem.posicao.y ), RAYWHITE);
 
-           administraPowerUp(&powerUp, &personagem, alturaTela, larguraTela);
+        //////POWER-UP////////
+           administraPowerUp(&powerUp, &personagem, obstaculos, NUM_OBSTACULOS, alturaTela, larguraTela);
 
 
 
