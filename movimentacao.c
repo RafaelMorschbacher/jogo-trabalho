@@ -183,8 +183,6 @@ int main()
 
         atualizaPosicao(&personagem, personagemRight, personagemLeft, personagemUp, personagemDown);
 
-        DrawTexture(personagem.textura, (personagem.posicao.x ), (personagem.posicao.y ), RAYWHITE);
-
 
         /////Colisao Cenario///////
 
@@ -217,8 +215,10 @@ int main()
            }
 
 
-           //BOOSTER (poderzinho)
+        //////PERSONAGEM//////
+        DrawTexture(personagem.textura, (personagem.posicao.x ), (personagem.posicao.y ), RAYWHITE);
 
+        //////POWER-UP////////
            administraPowerUp(&powerUp, &personagem, alturaTela, larguraTela);
 
 
