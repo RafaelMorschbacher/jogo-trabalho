@@ -5,22 +5,11 @@
 
 #define screenWidth 1000
 #define screenHeight 640
+
 typedef enum gameScreen {MENU = 0, NOVOJOGO, CONTINUAR} gameScreen;
 
-
 int main(void) {
-    printf ("aqui dentro do main\n"); 
-    // variaveis
-    char menuOptions[3][10] =  {"Novo Jogo", "Continuar","Sair"};
-    float u;
-    int positionX = 0;                  //coordenada x de um objeto na tela
-    int positionY = 1;                  //coordenada y de um objeto na tela
-    int brickWall[600][2] = {0};
-    int positionPlayer[1][2] = {0};
-    int nroBlocos = 0;
-    char tipo = ' ';
-    int estadoChave = 1;
-
+    Rectangle obstaculos[600] ={{0,0,0,0}}; //posX, posY, largura, altura
 
     // Init
     InitWindow(screenWidth, screenHeight, "Battle INF - MENU");
@@ -39,11 +28,44 @@ int main(void) {
     ImageResize(&brick, 25, 40);
     Texture2D brickTexture = LoadTextureFromImage(brick);
 
+    Texture2D personagemUp = LoadTexture("../assets/personagem_up30x30.png");
+    Texture2D personagemDown = LoadTexture("../assets/personagem_down30x30.png");
+    Texture2D personagemLeft = LoadTexture("../assets/personagem_left30x30.png");
+    Texture2D personagemRight = LoadTexture("../assets/personagem_right30x30.png");
+
+    Texture2D energyCellTextura = LoadTexture("../assets/booster25x25.png");
+
+    Image escudo = LoadImage("../assets/shield.png");
+    ImageResize(&escudo, 40, 40);
+    Texture2D escudoTextura = LoadTextureFromImage(escudo);
+
+
+    //Inicialização do Personagem
+    PERSONAGEM personagem = {0};
+
+    personagem.posicao.x = screenWidth/2;
+    personagem.posicao.y = screenHeight/2;
+    personagem.posicao.width = 25;
+    personagem.posicao.height = 25;
+    personagem.velocidadeBase = VELOCIDADE_INICIAL;
+    personagem.velocidadeAtual = personagem.velocidadeBase;
+    personagem.textura = personagemUp;
+    personagem.vidas = 3;
+
+    //Inicializando PowerUp
+    POWERUP powerUp = {0};
+    powerUp.posicao.x = GetRandomValue(25, screenWidth-25);
+    powerUp.posicao.y = GetRandomValue(25, screenHeight-25);
+    powerUp.posicao.width = 25;
+    powerUp.posicao.height = 25;
+    powerUp.textura = energyCellTextura;
+
+
     SetTargetFPS(60);
     while (!WindowShouldClose()) { // detecta se vai fechar
         // Update
         switch (currentScreen) {
-            case MENU:  printf("chamando posicao chave\n");
+            case MENU:  {printf("chamando posicao chave\n");
                         if (IsKeyPressed(KEY_DOWN))
                             estadoChave++;
                         if (IsKeyPressed(KEY_UP))
@@ -56,28 +78,46 @@ int main(void) {
                             currentScreen = NOVOJOGO;
                         if (estadoChave == 2 && IsKeyPressed(KEY_ENTER))
                             currentScreen = CONTINUAR;
-                        break;
+                        break;}
                         
-            case NOVOJOGO:  while (readLevel(fileLevel, &positionX, &positionY,&tipo) == 0) { // enquanto tiver coisas para ler
+            case NOVOJOGO:  {while (readLevel(fileLevel, &positionX, &positionY,&tipo) == 0) { // enquanto tiver coisas para ler
                                 if (tipo == '#') { // se a função parou num #, desenha o bloco
                                     brickWall[nroBlocos][0] = positionX;
                                     brickWall[nroBlocos][1] = positionY;
+
+                                    //adicionando as características pro array de structs obstaculos
+                                    obstaculos[nroBlocos].x = positionX;
+                                    obstaculos[nroBlocos].y = positionY; 
+                                    obstaculos[nroBlocos].width = 25.0;
+                                    obstaculos[nroBlocos].height = 40.0; 
                                     nroBlocos++;
+                                    
                                 }
                                 else if (tipo == 'T') { // se parou num T, encontra a posição do jogador
                                     positionPlayer[0][0] = positionX;
                                     positionPlayer[0][1] = positionY;
                                 }
                             }
-                            break;
-            case CONTINUAR: break;
+                            
+                            //Update da posicao e textura do personagem
+                            Rectangle posicaoInicial = personagem.posicao;// Guardando posicao inicial antes de colisoes, etc
+                            atualizaPosicao(&personagem, personagemRight, personagemLeft, personagemUp, personagemDown);
+                            //Colisao Cenario
+                            bool ultrapassaCenario = (personagem.posicao.x > screenWidth - personagem.posicao.width) || (personagem.posicao.x <0) || (personagem.posicao.y > screenHeight - personagem.posicao.height) || (personagem.posicao.y <0);
+                            if(ultrapassaCenario) 
+                                personagem.posicao = posicaoInicial;
+                            //Colisao Obstaculos // *****ALTERAR P/ COLOCAR ARRAY BRICK WALL NO LUGAR DE ARRAY OBSTACULOS
+                            checaColisaoArray(&personagem.posicao, obstaculos ,nroBlocos,posicaoInicial);
+                            break;}
+                            
+            case CONTINUAR:{ break;}
         }
 
         // Draw
         BeginDrawing();
             ClearBackground(RAYWHITE);
             switch (currentScreen) {
-                case MENU: //to do
+                case MENU: {//to do
                     DrawRectangle(0, 0, screenWidth, screenHeight, BLACK);
                     DrawTexture(tituloTex, 0, 20 , WHITE);
                     u = 0; //escreve menu
@@ -94,21 +134,24 @@ int main(void) {
                                 break;
                         default: break;
                     }
-                    break;
+                    break;}
 
-                case NOVOJOGO:  ClearBackground(RAYWHITE);
+                case NOVOJOGO:  {ClearBackground(RAYWHITE);
                                 DrawRectangle(0,0,screenWidth,screenHeight,BLACK);
-                                DrawRectangle(0,0,screenWidth,40,GRAY);
                                 for (int j = 0; j < nroBlocos; j++ ) {
                                     int xvec = ((brickWall[j][0]-1)*25);
                                     int yvec = ((brickWall[j][1]-1)*40)+40;
                                     DrawTexture(brickTexture, xvec, yvec, WHITE);
-                                 }
-                                break;
+                                 }                                
+                                DrawRectangle(0,0,screenWidth,40,GRAY);
+                                desenhaCabecalho(&personagem, escudoTextura);
+                                administraPowerUp(&powerUp, &personagem, screenHeight, screenWidth);
+                                DrawTexture(personagem.textura, (personagem.posicao.x ), (personagem.posicao.y ), RAYWHITE);
+                                break;}
 
-                case CONTINUAR: DrawRectangle(0, 0, screenWidth, screenHeight, BLACK);
+                case CONTINUAR: {DrawRectangle(0, 0, screenWidth, screenHeight, BLACK);
                                 DrawTextEx(arcade, "Continuar", (Vector2){200,350}, 75, 1,WHITE);
-                                break;
+                                break;}
                 default: break;
             }
 
