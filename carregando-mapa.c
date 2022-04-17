@@ -5,7 +5,9 @@ esse programa lê um arquivo de texto com o mapa, e a partir disso, cria um arra
 #include <stdio.h>
 #include <raylib.h>
 
+
 #define screenWidth 1000
+
 #define screenHeight 640
 
 int readLevel (FILE *level, int *positionX, int *positionY, char *tipo) { // função que le arquivo, 1 caractere por vez, e descobre qual é
