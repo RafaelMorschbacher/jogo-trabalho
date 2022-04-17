@@ -4,7 +4,6 @@
 #define screenWidth 1000
 
 float alignCenterFont (char *v, int i, int fontSize, Font arcade); 
-//int posicaoChave(); 
 int readLevel (FILE *level, int *positionX, int *positionY, char *tipo);
 
 

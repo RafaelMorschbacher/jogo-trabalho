@@ -14,21 +14,7 @@ float alignCenterFont (char *v, int i, int fontSize, Font arcade) {
 }
 
 // FUNÇÕES MENU --------------------------------------------------------------------------------------------------------------------
-/*int posicaoChave() {                //da posição da chave, pra saber onde deve estar amarelo
-    int estadoChave = 1;
-    if (IsKeyPressed(KEY_DOWN))
-        estadoChave++;
-    if (IsKeyPressed(KEY_UP))
-        estadoChave--;
-    if (estadoChave == 4)
-        estadoChave = 1;
-    if (estadoChave == 0)
-        estadoChave = 3;
 
-    printf("estado chave = %i\n", estadoChave); 
-    return estadoChave; 
-}
-*/
 // FUNÇOES NOVO JOGO ----------------------------------------------------------------------------------------------------------------
 // -- carregando mapa
 int readLevel (FILE *level, int *positionX, int *positionY, char *tipo) { // função que le arquivo, 1 caractere por vez, e descobre qual é
