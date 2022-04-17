@@ -3,9 +3,8 @@
 #include <string.h>
 #include "bibjogo.c"
 
-
 #define screenWidth 1000
-#define screenHeight 600
+#define screenHeight 640
 typedef enum gameScreen {MENU = 0, NOVOJOGO, CONTINUAR} gameScreen;
 
 
@@ -13,16 +12,13 @@ int main(void) {
     printf ("aqui dentro do main\n"); 
     // variaveis
     char menuOptions[3][10] =  {"Novo Jogo", "Continuar","Sair"};
-
     float u;
-
     int positionX = 0;                  //coordenada x de um objeto na tela
     int positionY = 1;                  //coordenada y de um objeto na tela
     int brickWall[600][2] = {0};
     int positionPlayer[1][2] = {0};
     int nroBlocos = 0;
     char tipo = ' ';
-
     int estadoChave = 1;
 
 
@@ -43,28 +39,11 @@ int main(void) {
     ImageResize(&brick, 25, 40);
     Texture2D brickTexture = LoadTextureFromImage(brick);
 
-    // Preechendo vetor de posiçoes de blocos
-    // Depois provavelmente vai pro UPDATE, aí, atualizar o vetor a cada vez, pra ver se alguma peça foi tirada (com um tiro), e ele 
-    //...vai printar novamente na tela, sem aquele que saiu dentro do vetor
-    printf("entrando no while q chama a read level"); 
-    while (readLevel(fileLevel, &positionX, &positionY,&tipo) == 0) { // enquanto tiver coisas para ler
-        if (tipo == '#') { // se a função parou num #, desenha o bloco
-            brickWall[nroBlocos][0] = positionX;
-            brickWall[nroBlocos][1] = positionY;
-            nroBlocos++;
-        }
-        else if (tipo == 'T') { // se parou num T, encontra a posição do jogador
-            positionPlayer[0][0] = positionX;
-            positionPlayer[0][1] = positionY;
-        }
-    }
-
     SetTargetFPS(60);
     while (!WindowShouldClose()) { // detecta se vai fechar
         // Update
         switch (currentScreen) {
             case MENU:  printf("chamando posicao chave\n");
-                 
                         if (IsKeyPressed(KEY_DOWN))
                             estadoChave++;
                         if (IsKeyPressed(KEY_UP))
@@ -79,9 +58,21 @@ int main(void) {
                             currentScreen = CONTINUAR;
                         break;
                         
-            case NOVOJOGO: break;;
-            case CONTINUAR: break;;
+            case NOVOJOGO:  while (readLevel(fileLevel, &positionX, &positionY,&tipo) == 0) { // enquanto tiver coisas para ler
+                                if (tipo == '#') { // se a função parou num #, desenha o bloco
+                                    brickWall[nroBlocos][0] = positionX;
+                                    brickWall[nroBlocos][1] = positionY;
+                                    nroBlocos++;
+                                }
+                                else if (tipo == 'T') { // se parou num T, encontra a posição do jogador
+                                    positionPlayer[0][0] = positionX;
+                                    positionPlayer[0][1] = positionY;
+                                }
+                            }
+                            break;
+            case CONTINUAR: break;
         }
+
         // Draw
         BeginDrawing();
             ClearBackground(RAYWHITE);
@@ -89,7 +80,6 @@ int main(void) {
                 case MENU: //to do
                     DrawRectangle(0, 0, screenWidth, screenHeight, BLACK);
                     DrawTexture(tituloTex, 0, 20 , WHITE);
-                    
                     u = 0; //escreve menu
                     for (int i = 0; i < 3; i++) {
                         DrawTextEx(arcade, menuOptions[i], (Vector2){(alignCenterFont(menuOptions[i],i,40, arcade)),(250 + u) }, 40, 1,GRAY);
@@ -106,16 +96,15 @@ int main(void) {
                     }
                     break;
 
-                case NOVOJOGO:  InitWindow(screenWidth, 640, "Novo Jogo");
-                                ClearBackground(RAYWHITE);
+                case NOVOJOGO:  ClearBackground(RAYWHITE);
                                 DrawRectangle(0,0,screenWidth,screenHeight,BLACK);
                                 DrawRectangle(0,0,screenWidth,40,GRAY);
-
                                 for (int j = 0; j < nroBlocos; j++ ) {
                                     int xvec = ((brickWall[j][0]-1)*25);
                                     int yvec = ((brickWall[j][1]-1)*40)+40;
                                     DrawTexture(brickTexture, xvec, yvec, WHITE);
-                                break; }
+                                 }
+                                break;
 
                 case CONTINUAR: DrawRectangle(0, 0, screenWidth, screenHeight, BLACK);
                                 DrawTextEx(arcade, "Continuar", (Vector2){200,350}, 75, 1,WHITE);
