@@ -86,12 +86,11 @@ int main(void) {
                                     brickWall[nroBlocos][1] = positionY;
 
                                     //adicionando as características pro array de structs obstaculos
-                                    obstaculos[nroBlocos].x = positionX;
-                                    obstaculos[nroBlocos].y = positionY; 
+                                    obstaculos[nroBlocos].x = (positionX-1)*25;
+                                    obstaculos[nroBlocos].y = ((positionY-1)*40)+40; 
                                     obstaculos[nroBlocos].width = 25.0;
                                     obstaculos[nroBlocos].height = 40.0; 
                                     nroBlocos++;
-                                    
                                 }
                                 else if (tipo == 'T') { // se parou num T, encontra a posição do jogador
                                     positionPlayer[0][0] = positionX;
@@ -103,10 +102,10 @@ int main(void) {
                             Rectangle posicaoInicial = personagem.posicao;// Guardando posicao inicial antes de colisoes, etc
                             atualizaPosicao(&personagem, personagemRight, personagemLeft, personagemUp, personagemDown);
                             //Colisao Cenario
-                            bool ultrapassaCenario = (personagem.posicao.x > screenWidth - personagem.posicao.width) || (personagem.posicao.x <0) || (personagem.posicao.y > screenHeight - personagem.posicao.height) || (personagem.posicao.y <0);
+                            bool ultrapassaCenario = (personagem.posicao.x > screenWidth - personagem.posicao.width) || (personagem.posicao.x <0) || (personagem.posicao.y > screenHeight - personagem.posicao.height) || (personagem.posicao.y <40);
                             if(ultrapassaCenario) 
                                 personagem.posicao = posicaoInicial;
-                            //Colisao Obstaculos // *****ALTERAR P/ COLOCAR ARRAY BRICK WALL NO LUGAR DE ARRAY OBSTACULOS
+                            //Colisao Obstaculos 
                             checaColisaoArray(&personagem, obstaculos ,nroBlocos,posicaoInicial);
                             break;}
 

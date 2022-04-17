@@ -4,15 +4,20 @@
 #include "bibjogo.h"
 
 //VARIÁVEIS ------------------------------------------------------------------------------------------------------------------------
+//variaveis menu
 char menuOptions[3][10] =  {"Novo Jogo", "Continuar","Sair"};
 float u;
-float positionX = 0;                  //coordenada x de um objeto na tela
-float positionY = 1;                  //coordenada y de um objeto na tela
-int brickWall[600][2] = {0};
-int positionPlayer[1][2] = {0};
-int nroBlocos = 0;
 char tipo = ' ';
 int estadoChave = 1;
+
+//variaveis obstaculos
+float positionX = 0;                  //coordenada x de um objeto na tela
+float positionY = 1;                  //coordenada y de um objeto na tela
+float brickWall[600][2] = {0};
+int nroBlocos = 0;
+
+//variaveis movimentação
+int positionPlayer[1][2] = {0};
 
 //mov
 Rectangle obstaculos[600] ={{0,0,0,0}}; //posX, posY, largura, altura
@@ -76,16 +81,18 @@ int readLevel (FILE *level, float *positionX, float *positionY, char *tipo) { //
 void checaColisao(PERSONAGEM *personagem, Rectangle *obstaculo, Rectangle posicaoInicial) {
     if(CheckCollisionRecs(personagem->posicao,*obstaculo)) {
         personagem->posicao = posicaoInicial;
-        printf("COLIDIU 1 \n");
+        printf("dentro da função coordenadas são %f e %f\n", obstaculo->x, obstaculo->y);
+        printf("COLIDIU  \n");
     }
-       
-    //printf("entrei na CHECA COLISÃO 1 \n");
 }
 
 void checaColisaoArray(PERSONAGEM *personagem, Rectangle *obstaculos, int numObstaculos, Rectangle posicaoInicial) {
-        for(int i=0; i<numObstaculos-1; i++) {
+        for(int i=0; i<numObstaculos; i++) {
             checaColisao(&(*personagem), &obstaculos[i], posicaoInicial);
-        //printf("entrei na CHECA COLISÃO ARRAY 2 \n");
+          //  printf("o numero de obstaculos é %i\n", numObstaculos);
+          //  printf("estou checando o personagem em %f, %f\n", personagem->posicao.x, personagem->posicao.y); 
+           // printf("estou checando c o obstaculo em %f, %f\n\n", obstaculos[i].x, obstaculos[i].y);
+
         }
 }
 
