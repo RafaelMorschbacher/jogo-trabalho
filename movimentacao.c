@@ -30,17 +30,36 @@ void checaColisaoArray(Rectangle *personagem, Rectangle *obstaculos, int numObst
         }
 
 }
+int spawnParede(POWERUP *powerUp, Rectangle obstaculos[], int numObstaculos)
+{
+    int colisao = 0;
+    for(int i=0; i<numObstaculos-1; i++)
+    {
+        if(CheckCollisionRecs(obstaculos[i], powerUp->posicao))
+        {
+            colisao = 1;
+            printf("bateu");
+        }
 
-void administraPowerUp(POWERUP *powerUp, PERSONAGEM *personagem, int larguraTela, int alturaTela)
+    }
+    return colisao;
+}
+void administraPowerUp(POWERUP *powerUp, PERSONAGEM *personagem, Rectangle *obstaculos, int numObstaculos, int larguraTela, int alturaTela)
 {
     if(CheckCollisionRecs(personagem->posicao, powerUp->posicao))
     {
         //Power-up coletado
         personagem->velocidadeAtual = personagem->velocidadeBase * 1.5;
-        powerUp->cooldown = 5*60;
+        powerUp->cooldown = 1*60;
         powerUp->ativo = 1;
-        powerUp->posicao.x = GetRandomValue((*powerUp).posicao.width, larguraTela-(*powerUp).posicao.width);
-        powerUp->posicao.y = GetRandomValue((*powerUp).posicao.height,alturaTela-(*powerUp).posicao.height);
+        do{
+            powerUp->posicao.x = GetRandomValue(powerUp->posicao.width, larguraTela-powerUp->posicao.width);
+            //powerUp->posicao.x = GetRandomValue(0, larguraTela);
+            powerUp->posicao.y = GetRandomValue(powerUp->posicao.height,alturaTela- powerUp->posicao.height);
+            //powerUp->posicao.y = GetRandomValue(0, alturaTela);
+            if(powerUp->posicao.x>larguraTela || powerUp->posicao.y>alturaTela) printf("Saiu da tela");
+        }while(spawnParede(powerUp, obstaculos, numObstaculos));
+
         }
         else
         {
@@ -219,7 +238,7 @@ int main()
         DrawTexture(personagem.textura, (personagem.posicao.x ), (personagem.posicao.y ), RAYWHITE);
 
         //////POWER-UP////////
-           administraPowerUp(&powerUp, &personagem, alturaTela, larguraTela);
+           administraPowerUp(&powerUp, &personagem, obstaculos, NUM_OBSTACULOS, alturaTela, larguraTela);
 
 
 
