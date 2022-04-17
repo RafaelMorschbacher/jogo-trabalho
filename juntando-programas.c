@@ -107,9 +107,9 @@ int main(void) {
                             if(ultrapassaCenario) 
                                 personagem.posicao = posicaoInicial;
                             //Colisao Obstaculos // *****ALTERAR P/ COLOCAR ARRAY BRICK WALL NO LUGAR DE ARRAY OBSTACULOS
-                            checaColisaoArray(&personagem.posicao, obstaculos ,nroBlocos,posicaoInicial);
+                            checaColisaoArray(&personagem, obstaculos ,nroBlocos,posicaoInicial);
                             break;}
-                            
+
             case CONTINUAR:{ break;}
         }
 
@@ -144,9 +144,10 @@ int main(void) {
                                     DrawTexture(brickTexture, xvec, yvec, WHITE);
                                  }                                
                                 DrawRectangle(0,0,screenWidth,40,GRAY);
-                                desenhaCabecalho(&personagem, escudoTextura);
+                                
                                 administraPowerUp(&powerUp, &personagem, screenHeight, screenWidth);
                                 DrawTexture(personagem.textura, (personagem.posicao.x ), (personagem.posicao.y ), RAYWHITE);
+                                desenhaCabecalho(&personagem, escudoTextura);
                                 break;}
 
                 case CONTINUAR: {DrawRectangle(0, 0, screenWidth, screenHeight, BLACK);

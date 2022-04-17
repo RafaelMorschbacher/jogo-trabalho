@@ -73,16 +73,19 @@ int readLevel (FILE *level, float *positionX, float *positionY, char *tipo) { //
 }
 
 // funcoes MOVIMENTAÇÃO
-void checaColisao(Rectangle *personagem, Rectangle *obstaculo, Rectangle posicaoInicial) {
-    if(CheckCollisionRecs(*personagem,*obstaculo))
-        *personagem = posicaoInicial;
-    printf("entrei na CHECA COLISÃO 1 \n");
+void checaColisao(PERSONAGEM *personagem, Rectangle *obstaculo, Rectangle posicaoInicial) {
+    if(CheckCollisionRecs(personagem->posicao,*obstaculo)) {
+        personagem->posicao = posicaoInicial;
+        printf("COLIDIU 1 \n");
+    }
+       
+    //printf("entrei na CHECA COLISÃO 1 \n");
 }
 
-void checaColisaoArray(Rectangle *personagem, Rectangle *obstaculos, int numObstaculos, Rectangle posicaoInicial) {
+void checaColisaoArray(PERSONAGEM *personagem, Rectangle *obstaculos, int numObstaculos, Rectangle posicaoInicial) {
         for(int i=0; i<numObstaculos-1; i++) {
-            checaColisao(personagem, &obstaculos[i], posicaoInicial);
-        printf("entrei na CHECA COLISÃO ARRAY 2 \n");
+            checaColisao(&(*personagem), &obstaculos[i], posicaoInicial);
+        //printf("entrei na CHECA COLISÃO ARRAY 2 \n");
         }
 }
 
@@ -110,7 +113,7 @@ void administraPowerUp(POWERUP *powerUp, PERSONAGEM *personagem, int larguraTela
         }
     }
 
-    printf("entrei na ADMINISTRA POWER UP 3 \n");
+    //printf("entrei na ADMINISTRA POWER UP 3 \n");
 }
 
 void atualizaPosicao(PERSONAGEM *personagem , Texture personagemRight, Texture personagemLeft, Texture personagemUp, Texture personagemDown) {
@@ -134,7 +137,7 @@ void atualizaPosicao(PERSONAGEM *personagem , Texture personagemRight, Texture p
         (*personagem).posicao.y +=  (*personagem).velocidadeAtual;
         (*personagem).textura = personagemDown;
     }
-    printf("entrei na ATUALIZA POSIÇÃO 4\n");
+    //printf("entrei na ATUALIZA POSIÇÃO 4\n");
 }
 
 void desenhaCabecalho(PERSONAGEM *personagem, Texture2D iconeVidas) {
@@ -148,5 +151,5 @@ void desenhaCabecalho(PERSONAGEM *personagem, Texture2D iconeVidas) {
     }
     DrawText("FASE 1", 440, 15, 30, LIGHTGRAY);
 
-    printf("entrei na DESENHA CABEÇALHO 5 \n");
+    //printf("entrei na DESENHA CABEÇALHO 5 \n");
 }
