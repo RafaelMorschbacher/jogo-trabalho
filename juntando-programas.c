@@ -54,11 +54,13 @@ int main(void) {
 
     //Inicializando PowerUp
     POWERUP powerUp = {0};
-    powerUp.posicao.x = GetRandomValue(25, screenWidth-25);
-    powerUp.posicao.y = GetRandomValue(25, screenHeight-25);
     powerUp.posicao.width = 25;
     powerUp.posicao.height = 25;
     powerUp.textura = energyCellTextura;
+    do{
+        powerUp.posicao.x = GetRandomValue(powerUp.posicao.width, GetScreenWidth()-powerUp.posicao.width);
+        powerUp.posicao.y = GetRandomValue(powerUp.posicao.height+40,GetScreenHeight()- powerUp.posicao.height);
+    }while(spawnParede(&powerUp, obstaculos, nroBlocos));
 
 
     SetTargetFPS(60);

@@ -101,7 +101,6 @@ int spawnParede(POWERUP *powerUp, Rectangle obstaculos[], int numObstaculos)
         if(CheckCollisionRecs(obstaculos[i], powerUp->posicao))
         {
             colisao = 1;
-            printf("Spawnou errado");
         }
 
     }
@@ -117,35 +116,30 @@ void administraPowerUp(POWERUP *powerUp, PERSONAGEM *personagem, Rectangle *obst
         powerUp->cooldown = 5*60;
         powerUp->ativo = 1;
         do{
-            powerUp->posicao.x = GetRandomValue(powerUp->posicao.width, larguraTela-powerUp->posicao.width);
-            //powerUp->posicao.x = GetRandomValue(0, larguraTela);
-            powerUp->posicao.y = GetRandomValue(powerUp->posicao.height,alturaTela- powerUp->posicao.height);
-            //powerUp->posicao.y = GetRandomValue(0, alturaTela);
+            powerUp->posicao.x = GetRandomValue(powerUp->posicao.width, GetScreenWidth()-powerUp->posicao.width);
+            powerUp->posicao.y = GetRandomValue(powerUp->posicao.height+40,GetScreenHeight()- powerUp->posicao.height);
         }while(spawnParede(&(*powerUp), &(*obstaculos), numObstaculos));
 
 
         }
+        if(powerUp->ativo)
+        {
+            powerUp->cooldown--;
+        }
         else
         {
-            if(powerUp->ativo)
-            {
-                powerUp->cooldown--;
-            }
-            else
-            {
                 DrawRectangleRec(powerUp->posicao, BLANK);
                 DrawTexture(powerUp->textura, powerUp->posicao.x, powerUp->posicao.y, RAYWHITE);
-            }
+        }
 
-            if(powerUp->cooldown <=0)
-            {
-                powerUp->ativo = 0;
-                personagem->velocidadeAtual = personagem->velocidadeBase;
-            }
+        if(powerUp->cooldown <=0)
+        {
+            powerUp->ativo = 0;
+            personagem->velocidadeAtual = personagem->velocidadeBase;
+        }
 
-                printf("\n x: %f , y: %f",  powerUp->posicao.x, powerUp->posicao.y);
 
-    }
+
 }
 
 void atualizaPosicao(PERSONAGEM *personagem , Texture personagemRight, Texture personagemLeft, Texture personagemUp, Texture personagemDown) {
@@ -177,11 +171,11 @@ void desenhaCabecalho(PERSONAGEM *personagem, Texture2D iconeVidas) {
     int espacamento = 0;
     if((*personagem).vidas>0) {
         for(int i= (*personagem).vidas; i>0; i--) {
-            DrawTexture(iconeVidas, (180 + espacamento), 10 , RAYWHITE);
+            DrawTexture(iconeVidas, (180 + espacamento), 2 , RAYWHITE);
             espacamento +=40;
         }
     }
-    DrawText("FASE 1", 440, 15, 30, LIGHTGRAY);
+    DrawText("FASE 1", 440, 5, 30, LIGHTGRAY);
 
     //printf("entrei na DESENHA CABEÇALHO 5 \n");
 }
