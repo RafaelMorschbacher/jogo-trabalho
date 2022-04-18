@@ -45,7 +45,8 @@ int spawnParede(POWERUP *powerUp, Rectangle obstaculos[], int numObstaculos)
             printf("bateu");
         }
 
-
+    }
+}
 void administraPowerUp(POWERUP *powerUp, PERSONAGEM *personagem, Rectangle *obstaculos, int numObstaculos, int larguraTela, int alturaTela)
 {
     if(CheckCollisionRecs(personagem->posicao, powerUp->posicao))

@@ -4,7 +4,7 @@
 #define screenWidth 1000
 #define VELOCIDADE_INICIAL 4
 
-float alignCenterFont (char *v, int i, int fontSize, Font arcade); 
+float alignCenterFont (char *v, int i, int fontSize, Font arcade);
 int readLevel (FILE *level, float *positionX, float *positionY, char *tipo);
 
 
@@ -25,12 +25,13 @@ typedef struct powerUp {
     } POWERUP;
 
 
-// funcoes movimentacao 
+// funcoes movimentacao
 void checaColisao(PERSONAGEM *personagem, Rectangle *obstaculo, Rectangle posicaoInicial);
 void checaColisaoArray(PERSONAGEM *personagem, Rectangle *obstaculos, int numObstaculos, Rectangle posicaoInicial);
-void administraPowerUp(POWERUP *powerUp, PERSONAGEM *personagem, int larguraTela, int alturaTela);
+int spawnParede(POWERUP *powerUp, Rectangle obstaculos[], int numObstaculos);
+void administraPowerUp(POWERUP *powerUp, PERSONAGEM *personagem, Rectangle *obstaculos, int numObstaculos, int larguraTela, int alturaTela);
 void atualizaPosicao(PERSONAGEM *personagem , Texture personagemRight, Texture personagemLeft, Texture personagemUp, Texture personagemDown);
-void desenhaCabecalho(PERSONAGEM *personagem, Texture2D iconeVidas); 
+void desenhaCabecalho(PERSONAGEM *personagem, Texture2D iconeVidas);
 
 
 

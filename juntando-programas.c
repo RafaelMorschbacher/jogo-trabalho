@@ -15,7 +15,7 @@ int main(void) {
     InitWindow(screenWidth, screenHeight, "Battle INF - MENU");
     gameScreen currentScreen = MENU;
 
-    //Arquivo 
+    //Arquivo
     FILE *fileLevel;
     fileLevel = fopen("../levels/nivel1.txt", "r");
 
@@ -23,7 +23,7 @@ int main(void) {
     Image titulo = LoadImage("../assets/battleInf.png");
     Texture2D tituloTex = LoadTextureFromImage(titulo);
     Font arcade = LoadFont("../assets/ARCADECLASSIC.ttf");
-    
+
     Image brick = LoadImage("../assets/brick_texture2.png");
     ImageResize(&brick, 25, 40);
     Texture2D brickTexture = LoadTextureFromImage(brick);
@@ -74,12 +74,12 @@ int main(void) {
                             estadoChave = 1;
                         if (estadoChave == 0)
                             estadoChave = 3;
-                        if (estadoChave == 1 && IsKeyPressed(KEY_ENTER)) 
+                        if (estadoChave == 1 && IsKeyPressed(KEY_ENTER))
                             currentScreen = NOVOJOGO;
                         if (estadoChave == 2 && IsKeyPressed(KEY_ENTER))
                             currentScreen = CONTINUAR;
                         break;}
-                        
+
             case NOVOJOGO:  {while (readLevel(fileLevel, &positionX, &positionY,&tipo) == 0) { // enquanto tiver coisas para ler
                                 if (tipo == '#') { // se a função parou num #, desenha o bloco
                                     brickWall[nroBlocos][0] = positionX;
@@ -87,9 +87,9 @@ int main(void) {
 
                                     //adicionando as características pro array de structs obstaculos
                                     obstaculos[nroBlocos].x = (positionX-1)*25;
-                                    obstaculos[nroBlocos].y = ((positionY-1)*40)+40; 
+                                    obstaculos[nroBlocos].y = ((positionY-1)*40)+40;
                                     obstaculos[nroBlocos].width = 25.0;
-                                    obstaculos[nroBlocos].height = 40.0; 
+                                    obstaculos[nroBlocos].height = 40.0;
                                     nroBlocos++;
                                 }
                                 else if (tipo == 'T') { // se parou num T, encontra a posição do jogador
@@ -97,15 +97,15 @@ int main(void) {
                                     positionPlayer[0][1] = positionY;
                                 }
                             }
-                            
+
                             //Update da posicao e textura do personagem
                             Rectangle posicaoInicial = personagem.posicao;// Guardando posicao inicial antes de colisoes, etc
                             atualizaPosicao(&personagem, personagemRight, personagemLeft, personagemUp, personagemDown);
                             //Colisao Cenario
                             bool ultrapassaCenario = (personagem.posicao.x > screenWidth - personagem.posicao.width) || (personagem.posicao.x <0) || (personagem.posicao.y > screenHeight - personagem.posicao.height) || (personagem.posicao.y <40);
-                            if(ultrapassaCenario) 
+                            if(ultrapassaCenario)
                                 personagem.posicao = posicaoInicial;
-                            //Colisao Obstaculos 
+                            //Colisao Obstaculos
                             checaColisaoArray(&personagem, obstaculos ,nroBlocos,posicaoInicial);
                             break;}
 
@@ -141,10 +141,10 @@ int main(void) {
                                     int xvec = ((brickWall[j][0]-1)*25);
                                     int yvec = ((brickWall[j][1]-1)*40)+40;
                                     DrawTexture(brickTexture, xvec, yvec, WHITE);
-                                 }                                
+                                 }
                                 DrawRectangle(0,0,screenWidth,40,GRAY);
-                                
-                                administraPowerUp(&powerUp, &personagem, screenHeight, screenWidth);
+
+                                administraPowerUp(&powerUp, &personagem, obstaculos, nroBlocos, screenHeight, screenWidth);
                                 DrawTexture(personagem.textura, (personagem.posicao.x ), (personagem.posicao.y ), RAYWHITE);
                                 desenhaCabecalho(&personagem, escudoTextura);
                                 break;}

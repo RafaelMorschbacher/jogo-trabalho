@@ -31,7 +31,7 @@ Rectangle obstaculos[600] ={{0,0,0,0}}; //posX, posY, largura, altura
 //Estrutura Personagem
 
 // FUNÇÕES GERAIS ------------------------------------------------------------------------------------------------------------------
-float alignCenterFont (char *v, int i, int fontSize, Font arcade) { 
+float alignCenterFont (char *v, int i, int fontSize, Font arcade) {
     float width;
     Vector2 tamText = MeasureTextEx(arcade, v, fontSize, 1);
     width = ((screenWidth-tamText.x)/2);
@@ -47,7 +47,7 @@ int readLevel (FILE *level, float *positionX, float *positionY, char *tipo) { //
     float yFuncao = *positionY;
     char conteudoTipo = *tipo;
     char leitura;
-    
+
     do {
         fscanf(level,"%c",&leitura);
         switch(leitura) {
@@ -81,8 +81,6 @@ int readLevel (FILE *level, float *positionX, float *positionY, char *tipo) { //
 void checaColisao(PERSONAGEM *personagem, Rectangle *obstaculo, Rectangle posicaoInicial) {
     if(CheckCollisionRecs(personagem->posicao,*obstaculo)) {
         personagem->posicao = posicaoInicial;
-        printf("dentro da função coordenadas são %f e %f\n", obstaculo->x, obstaculo->y);
-        printf("COLIDIU  \n");
     }
 }
 
@@ -90,37 +88,64 @@ void checaColisaoArray(PERSONAGEM *personagem, Rectangle *obstaculos, int numObs
         for(int i=0; i<numObstaculos; i++) {
             checaColisao(&(*personagem), &obstaculos[i], posicaoInicial);
           //  printf("o numero de obstaculos é %i\n", numObstaculos);
-          //  printf("estou checando o personagem em %f, %f\n", personagem->posicao.x, personagem->posicao.y); 
+          //  printf("estou checando o personagem em %f, %f\n", personagem->posicao.x, personagem->posicao.y);
            // printf("estou checando c o obstaculo em %f, %f\n\n", obstaculos[i].x, obstaculos[i].y);
 
         }
 }
+int spawnParede(POWERUP *powerUp, Rectangle obstaculos[], int numObstaculos)
+{
+    int colisao = 0;
+    for(int i=0; i<numObstaculos; i++)
+    {
+        if(CheckCollisionRecs(obstaculos[i], powerUp->posicao))
+        {
+            colisao = 1;
+            printf("Spawnou errado");
+        }
 
-void administraPowerUp(POWERUP *powerUp, PERSONAGEM *personagem, int larguraTela, int alturaTela) {
-    if(CheckCollisionRecs((*personagem).posicao, (*powerUp).posicao)) {
+    }
+
+    return colisao;
+}
+void administraPowerUp(POWERUP *powerUp, PERSONAGEM *personagem, Rectangle *obstaculos, int numObstaculos, int larguraTela, int alturaTela)
+{
+    if(CheckCollisionRecs(personagem->posicao, powerUp->posicao))
+    {
         //Power-up coletado
         personagem->velocidadeAtual = personagem->velocidadeBase * 1.5;
-        (*powerUp).cooldown = 5*60;
-        (*powerUp).ativo = 1;
-        (*powerUp).posicao.x = GetRandomValue((*powerUp).posicao.width, larguraTela-(*powerUp).posicao.width);
-        (*powerUp).posicao.y = GetRandomValue((*powerUp).posicao.height,alturaTela-(*powerUp).posicao.height); 
-    }
-    else {
-        if(!powerUp->ativo) {
-            DrawRectangleRec((*powerUp).posicao, BLANK);
-            DrawTexture(powerUp->textura, (*powerUp).posicao.x, (*powerUp).posicao.y, RAYWHITE);
-        }
-        else {
-            powerUp->cooldown--;
-        }
+        powerUp->cooldown = 5*60;
+        powerUp->ativo = 1;
+        do{
+            powerUp->posicao.x = GetRandomValue(powerUp->posicao.width, larguraTela-powerUp->posicao.width);
+            //powerUp->posicao.x = GetRandomValue(0, larguraTela);
+            powerUp->posicao.y = GetRandomValue(powerUp->posicao.height,alturaTela- powerUp->posicao.height);
+            //powerUp->posicao.y = GetRandomValue(0, alturaTela);
+        }while(spawnParede(&(*powerUp), &(*obstaculos), numObstaculos));
 
-        if(powerUp->cooldown <=0) {
-            powerUp->ativo = 0;
-            personagem->velocidadeAtual = personagem->velocidadeBase;
-        }
-    }
 
-    //printf("entrei na ADMINISTRA POWER UP 3 \n");
+        }
+        else
+        {
+            if(powerUp->ativo)
+            {
+                powerUp->cooldown--;
+            }
+            else
+            {
+                DrawRectangleRec(powerUp->posicao, BLANK);
+                DrawTexture(powerUp->textura, powerUp->posicao.x, powerUp->posicao.y, RAYWHITE);
+            }
+
+            if(powerUp->cooldown <=0)
+            {
+                powerUp->ativo = 0;
+                personagem->velocidadeAtual = personagem->velocidadeBase;
+            }
+
+                printf("\n x: %f , y: %f",  powerUp->posicao.x, powerUp->posicao.y);
+
+    }
 }
 
 void atualizaPosicao(PERSONAGEM *personagem , Texture personagemRight, Texture personagemLeft, Texture personagemUp, Texture personagemDown) {
