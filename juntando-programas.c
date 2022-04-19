@@ -43,8 +43,8 @@ int main(void) {
     //Inicialização do Personagem
     PERSONAGEM personagem = {0};
 
-    personagem.posicao.x = screenWidth/2;
-    personagem.posicao.y = screenHeight/2;
+    //personagem.posicao.x = screenWidth/2;
+    //personagem.posicao.y = screenHeight/2;
     personagem.posicao.width = 25;
     personagem.posicao.height = 25;
     personagem.velocidadeBase = VELOCIDADE_INICIAL;
@@ -97,6 +97,9 @@ int main(void) {
                                 else if (tipo == 'T') { // se parou num T, encontra a posição do jogador
                                     positionPlayer[0][0] = positionX;
                                     positionPlayer[0][1] = positionY;
+                                    personagem.posicao.x = (float) (positionX-1)*25;
+                                    personagem.posicao.y = (float) (positionY-1)*40+50;
+
                                 }
                             }
 
