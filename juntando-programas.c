@@ -1,22 +1,44 @@
-#include <stdio.h>
-#include <raylib.h>
-#include <string.h>
-#include <time.h>
-#include "bibjogo.c"
+#include "bibjogo.h"
+
+//VARIÁVEIS ------------------------------------------------------------------------------------------------------------------------
+//variaveis menu
+char menuOptions[3][10] =  {"Novo Jogo", "Continuar","Sair"};
+float u;
+char tipo = ' ';
+int estadoChave = 1;
+char fase[3][10] = {"FASE 1"," FASE 2", "FASE 3"};
+//variaveis obstaculos
+float positionX = 0;                  //coordenada x de um objeto na tela
+float positionY = 1;                  //coordenada y de um objeto na tela
+int nroBlocos = 0;
+Rectangle obstaculos[600] ={{0,0,0,0}}; //posX, posY, largura, altura
+//variaveis movimentação
+int positionPlayer[1][2] = {0};
+//variaveis inimigos
+
+int nroInimigos = 0; 
+clock_t tempo[2]; 
+int aux = 1;
+char corInimigo; 
+int colisaoDoInimigo = FALSE; 
+int colisaoInimigoCenario = FALSE; 
+
+//testando variaveis aqui
+INIMIGO inimigos[MAX_INIMIGOS] = {}; //se chega no limite do tamanho bugaS
 
 #define screenHeight 650
 
 typedef enum gameScreen {MENU = 0, NOVOJOGO, CONTINUAR} gameScreen;
 
 int main(void) {
-    Rectangle obstaculos[600] ={{0,0,0,0}}; //posX, posY, largura, altura
-
+    
     // Init------------------------------------------------------------------------------------------------------------------------
     InitWindow(screenWidth, screenHeight, "Battle INF - MENU");
     gameScreen currentScreen = MENU;
 
     //Arquivo 
-    FILE *fileLevel;
+    
+    FILE *fileLevel; // lembrar de colocar if else com problema pra abrir arquivo ou nao
     fileLevel = fopen("../levels/nivel1.txt", "r");
 
     // Load------------------------------------------------------------------------------------------------------------------------
@@ -103,9 +125,6 @@ int main(void) {
                 //update dos obstaculos (tijolos)
                 while (readLevel(fileLevel, &positionX, &positionY,&tipo) == 0) { // enquanto tiver coisas para ler
                     if (tipo == '#') { // se a função parou num #, desenha o bloco
-                        brickWall[nroBlocos][0] = positionX;
-                        brickWall[nroBlocos][1] = positionY;
-
                         //adicionando as características pro array de structs obstaculos
                         obstaculos[nroBlocos].x = (positionX-1)*25;
                         obstaculos[nroBlocos].y = ((positionY-1)*40)+50; 
@@ -135,15 +154,18 @@ int main(void) {
                     corInimigo = 'G';
 
                 if (tempoPassado == 5) {
-                    nroInimigos++; //aumenta os inimigos q vão aparecendo
-                    if (corInimigo == 'R')
-                        criaInimigos(nroInimigos, inimigoRedDown, &personagem, obstaculos, nroBlocos, corInimigo);
-                    else if (corInimigo == 'G') 
-                        criaInimigos(nroInimigos, inimigoGreenDown, &personagem, obstaculos, nroBlocos, corInimigo);
-                    tempo[0] = clock();
+                    if (nroInimigos < MAX_INIMIGOS) {
+                        nroInimigos++; //aumenta os inimigos q vão aparecendo
+                        if (corInimigo == 'R')
+                            criaInimigos(inimigos, nroInimigos, inimigoRedDown, &personagem, obstaculos, nroBlocos, corInimigo); //adicionar corretamente //mando o array de structs
+                        else if (corInimigo == 'G') 
+                            criaInimigos(inimigos, nroInimigos, inimigoGreenDown, &personagem, obstaculos, nroBlocos, corInimigo);
+                        tempo[0] = clock();
+                    }
                 }
                 
                 //---- faze-los andar
+ 
                 for (int i = 0; i < nroInimigos; i++) { // vai um a um nos inimigos, até o último (nroInimigos)
 
                     Rectangle posicaoInicialInimigo = inimigos[i].posicao; 
@@ -154,12 +176,12 @@ int main(void) {
                         inimigos[i].posicao = posicaoInicialInimigo;
                         colisaoInimigoCenario = TRUE; // manda a informação de q colidiu com algo (nesse caso, extremos da janela)
                     }
-                    colisaoDoInimigo = checaColisaoInimigos(&personagem, i, obstaculos, nroBlocos);
+                    colisaoDoInimigo = checaColisaoInimigos(nroInimigos, inimigos, &personagem, i, obstaculos, nroBlocos);
                     if(colisaoDoInimigo)
                         inimigos[i].posicao = posicaoInicialInimigo;
-
-                    modoInimigos(&personagem, i); 
-                    movInimigos(posicaoInicialInimigo, &personagem, i, colisaoInimigoCenario, colisaoDoInimigo, corInimigo, inimigoRedUp,  inimigoRedDown,  inimigoRedLeft,  inimigoRedRight,  inimigoGreenUp,  inimigoGreenDown,  inimigoGreenLeft,  inimigoGreenRight);
+                    
+                    modoInimigos(&inimigos[i], &personagem); //mando o endereço de um inimigo em especifico
+                    movInimigos (&inimigos[i], posicaoInicialInimigo, &personagem, i, colisaoInimigoCenario, colisaoDoInimigo, corInimigo, inimigoRedUp,  inimigoRedDown,  inimigoRedLeft,  inimigoRedRight,  inimigoGreenUp,  inimigoGreenDown,  inimigoGreenLeft,  inimigoGreenRight);
                     //faz a movimentação já levando em consideração o modo
                 } 
 
@@ -171,7 +193,7 @@ int main(void) {
                 if(ultrapassaCenario) 
                     personagem.posicao = posicaoInicial;
                 //Colisao Obstaculos 
-                checaColisaoArray(&personagem, obstaculos, nroBlocos,posicaoInicial,nroInimigos);
+                checaColisaoArray(inimigos, &personagem, obstaculos, nroBlocos,posicaoInicial,nroInimigos);
                 break;
             }
 
@@ -207,16 +229,17 @@ int main(void) {
                 case NOVOJOGO: { 
                     ClearBackground(RAYWHITE);
                     DrawRectangle(0,0,screenWidth,screenHeight,BLACK);
-                    for (int j = 0; j < nroBlocos; j++ ) { //***passar isso para STRUCT depois, p/ facilitar apagar depois de tiro
-                        int xvec = ((brickWall[j][0]-1)*25);
-                        int yvec = ((brickWall[j][1]-1)*40)+50;
+
+                    for (int j = 0; j < nroBlocos; j++ ) {
+                        int xvec = obstaculos[j].x;            
+                        int yvec =  obstaculos[j].y;           
                         DrawTexture(brickTexture, xvec, yvec, WHITE);
                     }                                
-                    DrawRectangle(0,0,screenWidth,50,GRAY);
+                    //DrawRectangleRec
                                 
                     administraPowerUp(&powerUp, &personagem, screenHeight, screenWidth);
                     DrawTexture(personagem.textura, (personagem.posicao.x ), (personagem.posicao.y ), RAYWHITE);
-                    desenhaCabecalho(&personagem, escudoTextura);
+                    desenhaCabecalho(&personagem, escudoTextura, arcade, fase[0]);
 
                     //desenhando inimigos na tela
                     for (int i = 0; i<nroInimigos; i++) {
