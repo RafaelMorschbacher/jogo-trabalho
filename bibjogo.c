@@ -237,11 +237,9 @@ int checaColisaoInimigos(int numeroDeInimigos, INIMIGO *inimigos, PERSONAGEM *pe
     for (int i = 0; i<nroBlocos; i++) {
         if ( CheckCollisionRecs(inimigos[numeroInimigo].posicao , (obstaculo[i])) ) {                 //checa colisao com tijolos
             colisaoDoInimigo = TRUE;
-            printf ("colisao com obstculo\n");
         }
         if ( CheckCollisionRecs(inimigos[numeroInimigo].posicao,(*personagem).posicao) ) {            //checa colisao com personagem
             colisaoDoInimigo = TRUE;
-            printf ("colisao com personagem\n");
         }
 
     }
@@ -249,7 +247,6 @@ int checaColisaoInimigos(int numeroDeInimigos, INIMIGO *inimigos, PERSONAGEM *pe
         if ( CheckCollisionRecs(inimigos[numeroInimigo].posicao, inimigos[i].posicao) ) {           //checa colisão com outros tanques
                 if (numeroInimigo != i) {
                     colisaoDoInimigo = TRUE;   
-                    printf ("colisao com outro inimigo\n");
                 }
         }
     }
