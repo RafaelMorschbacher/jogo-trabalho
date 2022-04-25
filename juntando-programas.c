@@ -43,14 +43,16 @@ int main(void) {
     //Inicialização do Personagem
     PERSONAGEM personagem = {0};
 
-    //personagem.posicao.x = screenWidth/2;
-    //personagem.posicao.y = screenHeight/2;
     personagem.posicao.width = 25;
     personagem.posicao.height = 25;
     personagem.velocidadeBase = VELOCIDADE_INICIAL;
     personagem.velocidadeAtual = personagem.velocidadeBase;
     personagem.textura = personagemUp;
     personagem.vidas = 3;
+    personagem.tiro.posicao.height = 10;
+    personagem.tiro.posicao.width = 10;
+    personagem.tiro.velocidade = 10;
+    personagem.tiro.numBalas = 3;
 
     //Inicializando PowerUp
     POWERUP powerUp = {0};
@@ -151,6 +153,7 @@ int main(void) {
 
                                 administraPowerUp(&powerUp, &personagem, obstaculos, nroBlocos, screenHeight, screenWidth);
                                 DrawTexture(personagem.textura, (personagem.posicao.x ), (personagem.posicao.y ), RAYWHITE);
+                                administraTiro(&personagem, screenWidth, screenHeight);
                                 desenhaCabecalho(&personagem, escudoTextura);
                                 break;}
 

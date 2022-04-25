@@ -145,25 +145,66 @@ void administraPowerUp(POWERUP *powerUp, PERSONAGEM *personagem, Rectangle *obst
 void atualizaPosicao(PERSONAGEM *personagem , Texture personagemRight, Texture personagemLeft, Texture personagemUp, Texture personagemDown) {
 
     if(IsKeyDown(KEY_RIGHT)) {
-        (*personagem).posicao.x += (*personagem).velocidadeAtual;
-        (*personagem).textura = personagemRight;
+        personagem->posicao.x += (*personagem).velocidadeAtual;
+        personagem->textura = personagemRight;
+        personagem->inclinacao = 0;
     }
 
     if(IsKeyDown(KEY_LEFT)) {
-        (*personagem).posicao.x -=  (*personagem).velocidadeAtual;
-        (*personagem).textura = personagemLeft;
+        personagem->posicao.x -=  (*personagem).velocidadeAtual;
+        personagem->textura = personagemLeft;
+        personagem->inclinacao = 180;
     }
 
     if(IsKeyDown(KEY_UP)) {
-        (*personagem).posicao.y -=  (*personagem).velocidadeAtual;
-        (*personagem).textura = personagemUp;
+        personagem->posicao.y -=  (*personagem).velocidadeAtual;
+        personagem->textura = personagemUp;
+        personagem->inclinacao = 90;
     }
 
     if(IsKeyDown(KEY_DOWN)) {
-        (*personagem).posicao.y +=  (*personagem).velocidadeAtual;
-        (*personagem).textura = personagemDown;
+        personagem->posicao.y +=  (*personagem).velocidadeAtual;
+        personagem->textura = personagemDown;
+        personagem->inclinacao = 270;
     }
-    //printf("entrei na ATUALIZA POSIÇÃO 4\n");
+}
+
+void administraTiro(PERSONAGEM *personagem, int larguraTela, int alturaTela){
+    //Atirando ao apertar SPACE
+    if(IsKeyReleased(KEY_SPACE) && !personagem->tiro.atirando && personagem->tiro.numBalas>0){
+        personagem->tiro.atirando = 1;
+        personagem->tiro.posicao.x = personagem->posicao.x +10;
+        personagem->tiro.posicao.y = personagem->posicao.y +10;
+        personagem->tiro.inclinacao = personagem->inclinacao;
+        personagem->tiro.numBalas -= 1;
+        printf("%d",  personagem->tiro.numBalas);
+    }
+
+    //Animação de tiro
+    if(personagem->tiro.atirando){
+        DrawRectangleRec(personagem->tiro.posicao, GREEN);
+        switch(personagem->tiro.inclinacao){
+            case 0:
+                personagem->tiro.posicao.x += personagem->tiro.velocidade;
+            break;
+            case 90:
+                personagem->tiro.posicao.y -= personagem->tiro.velocidade;
+            break;
+            case 180:
+                personagem->tiro.posicao.x -= personagem->tiro.velocidade;
+            break;
+            case 270:
+                personagem->tiro.posicao.y += personagem->tiro.velocidade;
+            break;
+
+        }
+
+    }
+
+    //Destruição do tiro
+    if(personagem->tiro.posicao.x > larguraTela || personagem->tiro.posicao.x < 0 || personagem->tiro.posicao.y >= alturaTela || personagem->tiro.posicao.y < 0){
+        personagem->tiro.atirando = 0;
+    }
 }
 
 void desenhaCabecalho(PERSONAGEM *personagem, Texture2D iconeVidas) {
