@@ -12,7 +12,7 @@ char fase[3][10] = {"FASE 1"," FASE 2", "FASE 3"};
 float positionX = 0;                  //coordenada x de um objeto na tela
 float positionY = 1;                  //coordenada y de um objeto na tela
 int nroBlocos = 0;
-Rectangle obstaculos[600] ={{0,0,0,0}}; //posX, posY, largura, altura
+OBSTACULO obstaculos[600] ={0}; //posX, posY, largura, altura
 //variaveis movimentação
 int positionPlayer[1][2] = {0};
 //variaveis inimigos
@@ -133,10 +133,10 @@ int main(void) {
                 while (readLevel(fileLevel, &positionX, &positionY,&tipo) == 0) { // enquanto tiver coisas para ler
                     if (tipo == '#') { // se a função parou num #, desenha o bloco
                         //adicionando as características pro array de structs obstaculos
-                        obstaculos[nroBlocos].x = (positionX-1)*25;
-                        obstaculos[nroBlocos].y = ((positionY-1)*40)+50;
-                        obstaculos[nroBlocos].width = 25.0;
-                        obstaculos[nroBlocos].height = 40.0;
+                        obstaculos[nroBlocos].posicao.x = (positionX-1)*25;
+                        obstaculos[nroBlocos].posicao.y = ((positionY-1)*40)+50;
+                        obstaculos[nroBlocos].posicao.width = 25.0;
+                        obstaculos[nroBlocos].posicao.height = 40.0;
                         nroBlocos++;
                     }
                     else if (tipo == 'T') { // se parou num T, encontra a posição do jogador
@@ -239,14 +239,18 @@ int main(void) {
                     DrawRectangle(0,0,screenWidth,screenHeight,BLACK);
 
                     for (int j = 0; j < nroBlocos; j++ ) {
-                        int xvec = obstaculos[j].x;
-                        int yvec =  obstaculos[j].y;
-                        DrawTexture(brickTexture, xvec, yvec, WHITE);
+                        //Desenhar apenas Blocos nao destruidos
+                        if(!obstaculos[j].destruido){
+                            int xvec = obstaculos[j].posicao.x;
+                            int yvec =  obstaculos[j].posicao.y;
+                            DrawTexture(brickTexture, xvec, yvec, WHITE);
+                        }
+
                     }
                     //DrawRectangleRec
 
                     administraPowerUp(&powerUp, &personagem, obstaculos, nroBlocos, screenHeight, screenWidth);
-                    administraTiro(&personagem, screenWidth, screenHeight);
+                    administraTiro(&personagem, screenWidth, screenHeight, obstaculos, nroBlocos);
                     DrawTexture(personagem.textura, (personagem.posicao.x ), (personagem.posicao.y ), RAYWHITE);
                     desenhaCabecalho(&personagem, escudoTextura, arcade, fase[0]);
 
