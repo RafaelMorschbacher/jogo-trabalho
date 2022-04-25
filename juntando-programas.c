@@ -36,6 +36,7 @@ int main(void) {
     InitWindow(screenWidth, screenHeight, "Battle INF - MENU");
     gameScreen currentScreen = MENU;
 
+
     //Arquivo 
     
     FILE *fileLevel; // lembrar de colocar if else com problema pra abrir arquivo ou nao
@@ -47,6 +48,7 @@ int main(void) {
     Font arcade = LoadFont("../assets/ARCADECLASSIC.ttf");
     
     //texturas obstaculos
+
     Image brick = LoadImage("../assets/brick_texture2.png");
     ImageResize(&brick, 25, 40);
     Texture2D brickTexture = LoadTextureFromImage(brick);
@@ -79,22 +81,26 @@ int main(void) {
 
     //Inicialização do Personagem
     PERSONAGEM personagem = {0};
-    personagem.posicao.x = screenWidth/2;
-    personagem.posicao.y = screenHeight/2;
     personagem.posicao.width = 25;
     personagem.posicao.height = 25;
     personagem.velocidadeBase = VELOCIDADE_INICIAL;
     personagem.velocidadeAtual = personagem.velocidadeBase;
     personagem.textura = personagemUp;
     personagem.vidas = 3;
+    personagem.tiro.posicao.height = 10;
+    personagem.tiro.posicao.width = 10;
+    personagem.tiro.velocidade = 10;
+    personagem.tiro.numBalas = 3;
 
     //Inicializando PowerUp
     POWERUP powerUp = {0};
-    powerUp.posicao.x = GetRandomValue(25, screenWidth-25);
-    powerUp.posicao.y = GetRandomValue(25, screenHeight-25);
     powerUp.posicao.width = 25;
     powerUp.posicao.height = 25;
     powerUp.textura = energyCellTextura;
+    do{
+        powerUp.posicao.x = GetRandomValue(powerUp.posicao.width, GetScreenWidth()-powerUp.posicao.width);
+        powerUp.posicao.y = GetRandomValue(powerUp.posicao.height+40,GetScreenHeight()- powerUp.posicao.height);
+    }while(spawnParede(&powerUp, obstaculos, nroBlocos));
 
     //Inicializando Inimigos ***preciso mesmo inicializar?? 
     //normal(patrulha) ou perseguição 
@@ -223,6 +229,7 @@ int main(void) {
                             break;
                         default: break;
                     }
+
                     break;
                 }
 
@@ -237,7 +244,8 @@ int main(void) {
                     }                                
                     //DrawRectangleRec
                                 
-                    administraPowerUp(&powerUp, &personagem, screenHeight, screenWidth);
+                    administraPowerUp(&powerUp, &personagem, obstaculos, nroBlocos, screenHeight, screenWidth);
+                    administraTiro(&personagem, screenWidth, screenHeight);
                     DrawTexture(personagem.textura, (personagem.posicao.x ), (personagem.posicao.y ), RAYWHITE);
                     desenhaCabecalho(&personagem, escudoTextura, arcade, fase[0]);
 

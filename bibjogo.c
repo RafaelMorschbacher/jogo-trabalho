@@ -29,7 +29,7 @@ int readLevel (FILE *level, float *positionX, float *positionY, char *tipo) { //
     float yFuncao = *positionY;
     char conteudoTipo = *tipo;
     char leitura;
-    
+
     do {
         fscanf(level,"%c",&leitura); // fiz a leitura do caractere
 
@@ -69,54 +69,117 @@ void checaColisao(PERSONAGEM *personagem, Rectangle *obstaculo, Rectangle posica
 void checaColisaoArray(INIMIGO *inimigos, PERSONAGEM *personagem, Rectangle *obstaculos, int numObstaculos, Rectangle posicaoInicial, int nroInimigos) {
         for(int i=0; i<numObstaculos; i++) {
             checaColisao(&(*personagem), &obstaculos[i], posicaoInicial);
+
         }
         for (int i=0;i<nroInimigos;i++) {
             checaColisao(&(*personagem), &(inimigos[i].posicao), posicaoInicial);
         }
 }
+int spawnParede(POWERUP *powerUp, Rectangle obstaculos[], int numObstaculos)
+{
+    int colisao = 0;
+    for(int i=0; i<numObstaculos; i++)
+    {
+        if(CheckCollisionRecs(obstaculos[i], powerUp->posicao))
+        {
+            colisao = 1;
+        }
 
-void administraPowerUp(POWERUP *powerUp, PERSONAGEM *personagem, int larguraTela, int alturaTela) {
-    if(CheckCollisionRecs((*personagem).posicao, (*powerUp).posicao)) {
+    }
+
+    return colisao;
+}
+void administraPowerUp(POWERUP *powerUp, PERSONAGEM *personagem, Rectangle *obstaculos, int numObstaculos, int larguraTela, int alturaTela)
+{
+    if(CheckCollisionRecs(personagem->posicao, powerUp->posicao))
+    {
         //Power-up coletado
         personagem->velocidadeAtual = personagem->velocidadeBase * 1.5;
-        (*powerUp).cooldown = 5*60;
-        (*powerUp).ativo = 1;
-        (*powerUp).posicao.x = GetRandomValue((*powerUp).posicao.width, larguraTela-(*powerUp).posicao.width);
-        (*powerUp).posicao.y = GetRandomValue((*powerUp).posicao.height,alturaTela-(*powerUp).posicao.height); 
-    }
-    else {
-        if(!powerUp->ativo) {
-            DrawRectangleRec((*powerUp).posicao, BLANK);
-            DrawTexture(powerUp->textura, (*powerUp).posicao.x, (*powerUp).posicao.y, RAYWHITE);
+        powerUp->cooldown = 5*60;
+        powerUp->ativo = 1;
+        do{
+            powerUp->posicao.x = GetRandomValue(powerUp->posicao.width, GetScreenWidth()-powerUp->posicao.width);
+            powerUp->posicao.y = GetRandomValue(powerUp->posicao.height+40,GetScreenHeight()- powerUp->posicao.height);
+        }while(spawnParede(&(*powerUp), &(*obstaculos), numObstaculos));
+
+
         }
-        else {
+        if(powerUp->ativo)
+        {
             powerUp->cooldown--;
         }
+        else
+        {
+                DrawRectangleRec(powerUp->posicao, BLANK);
+                DrawTexture(powerUp->textura, powerUp->posicao.x, powerUp->posicao.y, RAYWHITE);
+        }
 
-        if(powerUp->cooldown <=0) {
+        if(powerUp->cooldown <=0)
+        {
             powerUp->ativo = 0;
             personagem->velocidadeAtual = personagem->velocidadeBase;
         }
-    }
 
 }
 
 void atualizaPosicao(PERSONAGEM *personagem , Texture personagemRight, Texture personagemLeft, Texture personagemUp, Texture personagemDown) {
     if(IsKeyDown(KEY_RIGHT)) {
-        (*personagem).posicao.x += (*personagem).velocidadeAtual;
-        (*personagem).textura = personagemRight;
+        personagem->posicao.x += (*personagem).velocidadeAtual;
+        personagem->textura = personagemRight;
+        personagem->inclinacao = 0;
     }
     if(IsKeyDown(KEY_LEFT)) {
-        (*personagem).posicao.x -=  (*personagem).velocidadeAtual;
-        (*personagem).textura = personagemLeft;
+        personagem->posicao.x -=  (*personagem).velocidadeAtual;
+        personagem->textura = personagemLeft;
+        personagem->inclinacao = 180;
     }
     if(IsKeyDown(KEY_UP)) {
-        (*personagem).posicao.y -=  (*personagem).velocidadeAtual;
-        (*personagem).textura = personagemUp;
+        personagem->posicao.y -=  (*personagem).velocidadeAtual;
+        personagem->textura = personagemUp;
+        personagem->inclinacao = 90;
     }
     if(IsKeyDown(KEY_DOWN)) {
-        (*personagem).posicao.y +=  (*personagem).velocidadeAtual;
-        (*personagem).textura = personagemDown;
+        personagem->posicao.y +=  (*personagem).velocidadeAtual;
+        personagem->textura = personagemDown;
+        personagem->inclinacao = 270;
+    }
+}
+
+void administraTiro(PERSONAGEM *personagem, int larguraTela, int alturaTela){
+    //Atirando ao apertar SPACE
+    if(IsKeyReleased(KEY_SPACE) && !personagem->tiro.atirando && personagem->tiro.numBalas>0){
+        personagem->tiro.atirando = 1;
+        personagem->tiro.posicao.x = personagem->posicao.x +10;
+        personagem->tiro.posicao.y = personagem->posicao.y +10;
+        personagem->tiro.inclinacao = personagem->inclinacao;
+        personagem->tiro.numBalas -= 1;
+        printf("%d",  personagem->tiro.numBalas);
+    }
+
+    //Animação de tiro
+    if(personagem->tiro.atirando){
+        DrawRectangleRec(personagem->tiro.posicao, GREEN);
+        switch(personagem->tiro.inclinacao){
+            case 0:
+                personagem->tiro.posicao.x += personagem->tiro.velocidade;
+            break;
+            case 90:
+                personagem->tiro.posicao.y -= personagem->tiro.velocidade;
+            break;
+            case 180:
+                personagem->tiro.posicao.x -= personagem->tiro.velocidade;
+            break;
+            case 270:
+                personagem->tiro.posicao.y += personagem->tiro.velocidade;
+            break;
+
+        }
+
+    }
+
+    //Destruição do tiro
+    if(personagem->tiro.posicao.x > larguraTela || personagem->tiro.posicao.x < 0 || personagem->tiro.posicao.y >= alturaTela || personagem->tiro.posicao.y < 0){
+        personagem->tiro.atirando = 0;
     }
 }
 
@@ -253,5 +316,4 @@ int checaColisaoInimigos(int numeroDeInimigos, INIMIGO *inimigos, PERSONAGEM *pe
      
     return colisaoDoInimigo; 
 }
-
 
