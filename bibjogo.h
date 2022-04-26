@@ -23,7 +23,7 @@ typedef struct tiro {
     int atirando;
     int velocidade;
     int inclinacao;
-    int numBalas;
+    //int numBalas;
     } TIRO;
 
 typedef struct personagem {
@@ -51,6 +51,7 @@ typedef struct inimigo {
     int velocidade;
     int orientacao;         //indo para cima(o), baixo(180), direita(90), esquerda(270)
     char cor;
+    int vivo;
 
     } INIMIGO;
 
@@ -75,7 +76,7 @@ void administraPowerUp(POWERUP *powerUp, PERSONAGEM *personagem, OBSTACULO *obst
 void atualizaPosicao(PERSONAGEM *personagem , Texture personagemRight, Texture personagemLeft, Texture personagemUp, Texture personagemDown);
 void desenhaCabecalho(PERSONAGEM *personagem, Texture2D iconeVidas,Font arcade, char *v);
 int spawnParede(POWERUP *powerUp, OBSTACULO obstaculos[], int numObstaculos);
-void administraTiro(PERSONAGEM *personagem, int larguraTela, int alturaTela, OBSTACULO obstaculos[] ,int nroBlocos);
+void administraTiro(PERSONAGEM *personagem, int larguraTela, int alturaTela, OBSTACULO obstaculos[] ,int nroBlocos, INIMIGO inimigos[], int nroInimigos, int *maxInimigos);
 
 // funcoes inimigos
 void criaInimigos(INIMIGO *inimigos, int nroInimigos, Texture inimigoTex, PERSONAGEM *personagem, OBSTACULO *obstaculo, int nroBlocos, char cor);

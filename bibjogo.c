@@ -147,15 +147,14 @@ void atualizaPosicao(PERSONAGEM *personagem , Texture personagemRight, Texture p
     }
 }
 
-void administraTiro(PERSONAGEM *personagem, int larguraTela, int alturaTela, OBSTACULO obstaculos[] ,int nroBlocos){
+void administraTiro(PERSONAGEM *personagem, int larguraTela, int alturaTela, OBSTACULO obstaculos[] ,int nroBlocos, INIMIGO inimigos[], int nroInimigos, int *maxInimigos){
     //Atirando ao apertar SPACE
-    if(IsKeyReleased(KEY_SPACE) && !personagem->tiro.atirando && personagem->tiro.numBalas>0){
+    if(IsKeyReleased(KEY_SPACE) && !personagem->tiro.atirando){
         personagem->tiro.atirando = TRUE;
         personagem->tiro.posicao.x = personagem->posicao.x +10;
         personagem->tiro.posicao.y = personagem->posicao.y +10;
         personagem->tiro.inclinacao = personagem->inclinacao;
-        personagem->tiro.numBalas -= 1;
-        printf("%d",  personagem->tiro.numBalas);
+        //personagem->tiro.numBalas -= 1;
     }
 
     //Funções após o disparo
@@ -177,19 +176,28 @@ void administraTiro(PERSONAGEM *personagem, int larguraTela, int alturaTela, OBS
             break;
 
         }
-        //Tiro sai do cenário
+        //Tiro sai do cenário : destruir tiro
         if(personagem->tiro.posicao.x > larguraTela || personagem->tiro.posicao.x < 0 || personagem->tiro.posicao.y >= alturaTela || personagem->tiro.posicao.y < 0){
             personagem->tiro.atirando = FALSE;
     }
 
     //Tiro atinge parede
         for(int i=0; i<nroBlocos; i++) {
-            if(CheckCollisionRecs(personagem->tiro.posicao, obstaculos[i].posicao)){
+            if(CheckCollisionRecs(personagem->tiro.posicao, obstaculos[i].posicao)&& !obstaculos[i].destruido){
                 obstaculos[i].destruido = TRUE;
                 personagem->tiro.atirando = FALSE;
             }
         }
 
+    //Tiro atinge inimigo
+        for(int i=0; i<nroInimigos; i++){
+            if(CheckCollisionRecs(personagem->tiro.posicao, inimigos[i].posicao)){
+                inimigos[i].vivo = FALSE;
+                personagem->tiro.atirando = FALSE;
+                *maxInimigos +=1;
+                //nroInimigos -=1;
+            }
+        }
     }
 
 
@@ -203,6 +211,7 @@ void criaInimigos(INIMIGO *inimigos, int nroInimigos, Texture inimigoTex, PERSON
     (inimigos[nroInimigos-1]).textura = inimigoTex;
     (inimigos[nroInimigos-1]).velocidade = VELOCIDADE_INIMIGO;
     (inimigos[nroInimigos-1]).orientacao = (nroInimigos % 4) * 90;
+    (inimigos[nroInimigos-1]).vivo = TRUE;
     do {
         (inimigos[nroInimigos-1]).posicao.x = (float)GetRandomValue(25, screenWidth-25);
         (inimigos[nroInimigos-1]).posicao.y = (float)GetRandomValue(75, 650-25);
@@ -311,16 +320,16 @@ int checaColisaoInimigos(int numeroDeInimigos, INIMIGO *inimigos, PERSONAGEM *pe
     int colisaoDoInimigo = FALSE;
 
     for (int i = 0; i<nroBlocos; i++) {
-        if ( CheckCollisionRecs(inimigos[numeroInimigo].posicao , (obstaculo[i].posicao)) ) {                 //checa colisao com tijolos
+        if ( CheckCollisionRecs(inimigos[numeroInimigo].posicao , (obstaculo[i].posicao)) && inimigos[numeroInimigo].vivo==TRUE && !obstaculo[i].destruido ) {                 //checa colisao com tijolos
             colisaoDoInimigo = TRUE;
         }
-        if ( CheckCollisionRecs(inimigos[numeroInimigo].posicao,(*personagem).posicao) ) {            //checa colisao com personagem
+        if ( CheckCollisionRecs(inimigos[numeroInimigo].posicao,(*personagem).posicao)&& inimigos[numeroInimigo].vivo==TRUE ) {            //checa colisao com personagem
             colisaoDoInimigo = TRUE;
         }
 
     }
     for (int i = 0; i<numeroDeInimigos; i++) {
-        if ( CheckCollisionRecs(inimigos[numeroInimigo].posicao, inimigos[i].posicao) ) {           //checa colisão com outros tanques
+        if ( CheckCollisionRecs(inimigos[numeroInimigo].posicao, inimigos[i].posicao) && inimigos[numeroInimigo].vivo==TRUE ) {           //checa colisão com outros tanques
                 if (numeroInimigo != i) {
                     colisaoDoInimigo = TRUE;
                 }
