@@ -1,5 +1,5 @@
 #include "bibjogo.h"
-#include "bibjogo.c"
+//#include "bibjogo.c"
 
 //VARIÁVEIS ------------------------------------------------------------------------------------------------------------------------
 //variaveis menu
@@ -23,6 +23,8 @@ int aux = 1;
 char corInimigo;
 int colisaoDoInimigo = FALSE;
 int colisaoInimigoCenario = FALSE;
+
+
 
 //testando variaveis aqui
 INIMIGO inimigos[MAX_INIMIGOS] = {}; //se chega no limite do tamanho bugaS
@@ -183,6 +185,8 @@ int main(void) {
                         inimigos[i].posicao = posicaoInicialInimigo;
                         colisaoInimigoCenario = TRUE; // manda a informação de q colidiu com algo (nesse caso, extremos da janela)
                     }
+                  
+                    inimigos[i].colisao = FALSE; 
                     colisaoDoInimigo = checaColisaoInimigos(nroInimigos, inimigos, &personagem, i, obstaculos, nroBlocos);
                     if(colisaoDoInimigo)
                         inimigos[i].posicao = posicaoInicialInimigo;

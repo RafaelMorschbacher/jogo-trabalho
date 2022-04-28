@@ -204,19 +204,19 @@ void criaInimigos(INIMIGO *inimigos, int nroInimigos, Texture inimigoTex, PERSON
 }
 // FUNÇÃO P MODO (ALEATORIO OU PERSEGUIÇÃO) // OK
 void modoInimigos (INIMIGO *inimigo, PERSONAGEM *personagem) {
-    if ( ((fabs(inimigo->posicao.x) - ((*personagem).posicao.x)) < 7) || (fabs(inimigo->posicao.y - ((*personagem).posicao.y))) < 7  ){
+    if ( (fabs(inimigo->posicao.x - (*personagem).posicao.x) < 7) || (fabs(inimigo->posicao.y - (*personagem).posicao.y) < 7 ) ){
             (inimigo->modo) = 'P'; 
     }
 }
 
 // to mandando &inimigos[i], ou seja, aqui to recebendo o endereço de uma struct inimigo
 void movInimigos (INIMIGO *inimigo, Rectangle posicaoInicial, PERSONAGEM *personagem , int i, int colisaoInimigoCenario, int colisaoDoInimigo, char corInimigo, Texture inimigoRedUp, Texture inimigoRedDown, Texture inimigoRedLeft, Texture inimigoRedRight, Texture inimigoGreenUp, Texture inimigoGreenDown, Texture inimigoGreenLeft, Texture inimigoGreenRight) {
-    float vp = 0; // serve pra mudar velocidade quandoe stiver em perseguição
-
+    
     if ((inimigo->modo) == 'P') { //caso patrulha, muda sua orientação de acordo com a orientação do personagem
-        vp = 2; 
+       
+        inimigo->velocidade = ((float)VELOCIDADE_INIMIGO + 2.0); 
+    
         if ((colisaoInimigoCenario == TRUE) || (colisaoDoInimigo == TRUE)) {
-            vp = 0; 
             (inimigo->modo) = 'N';
         }
 
@@ -240,62 +240,68 @@ void movInimigos (INIMIGO *inimigo, Rectangle posicaoInicial, PERSONAGEM *person
         }
     }
 
-    if ( inimigo->modo == 'N') { //Normal (Patrulha)
-        if (colisaoInimigoCenario == TRUE || colisaoDoInimigo == TRUE) {
-            vp = 0; 
-            switch (inimigo->orientacao) {
-                case 0: inimigo->posicao.y+= 5; break;
-                case 90: inimigo->posicao.x-= 5; break;
-                case 180: inimigo->posicao.y-= 5; break;
-                case 270: inimigo->posicao.x+= 5; break; 
-            }
-            inimigo->orientacao -= 90*(pow(-1,i)); 
+        if ( inimigo->modo == 'N') { 
+             inimigo->velocidade =VELOCIDADE_INIMIGO; 
+            if (colisaoInimigoCenario == TRUE || colisaoDoInimigo == TRUE) { 
+                switch (inimigo->orientacao) {
+                    case 0:   inimigo->posicao.y+= 5; break;
+                    case 90:  inimigo->posicao.x-= 5; break;
+                    case 180: inimigo->posicao.y-= 5; break;
+                    case 270: inimigo->posicao.x+= 5; break; 
+                }
+                inimigo->orientacao -= 90*(pow(-1,i)); 
+            } 
         }
-    } 
-        if (inimigo->orientacao == -90)
-            inimigo->orientacao =270; 
-        if (inimigo->orientacao == 360)
-            inimigo->orientacao = 0; 
 
-        switch(inimigo->orientacao) {
-            case 0: {
-                inimigo->posicao.y -= (float)VELOCIDADE_INIMIGO +vp; 
-                if (inimigo->cor == 'R') 
-                    inimigo->textura =  inimigoRedUp; 
-                if (inimigo->cor == 'G') 
-                    inimigo->textura =  inimigoGreenUp;
-                break; 
-            } 
-            case 90: {
-                inimigo->posicao.x+= (float)VELOCIDADE_INIMIGO + vp ; 
-                if (inimigo->cor == 'R') 
-                    inimigo->textura =  inimigoRedRight; 
-                if (inimigo->cor == 'G') 
-                    inimigo->textura =  inimigoGreenRight;
-                break; 
-            } 
-            case 180: {
-                inimigo->posicao.y += (float)VELOCIDADE_INIMIGO + vp ; 
-                if (inimigo->cor == 'R') 
-                    inimigo->textura =  inimigoRedDown; 
-                if (inimigo->cor == 'G')  
-                    inimigo->textura =  inimigoGreenDown;
-                break;
-            }                 
-            case 270: {
-                inimigo->posicao.x-= (float)VELOCIDADE_INIMIGO + vp; 
-                if (inimigo->cor == 'R')
-                    inimigo->textura =  inimigoRedLeft; 
-                if (inimigo->cor == 'G') 
-                    inimigo->textura =  inimigoGreenLeft; 
-                break;
+            if (inimigo->orientacao == -90)
+                inimigo->orientacao = 270; 
+            if (inimigo->orientacao == 360)
+                inimigo->orientacao = 0; 
+
+            switch(inimigo->orientacao) {
+                case 0: {
+                //  inimigo->posicao.y -= VELOCIDADE_INIMIGO ; //era assim, vou alterar para testes
+                    inimigo->posicao.y -=  inimigo->velocidade; 
+                    if (inimigo->cor == 'R') 
+                        inimigo->textura =  inimigoRedUp; 
+                    if (inimigo->cor == 'G') 
+                        inimigo->textura =  inimigoGreenUp;
+                    break; 
+                } 
+                case 90: {
+                // inimigo->posicao.x+= VELOCIDADE_INIMIGO; 
+                inimigo->posicao.x +=  inimigo->velocidade; 
+                    if (inimigo->cor == 'R') 
+                        inimigo->textura =  inimigoRedRight; 
+                    if (inimigo->cor == 'G') 
+                        inimigo->textura =  inimigoGreenRight;
+                    break; 
+                } 
+                case 180: {
+                // inimigo->posicao.y += VELOCIDADE_INIMIGO; 
+                inimigo->posicao.y +=  inimigo->velocidade; 
+                    if (inimigo->cor == 'R') 
+                        inimigo->textura =  inimigoRedDown; 
+                    if (inimigo->cor == 'G')  
+                        inimigo->textura =  inimigoGreenDown;
+                    break;
+                }                 
+                case 270: {
+                // inimigo->posicao.x-= VELOCIDADE_INIMIGO; 
+                inimigo->posicao.x-=inimigo->velocidade;
+                    if (inimigo->cor == 'R')
+                        inimigo->textura =  inimigoRedLeft; 
+                    if (inimigo->cor == 'G') 
+                        inimigo->textura =  inimigoGreenLeft; 
+                    break;
+                }
             }
-        }
-}
+    }
 
 
 int checaColisaoInimigos(int numeroDeInimigos, INIMIGO *inimigos, PERSONAGEM *personagem, int numeroInimigo, Rectangle *obstaculo, int nroBlocos) { // VERFICAR ENDEREÇOS AQUI
     int colisaoDoInimigo = FALSE; 
+    inimigos[numeroInimigo].colisao = FALSE;
 
     for (int i = 0; i<nroBlocos; i++) {
         if ( CheckCollisionRecs(inimigos[numeroInimigo].posicao , (obstaculo[i])) ) {                 //checa colisao com tijolos
@@ -303,17 +309,17 @@ int checaColisaoInimigos(int numeroDeInimigos, INIMIGO *inimigos, PERSONAGEM *pe
         }
         if ( CheckCollisionRecs(inimigos[numeroInimigo].posicao,(*personagem).posicao) ) {            //checa colisao com personagem
             colisaoDoInimigo = TRUE;
-        }
 
+        }
     }
+
     for (int i = 0; i<numeroDeInimigos; i++) {
         if ( CheckCollisionRecs(inimigos[numeroInimigo].posicao, inimigos[i].posicao) ) {           //checa colisão com outros tanques
-                if (numeroInimigo != i) {
-                    colisaoDoInimigo = TRUE;   
-                }
-        }
+            if (numeroInimigo != i) {
+                colisaoDoInimigo = TRUE;   
+            }
+        } 
     }
-     
     return colisaoDoInimigo; 
 }
 

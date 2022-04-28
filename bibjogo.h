@@ -6,8 +6,8 @@
 
 #define TRUE 1
 #define FALSE 0
-#define MAX_INIMIGOS 5
-#define VELOCIDADE_INIMIGO 0.5
+#define MAX_INIMIGOS 30
+#define VELOCIDADE_INIMIGO 1
 
 #include <stdio.h>
 #include <raylib.h>
@@ -48,10 +48,10 @@ typedef struct inimigo {
     char sentidoDesloc;         // Aleatorio ou seguindo
     Rectangle posicao;          //x,y, width, height
     Texture2D textura;
-    int velocidade;
-    int orientacao;         //indo para cima(o), baixo(180), direita(90), esquerda(270)
+    float velocidade;
+    int orientacao;             //indo para cima(o), baixo(180), direita(90), esquerda(270)
+    int colisao; 
     char cor;
-
     } INIMIGO;
 
 
@@ -75,6 +75,6 @@ void administraTiro(PERSONAGEM *personagem, int larguraTela, int alturaTela);
 // funcoes inimigos
 void criaInimigos(INIMIGO *inimigo, int nroInimigos, Texture inimigoTex, PERSONAGEM *personagem, Rectangle *obstaculo, int nroBlocos, char cor);
 void modoInimigos (INIMIGO *inimigo, PERSONAGEM *personagem);
-void movInimigos ( INIMIGO *inimigo, Rectangle posicaoInicial, PERSONAGEM *personagem , int i, int colisaoInimigoCenario, int colisaoDoInimigo, char corInimigo, Texture inimigoRedUp, Texture inimigoRedDown, Texture inimigoRedLeft, Texture inimigoRedRight, Texture inimigoGreenUp, Texture inimigoGreenDown, Texture inimigoGreenLeft, Texture inimigoGreenRight);
+void movInimigos (INIMIGO *inimigo, Rectangle posicaoInicial, PERSONAGEM *personagem , int i, int colisaoInimigoCenario, int colisaoDoInimigo, char corInimigo, Texture inimigoRedUp, Texture inimigoRedDown, Texture inimigoRedLeft, Texture inimigoRedRight, Texture inimigoGreenUp, Texture inimigoGreenDown, Texture inimigoGreenLeft, Texture inimigoGreenRight);
 int checaColisaoInimigos(int nroDeInimigos, INIMIGO *inimigos, PERSONAGEM *personagem, int numeroInimigo, Rectangle *obstaculo, int nroBlocos);
 #endif
