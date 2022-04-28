@@ -186,7 +186,7 @@ int main(void) {
                         colisaoInimigoCenario = TRUE; // manda a informação de q colidiu com algo (nesse caso, extremos da janela)
                     }
                   
-                    inimigos[i].colisao = FALSE; 
+                    inimigos[i].colisao = FALSE; //variavel que será usada para colisão entre inimigos
                     colisaoDoInimigo = checaColisaoInimigos(nroInimigos, inimigos, &personagem, i, obstaculos, nroBlocos);
                     if(colisaoDoInimigo)
                         inimigos[i].posicao = posicaoInicialInimigo;
