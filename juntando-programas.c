@@ -16,7 +16,6 @@ OBSTACULO obstaculos[600] ={0}; //posX, posY, largura, altura
 //variaveis movimentação
 int positionPlayer[1][2] = {0};
 //variaveis inimigos
-
 int nroInimigos = 0;
 clock_t tempo[2];
 int aux = 1;
@@ -24,6 +23,7 @@ char corInimigo;
 int colisaoDoInimigo = FALSE;
 int colisaoInimigoCenario = FALSE;
 int maxInimigos =MAX_INIMIGOS;
+int inimigosMortos =0;
 
 //testando variaveis aqui
 INIMIGO inimigos[MAX_INIMIGOS] = {}; //se chega no limite do tamanho bugaS
@@ -257,7 +257,7 @@ int main(void) {
                     //DrawRectangleRec
 
                     administraPowerUp(&powerUp, &personagem, obstaculos, nroBlocos, screenHeight, screenWidth);
-                    administraTiro(&personagem, screenWidth, screenHeight, obstaculos, nroBlocos, inimigos, nroInimigos, &maxInimigos);
+                    administraTiro(&personagem, screenWidth, screenHeight, obstaculos, nroBlocos, inimigos, nroInimigos, &maxInimigos, &inimigosMortos);
                     DrawTexture(personagem.textura, (personagem.posicao.x ), (personagem.posicao.y ), RAYWHITE);
                     desenhaCabecalho(&personagem, escudoTextura, arcade, fase[0]);
 
