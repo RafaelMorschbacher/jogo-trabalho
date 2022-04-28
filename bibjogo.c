@@ -315,7 +315,6 @@ void movInimigos (INIMIGO *inimigo, Rectangle posicaoInicial, PERSONAGEM *person
         }
 }
 
-
 int checaColisaoInimigos(int numeroDeInimigos, INIMIGO *inimigos, PERSONAGEM *personagem, int numeroInimigo, OBSTACULO *obstaculo, int nroBlocos) { // VERFICAR ENDEREÇOS AQUI
     int colisaoDoInimigo = FALSE;
 
@@ -338,4 +337,39 @@ int checaColisaoInimigos(int numeroDeInimigos, INIMIGO *inimigos, PERSONAGEM *pe
 
     return colisaoDoInimigo;
 }
+
+void administraTiroInimigos(INIMIGO *inimigo){
+    //Tiro aleatório se não estiver já atirando
+    if(!GetRandomValue(0,10) && !inimigo->tiro.atirando){
+        printf("Atirou");
+        inimigo->tiro.atirando = TRUE;
+        inimigo->tiro.posicao.x = inimigo->posicao.x +10;
+        inimigo->tiro.posicao.y = inimigo->posicao.y +10;
+        inimigo->tiro.inclinacao = inimigo->orientacao;
+
+    }
+
+    if(inimigo->tiro.atirando ==TRUE){
+        //printf("x:%f y:%f\n",inimigo->tiro.posicao.x, inimigo->tiro.posicao.y);
+        DrawRectangleRec(inimigo->tiro.posicao, RED);
+        switch(inimigo->tiro.inclinacao){
+            case 0:
+                inimigo->tiro.posicao.x += 10;//inimigo->tiro.velocidade;
+            break;
+            case 90:
+                inimigo->tiro.posicao.y -= 10;//inimigo->tiro.velocidade;
+            break;
+            case 180:
+                inimigo->tiro.posicao.x -= 10;//inimigo->tiro.velocidade;
+            break;
+            case 270:
+                inimigo->tiro.posicao.y += 10;//inimigo->tiro.velocidade;
+            break;
+        }
+
+    }
+
+
+}
+
 

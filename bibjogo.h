@@ -52,6 +52,7 @@ typedef struct inimigo {
     int orientacao;         //indo para cima(o), baixo(180), direita(90), esquerda(270)
     char cor;
     int vivo;
+    TIRO tiro;
 
     } INIMIGO;
 
@@ -83,4 +84,5 @@ void criaInimigos(INIMIGO *inimigos, int nroInimigos, Texture inimigoTex, PERSON
 void modoInimigos (INIMIGO *inimigo, PERSONAGEM *personagem);
 void movInimigos ( INIMIGO *inimigo, Rectangle posicaoInicial, PERSONAGEM *personagem , int i, int colisaoInimigoCenario, int colisaoDoInimigo, char corInimigo, Texture inimigoRedUp, Texture inimigoRedDown, Texture inimigoRedLeft, Texture inimigoRedRight, Texture inimigoGreenUp, Texture inimigoGreenDown, Texture inimigoGreenLeft, Texture inimigoGreenRight);
 int checaColisaoInimigos(int nroDeInimigos, INIMIGO *inimigos, PERSONAGEM *personagem, int numeroInimigo, OBSTACULO *obstaculo, int nroBlocos);
+void administraTiroInimigos(INIMIGO *inimigo);
 #endif

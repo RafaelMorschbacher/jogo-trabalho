@@ -105,7 +105,7 @@ int main(void) {
         powerUp.posicao.y = GetRandomValue(powerUp.posicao.height+40,GetScreenHeight()- powerUp.posicao.height);
     }while(spawnParede(&powerUp, obstaculos, nroBlocos));
 
-    //Inicializando Inimigos ***preciso mesmo inicializar??
+    //Inicializando Inimigos:
     //normal(patrulha) ou perseguição
     //aleatorio ou seguindo? ***ver se precisa pois já tem MODO.
 
@@ -192,6 +192,9 @@ int main(void) {
                         modoInimigos(&inimigos[i], &personagem); //mando o endereço de um inimigo em especifico
                         movInimigos (&inimigos[i], posicaoInicialInimigo, &personagem, i, colisaoInimigoCenario, colisaoDoInimigo, corInimigo, inimigoRedUp,  inimigoRedDown,  inimigoRedLeft,  inimigoRedRight,  inimigoGreenUp,  inimigoGreenDown,  inimigoGreenLeft,  inimigoGreenRight);
                         //faz a movimentação já levando em consideração o modo
+
+                        //Tiro dos inimigos
+                        administraTiroInimigos(&inimigos[i]);
                         }
 
                 }
