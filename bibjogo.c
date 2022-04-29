@@ -8,7 +8,7 @@ float alignCenterFont (char *v, int i, int fontSize, Font arcade) {
     return width;
 }
 
-// FUNÇOES NOVO JOGO 
+// FUNÇOES NOVO JOGO -----------------------------------------------------------------------------------------------------------------
 //cabeçalho
 void desenhaCabecalho(PERSONAGEM *personagem, Texture2D iconeVidas, Font arcade, char *v) {
     DrawRectangle(0,0,screenWidth,50,GRAY);
@@ -59,12 +59,111 @@ int readLevel (FILE *level, float *positionX, float *positionY, char *tipo) { //
     return feof(level);
 }
 
-//FUNCOES FASES
+//FUNCOES FASES ---------------------------------------------------------------------------------------------------------------------------
 //criar funções para encurtar as fases
 
+void criandoMapa(FILE *fileLevel, float *positionX, float *positionY, char *tipo, Rectangle obstaculos[], int *nroBlocos, PERSONAGEM *personagem) {
+  
+    while (readLevel(fileLevel, positionX, positionY,tipo) == 0) { // enquanto tiver coisas para ler
+        if (*tipo == '#') { // se a função parou num #, desenha o bloco
+            //adicionando as características pro array de structs obstaculos
+            obstaculos[*nroBlocos].x = ((*positionX)-1)*25;
+            obstaculos[*nroBlocos].y = (((*positionY)-1)*40)+50;
+            obstaculos[*nroBlocos].width = 25.0;
+            obstaculos[*nroBlocos].height = 40.0;
+            (*nroBlocos)++;
+        }
+        else if (*tipo == 'T') { // se parou num T, encontra a posição do jogador
+            personagem->posicao.x = ((*positionX)-1)*25;
+            personagem->posicao.y = (((*positionY)-1)*40)+50;                
+        }
+    }
+}
+
+void criandoInimigos(clock_t tempo[], int *aux, int *nroInimigos, int *nroBlocos, char *corInimigo, INIMIGO inimigos[], Texture inimigoRedDown, Texture inimigoGreenDown, Rectangle obstaculos[], PERSONAGEM *personagem) {
+
+    tempo[1] = clock();
+    if ((*aux) == 1) {                         // para entrar pela primeira vez no while
+        tempo[0] = tempo[1] - 5000;
+        (*aux)--;
+    }
+    int tempoPassado = ((tempo[1]-tempo[0])/1000);
+    
+
+    if (((*nroInimigos) % 2) == 0)             // escolher cor dos inimigos
+            (*corInimigo) = 'R';
+    else if (((*nroInimigos) % 2) == 1)
+            (*corInimigo) = 'G';
+
+    if (tempoPassado == 5) {
+        if ((*nroInimigos) < MAX_INIMIGOS) { 
+           (*nroInimigos)++; //aumenta os inimigos q vão aparecendo
+            if ((*corInimigo) == 'R')
+                criaInimigos(inimigos, *nroInimigos, inimigoRedDown, personagem, obstaculos, *nroBlocos, *corInimigo); //adicionar corretamente //mando o array de structs
+            else if ((*corInimigo) == 'G')
+                criaInimigos(inimigos, *nroInimigos, inimigoGreenDown, personagem, obstaculos, *nroBlocos, *corInimigo);
+            tempo[0] = clock();
+        }
+    }
+}
+
+void movendoInimigos (int screenHeight, int *nroInimigos, int *nroBlocos, int *colisaoInimigoCenario, int *colisaoDoInimigo, INIMIGO inimigos[], PERSONAGEM *personagem, Rectangle obstaculos[], char *corInimigo, Texture inimigoRedUp, Texture inimigoRedDown, Texture inimigoRedLeft, Texture inimigoRedRight, Texture inimigoGreenUp, Texture inimigoGreenDown, Texture inimigoGreenLeft, Texture inimigoGreenRight) {
+    for (int i = 0; i < (*nroInimigos); i++) { // vai um a um nos inimigos, até o último (nroInimigos)
+
+        Rectangle posicaoInicialInimigo = inimigos[i].posicao;
+        (*colisaoInimigoCenario) = FALSE;
+        (*colisaoDoInimigo) = FALSE;
+
+        bool ultrapassaCenario = (inimigos[i].posicao.x > screenWidth - inimigos[i].posicao.width) || (inimigos[i].posicao.x < 0) || (inimigos[i].posicao.y > screenHeight - inimigos[i].posicao.height) || (inimigos[i].posicao.y < 50);
+        if(ultrapassaCenario) {
+            inimigos[i].posicao = posicaoInicialInimigo;
+            (*colisaoInimigoCenario) = TRUE; // manda a informação de q colidiu com algo (nesse caso, extremos da janela)
+        }
+                  
+        inimigos[i].colisao = FALSE; //variavel que será usada para colisão entre inimigos
+        (*colisaoDoInimigo) = checaColisaoInimigos((*nroInimigos), inimigos, personagem, i, obstaculos, (*nroBlocos));
+        if((*colisaoDoInimigo))
+            inimigos[i].posicao = posicaoInicialInimigo;
+
+        modoInimigos(&inimigos[i], personagem); //mando o endereço de um inimigo em especifico
+        movInimigos (&inimigos[i], posicaoInicialInimigo, personagem, i, (*colisaoInimigoCenario), (*colisaoDoInimigo), (*corInimigo), inimigoRedUp,  inimigoRedDown,  inimigoRedLeft,  inimigoRedRight,  inimigoGreenUp,  inimigoGreenDown,  inimigoGreenLeft,  inimigoGreenRight);
+        //faz a movimentação já levando em consideração o modo
+    }    
+}
+
+void movendoPersonagem (PERSONAGEM *personagem,int *nroBlocos, int *nroInimigos, int screenHeight, INIMIGO inimigos[], Rectangle obstaculos[], Texture personagemRight, Texture personagemLeft, Texture personagemUp, Texture personagemDown) {
+    Rectangle posicaoInicial = personagem->posicao;// Guardando posicao inicial antes de colisoes, etc
+    atualizaPosicao(personagem, personagemRight, personagemLeft, personagemUp, personagemDown);
+    //Colisao Cenario
+    bool ultrapassaCenario = (personagem->posicao.x > screenWidth - personagem->posicao.width) || (personagem->posicao.x <0) || (personagem->posicao.y > screenHeight - personagem->posicao.height) || (personagem->posicao.y <50);
+    if(ultrapassaCenario)
+        personagem->posicao = posicaoInicial;
+    //Colisao Obstaculos
+    checaColisaoArray(inimigos, personagem, obstaculos, (*nroBlocos), posicaoInicial, (*nroInimigos));
+}
+
+//FUNÇÕES CONTINUAR ---------------------------------------------------------------------------------------------------------------------
+
+//continuar fazendo essa função
+salvarJogo(PERSONAGEM *personagem) {
+    FILE *savePointer; 
+    savePointer = fopen("../levels/continuar.txt", "wb");
+
+    fwrite (personagem, sizeof(PERSONAGEM), 1, savePointer); 
+
+    for (i = 0, )
+    
+    
+    fclose(savePointer); 
 
 
-// FUNCOES MOVIMENTAÇÃO & power UP
+
+
+
+}
+
+
+// FUNCOES MOVIMENTAÇÃO & power UP ------------------------------------------------------------------------------------------------------
 void checaColisao(PERSONAGEM *personagem, Rectangle *obstaculo, Rectangle posicaoInicial) {
     if(CheckCollisionRecs(personagem->posicao,*obstaculo)) {
         personagem->posicao = posicaoInicial;
