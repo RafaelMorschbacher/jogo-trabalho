@@ -191,7 +191,7 @@ void administraTiro(PERSONAGEM *personagem, int larguraTela, int alturaTela, OBS
 
     //Tiro atinge inimigo
         for(int i=0; i<nroInimigos; i++){
-            if(CheckCollisionRecs(personagem->tiro.posicao, inimigos[i].posicao)){
+            if(CheckCollisionRecs(personagem->tiro.posicao, inimigos[i].posicao) && inimigos[i].vivo == 1){
                 inimigos[i].vivo = FALSE;
                 personagem->tiro.atirando = FALSE;
                 *maxInimigos +=1;
