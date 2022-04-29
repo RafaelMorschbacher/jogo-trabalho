@@ -23,6 +23,7 @@ char corInimigo;
 int colisaoDoInimigo = FALSE;
 int colisaoInimigoCenario = FALSE;
 int maxInimigos =MAX_INIMIGOS;
+int inimigosEmTela = 0;
 int inimigosMortos =0;
 
 //testando variaveis aqui
@@ -165,6 +166,7 @@ int main(void) {
                 if (tempoPassado == 5) {
                     if (nroInimigos < maxInimigos) {
                         nroInimigos++; //aumenta os inimigos q vão aparecendo
+                        inimigosEmTela++;
                         if (corInimigo == 'R')
                             criaInimigos(inimigos, nroInimigos, inimigoRedDown, &personagem, obstaculos, nroBlocos, corInimigo); //adicionar corretamente //mando o array de structs
                         else if (corInimigo == 'G')
@@ -257,7 +259,7 @@ int main(void) {
                     //DrawRectangleRec
 
                     administraPowerUp(&powerUp, &personagem, obstaculos, nroBlocos, screenHeight, screenWidth);
-                    administraTiro(&personagem, screenWidth, screenHeight, obstaculos, nroBlocos, inimigos, nroInimigos, &maxInimigos, &inimigosMortos);
+                    administraTiro(&personagem, screenWidth, screenHeight, obstaculos, nroBlocos, inimigos, nroInimigos, &maxInimigos, &inimigosMortos, &inimigosEmTela);
                     DrawTexture(personagem.textura, (personagem.posicao.x ), (personagem.posicao.y ), RAYWHITE);
                     desenhaCabecalho(&personagem, escudoTextura, arcade, fase[0]);
 

@@ -147,7 +147,7 @@ void atualizaPosicao(PERSONAGEM *personagem , Texture personagemRight, Texture p
     }
 }
 
-void administraTiro(PERSONAGEM *personagem, int larguraTela, int alturaTela, OBSTACULO obstaculos[] ,int nroBlocos, INIMIGO inimigos[], int nroInimigos, int *maxInimigos, int *inimigosMortos){
+void administraTiro(PERSONAGEM *personagem, int larguraTela, int alturaTela, OBSTACULO obstaculos[] ,int nroBlocos, INIMIGO inimigos[], int nroInimigos, int *maxInimigos, int *inimigosMortos, int *inimigosEmTela){
     //Atirando ao apertar SPACE
     if(IsKeyReleased(KEY_SPACE) && !personagem->tiro.atirando){
         personagem->tiro.atirando = TRUE;
@@ -196,6 +196,7 @@ void administraTiro(PERSONAGEM *personagem, int larguraTela, int alturaTela, OBS
                 personagem->tiro.atirando = FALSE;
                 *maxInimigos +=1;
                 *inimigosMortos += 1;
+                *inimigosEmTela -=1;
                 printf("%d\n", *inimigosMortos);
             }
         }
