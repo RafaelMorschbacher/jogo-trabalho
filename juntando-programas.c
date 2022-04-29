@@ -12,17 +12,18 @@ char fase[3][10] = {"FASE 1"," FASE 2", "FASE 3"};
 float positionX = 0;                  //coordenada x de um objeto na tela
 float positionY = 1;                  //coordenada y de um objeto na tela
 int nroBlocos = 0;
-Rectangle obstaculos[600] ={{0,0,0,0}}; //posX, posY, largura, altura
+OBSTACULO obstaculos[600] ={0}; //posX, posY, largura, altura
 //variaveis movimentação
 int positionPlayer[1][2] = {0};
 //variaveis inimigos
-
 int nroInimigos = 0;
 clock_t tempo[2];
 int aux = 1;
 char corInimigo;
 int colisaoDoInimigo = FALSE;
 int colisaoInimigoCenario = FALSE;
+int maxInimigos =MAX_INIMIGOS;
+int inimigosMortos =0;
 
 //testando variaveis aqui
 INIMIGO inimigos[MAX_INIMIGOS] = {}; //se chega no limite do tamanho bugaS
@@ -72,6 +73,7 @@ int main(void) {
     Texture2D inimigoRedDown = LoadTexture("../assets/inimigo-vermelho_down30x30.png");
     Texture2D inimigoRedLeft = LoadTexture("../assets/inimigo-vermelho_left30x30.png");
     Texture2D inimigoRedRight = LoadTexture("../assets/inimigo-vermelho_right30x30.png");
+    Texture2D inimigoDead = LoadTexture("../assets/inimigo-destruido30x30.png");
 
     //textura inimigo verde
     Texture2D inimigoGreenUp = LoadTexture("../assets/inimigo-verde_up30x30.png");
@@ -91,7 +93,7 @@ int main(void) {
     personagem.tiro.posicao.height = 10;
     personagem.tiro.posicao.width = 10;
     personagem.tiro.velocidade = 10;
-    personagem.tiro.numBalas = 3;
+    //personagem.tiro.numBalas = 3;
 
     //Inicializando PowerUp
     POWERUP powerUp = {0};
@@ -103,7 +105,7 @@ int main(void) {
         powerUp.posicao.y = GetRandomValue(powerUp.posicao.height+40,GetScreenHeight()- powerUp.posicao.height);
     }while(spawnParede(&powerUp, obstaculos, nroBlocos));
 
-    //Inicializando Inimigos ***preciso mesmo inicializar??
+    //Inicializando Inimigos:
     //normal(patrulha) ou perseguição
     //aleatorio ou seguindo? ***ver se precisa pois já tem MODO.
 
@@ -133,10 +135,10 @@ int main(void) {
                 while (readLevel(fileLevel, &positionX, &positionY,&tipo) == 0) { // enquanto tiver coisas para ler
                     if (tipo == '#') { // se a função parou num #, desenha o bloco
                         //adicionando as características pro array de structs obstaculos
-                        obstaculos[nroBlocos].x = (positionX-1)*25;
-                        obstaculos[nroBlocos].y = ((positionY-1)*40)+50;
-                        obstaculos[nroBlocos].width = 25.0;
-                        obstaculos[nroBlocos].height = 40.0;
+                        obstaculos[nroBlocos].posicao.x = (positionX-1)*25;
+                        obstaculos[nroBlocos].posicao.y = ((positionY-1)*40)+50;
+                        obstaculos[nroBlocos].posicao.width = 25.0;
+                        obstaculos[nroBlocos].posicao.height = 40.0;
                         nroBlocos++;
                     }
                     else if (tipo == 'T') { // se parou num T, encontra a posição do jogador
@@ -161,7 +163,7 @@ int main(void) {
                     corInimigo = 'G';
 
                 if (tempoPassado == 5) {
-                    if (nroInimigos < MAX_INIMIGOS) {
+                    if (nroInimigos < maxInimigos) {
                         nroInimigos++; //aumenta os inimigos q vão aparecendo
                         if (corInimigo == 'R')
                             criaInimigos(inimigos, nroInimigos, inimigoRedDown, &personagem, obstaculos, nroBlocos, corInimigo); //adicionar corretamente //mando o array de structs
@@ -174,22 +176,27 @@ int main(void) {
                 //---- faze-los andar
 
                 for (int i = 0; i < nroInimigos; i++) { // vai um a um nos inimigos, até o último (nroInimigos)
+                    if(inimigos[i].vivo == TRUE){
+                        Rectangle posicaoInicialInimigo = inimigos[i].posicao;
+                        colisaoInimigoCenario = FALSE;
+                        colisaoDoInimigo = FALSE;
+                        bool ultrapassaCenario = (inimigos[i].posicao.x > screenWidth - inimigos[i].posicao.width) || (inimigos[i].posicao.x < 0) || (inimigos[i].posicao.y > screenHeight - inimigos[i].posicao.height) || (inimigos[i].posicao.y < 50);
+                        if(ultrapassaCenario) {
+                            inimigos[i].posicao = posicaoInicialInimigo;
+                            colisaoInimigoCenario = TRUE; // manda a informação de q colidiu com algo (nesse caso, extremos da janela)
+                        }
+                        colisaoDoInimigo = checaColisaoInimigos(nroInimigos, inimigos, &personagem, i, obstaculos, nroBlocos);
+                        if(colisaoDoInimigo)
+                            inimigos[i].posicao = posicaoInicialInimigo;
 
-                    Rectangle posicaoInicialInimigo = inimigos[i].posicao;
-                    colisaoInimigoCenario = FALSE;
-                    colisaoDoInimigo = FALSE;
-                    bool ultrapassaCenario = (inimigos[i].posicao.x > screenWidth - inimigos[i].posicao.width) || (inimigos[i].posicao.x < 0) || (inimigos[i].posicao.y > screenHeight - inimigos[i].posicao.height) || (inimigos[i].posicao.y < 50);
-                    if(ultrapassaCenario) {
-                        inimigos[i].posicao = posicaoInicialInimigo;
-                        colisaoInimigoCenario = TRUE; // manda a informação de q colidiu com algo (nesse caso, extremos da janela)
-                    }
-                    colisaoDoInimigo = checaColisaoInimigos(nroInimigos, inimigos, &personagem, i, obstaculos, nroBlocos);
-                    if(colisaoDoInimigo)
-                        inimigos[i].posicao = posicaoInicialInimigo;
+                        modoInimigos(&inimigos[i], &personagem); //mando o endereço de um inimigo em especifico
+                        movInimigos (&inimigos[i], posicaoInicialInimigo, &personagem, i, colisaoInimigoCenario, colisaoDoInimigo, corInimigo, inimigoRedUp,  inimigoRedDown,  inimigoRedLeft,  inimigoRedRight,  inimigoGreenUp,  inimigoGreenDown,  inimigoGreenLeft,  inimigoGreenRight);
+                        //faz a movimentação já levando em consideração o modo
 
-                    modoInimigos(&inimigos[i], &personagem); //mando o endereço de um inimigo em especifico
-                    movInimigos (&inimigos[i], posicaoInicialInimigo, &personagem, i, colisaoInimigoCenario, colisaoDoInimigo, corInimigo, inimigoRedUp,  inimigoRedDown,  inimigoRedLeft,  inimigoRedRight,  inimigoGreenUp,  inimigoGreenDown,  inimigoGreenLeft,  inimigoGreenRight);
-                    //faz a movimentação já levando em consideração o modo
+                        //Tiro dos inimigos
+                        administraTiroInimigos(&inimigos[i]);
+                        }
+
                 }
 
                 //Update da posicao e textura do personagem
@@ -239,20 +246,29 @@ int main(void) {
                     DrawRectangle(0,0,screenWidth,screenHeight,BLACK);
 
                     for (int j = 0; j < nroBlocos; j++ ) {
-                        int xvec = obstaculos[j].x;
-                        int yvec =  obstaculos[j].y;
-                        DrawTexture(brickTexture, xvec, yvec, WHITE);
+                        //Desenhar apenas Blocos nao destruidos
+                        if(!obstaculos[j].destruido){
+                            int xvec = obstaculos[j].posicao.x;
+                            int yvec =  obstaculos[j].posicao.y;
+                            DrawTexture(brickTexture, xvec, yvec, WHITE);
+                        }
+
                     }
                     //DrawRectangleRec
 
                     administraPowerUp(&powerUp, &personagem, obstaculos, nroBlocos, screenHeight, screenWidth);
-                    administraTiro(&personagem, screenWidth, screenHeight);
+                    administraTiro(&personagem, screenWidth, screenHeight, obstaculos, nroBlocos, inimigos, nroInimigos, &maxInimigos, &inimigosMortos);
                     DrawTexture(personagem.textura, (personagem.posicao.x ), (personagem.posicao.y ), RAYWHITE);
                     desenhaCabecalho(&personagem, escudoTextura, arcade, fase[0]);
 
                     //desenhando inimigos na tela
                     for (int i = 0; i<nroInimigos; i++) {
-                        DrawTexture(inimigos[i].textura, (inimigos[i].posicao.x),  (inimigos[i].posicao.y), RAYWHITE);
+                        if(inimigos[i].vivo==TRUE)
+                            DrawTexture(inimigos[i].textura, (inimigos[i].posicao.x),  (inimigos[i].posicao.y), RAYWHITE);
+                        if(inimigos[i].vivo==FALSE)
+                            DrawTexture(inimigoDead, (inimigos[i].posicao.x),  (inimigos[i].posicao.y), RAYWHITE);
+
+
                     }
                     break;
 

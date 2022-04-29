@@ -1,14 +1,14 @@
 #include "bibjogo.h"
 
 // FUNÇÕES GERAIS  ------------------------------------------------------------------------------------------------------------------
-float alignCenterFont (char *v, int i, int fontSize, Font arcade) { 
+float alignCenterFont (char *v, int i, int fontSize, Font arcade) {
     float width;
     Vector2 tamText = MeasureTextEx(arcade, v, fontSize, 1);
     width = ((screenWidth-tamText.x)/2);
     return width;
 }
 
-// FUNÇOES NOVO JOGO 
+// FUNÇOES NOVO JOGO
 //cabeçalho
 void desenhaCabecalho(PERSONAGEM *personagem, Texture2D iconeVidas, Font arcade, char *v) {
     DrawRectangle(0,0,screenWidth,50,GRAY);
@@ -66,21 +66,23 @@ void checaColisao(PERSONAGEM *personagem, Rectangle *obstaculo, Rectangle posica
     }
 }
 
-void checaColisaoArray(INIMIGO *inimigos, PERSONAGEM *personagem, Rectangle *obstaculos, int numObstaculos, Rectangle posicaoInicial, int nroInimigos) {
+void checaColisaoArray(INIMIGO *inimigos, PERSONAGEM *personagem, OBSTACULO *obstaculos, int numObstaculos, Rectangle posicaoInicial, int nroInimigos) {
+
         for(int i=0; i<numObstaculos; i++) {
-            checaColisao(&(*personagem), &obstaculos[i], posicaoInicial);
+             if(!obstaculos[i].destruido)
+                checaColisao(&(*personagem), &obstaculos[i].posicao, posicaoInicial);
 
         }
         for (int i=0;i<nroInimigos;i++) {
             checaColisao(&(*personagem), &(inimigos[i].posicao), posicaoInicial);
         }
 }
-int spawnParede(POWERUP *powerUp, Rectangle obstaculos[], int numObstaculos)
+int spawnParede(POWERUP *powerUp, OBSTACULO obstaculos[], int numObstaculos)
 {
     int colisao = 0;
     for(int i=0; i<numObstaculos; i++)
     {
-        if(CheckCollisionRecs(obstaculos[i], powerUp->posicao))
+        if(CheckCollisionRecs(obstaculos[i].posicao, powerUp->posicao))
         {
             colisao = 1;
         }
@@ -89,7 +91,7 @@ int spawnParede(POWERUP *powerUp, Rectangle obstaculos[], int numObstaculos)
 
     return colisao;
 }
-void administraPowerUp(POWERUP *powerUp, PERSONAGEM *personagem, Rectangle *obstaculos, int numObstaculos, int larguraTela, int alturaTela)
+void administraPowerUp(POWERUP *powerUp, PERSONAGEM *personagem, OBSTACULO *obstaculos, int numObstaculos, int larguraTela, int alturaTela)
 {
     if(CheckCollisionRecs(personagem->posicao, powerUp->posicao))
     {
@@ -145,20 +147,20 @@ void atualizaPosicao(PERSONAGEM *personagem , Texture personagemRight, Texture p
     }
 }
 
-void administraTiro(PERSONAGEM *personagem, int larguraTela, int alturaTela){
+void administraTiro(PERSONAGEM *personagem, int larguraTela, int alturaTela, OBSTACULO obstaculos[] ,int nroBlocos, INIMIGO inimigos[], int nroInimigos, int *maxInimigos, int *inimigosMortos){
     //Atirando ao apertar SPACE
-    if(IsKeyReleased(KEY_SPACE) && !personagem->tiro.atirando && personagem->tiro.numBalas>0){
-        personagem->tiro.atirando = 1;
+    if(IsKeyReleased(KEY_SPACE) && !personagem->tiro.atirando){
+        personagem->tiro.atirando = TRUE;
         personagem->tiro.posicao.x = personagem->posicao.x +10;
         personagem->tiro.posicao.y = personagem->posicao.y +10;
         personagem->tiro.inclinacao = personagem->inclinacao;
-        personagem->tiro.numBalas -= 1;
-        printf("%d",  personagem->tiro.numBalas);
+        //personagem->tiro.numBalas -= 1;
     }
 
-    //Animação de tiro
+    //Funções após o disparo
     if(personagem->tiro.atirando){
         DrawRectangleRec(personagem->tiro.posicao, GREEN);
+        //Animação de tiro
         switch(personagem->tiro.inclinacao){
             case 0:
                 personagem->tiro.posicao.x += personagem->tiro.velocidade;
@@ -174,29 +176,50 @@ void administraTiro(PERSONAGEM *personagem, int larguraTela, int alturaTela){
             break;
 
         }
-
+        //Tiro sai do cenário : destruir tiro
+        if(personagem->tiro.posicao.x > larguraTela || personagem->tiro.posicao.x < 0 || personagem->tiro.posicao.y >= alturaTela || personagem->tiro.posicao.y < 0){
+            personagem->tiro.atirando = FALSE;
     }
 
-    //Destruição do tiro
-    if(personagem->tiro.posicao.x > larguraTela || personagem->tiro.posicao.x < 0 || personagem->tiro.posicao.y >= alturaTela || personagem->tiro.posicao.y < 0){
-        personagem->tiro.atirando = 0;
+    //Tiro atinge parede
+        for(int i=0; i<nroBlocos; i++) {
+            if(CheckCollisionRecs(personagem->tiro.posicao, obstaculos[i].posicao)&& !obstaculos[i].destruido){
+                obstaculos[i].destruido = TRUE;
+                personagem->tiro.atirando = FALSE;
+            }
+        }
+
+    //Tiro atinge inimigo
+        for(int i=0; i<nroInimigos; i++){
+            if(CheckCollisionRecs(personagem->tiro.posicao, inimigos[i].posicao)){
+                inimigos[i].vivo = FALSE;
+                personagem->tiro.atirando = FALSE;
+                *maxInimigos +=1;
+                *inimigosMortos += 1;
+                printf("%d\n", *inimigosMortos);
+            }
+        }
     }
+
+
+
 }
 
 //FUNÇÕES ESPECIFICAS INIMIGOS
-void criaInimigos(INIMIGO *inimigos, int nroInimigos, Texture inimigoTex, PERSONAGEM *personagem, Rectangle *obstaculo, int nroBlocos, char cor) {
+void criaInimigos(INIMIGO *inimigos, int nroInimigos, Texture inimigoTex, PERSONAGEM *personagem, OBSTACULO *obstaculo, int nroBlocos, char cor) {
     (inimigos[nroInimigos-1]).posicao.width = 25;
     (inimigos[nroInimigos-1]).posicao.height = 25;
     (inimigos[nroInimigos-1]).textura = inimigoTex;
     (inimigos[nroInimigos-1]).velocidade = VELOCIDADE_INIMIGO;
-    (inimigos[nroInimigos-1]).orientacao = (nroInimigos % 4) * 90; 
+    (inimigos[nroInimigos-1]).orientacao = (nroInimigos % 4) * 90;
+    (inimigos[nroInimigos-1]).vivo = TRUE;
     do {
         (inimigos[nroInimigos-1]).posicao.x = (float)GetRandomValue(25, screenWidth-25);
         (inimigos[nroInimigos-1]).posicao.y = (float)GetRandomValue(75, 650-25);
-    } while ((checaColisaoInimigos(nroInimigos, inimigos, personagem, (nroInimigos-1), obstaculo, nroBlocos)) == TRUE); //para q nao seja criado em cima de onde n da
-    
+    } while ((checaColisaoInimigos(nroInimigos, inimigos, personagem, (nroInimigos-1), &(*obstaculo), nroBlocos)) == TRUE); //para q nao seja criado em cima de onde n da
+
     (inimigos[nroInimigos-1]).modo = 'N';
-    
+
     if (cor == 'G')
         (inimigos[nroInimigos-1]).cor = 'G';
     else if (cor == 'R')
@@ -205,7 +228,7 @@ void criaInimigos(INIMIGO *inimigos, int nroInimigos, Texture inimigoTex, PERSON
 // FUNÇÃO P MODO (ALEATORIO OU PERSEGUIÇÃO) // OK
 void modoInimigos (INIMIGO *inimigo, PERSONAGEM *personagem) {
     if ( ((fabs(inimigo->posicao.x) - ((*personagem).posicao.x)) < 7) || (fabs(inimigo->posicao.y - ((*personagem).posicao.y))) < 7  ){
-            (inimigo->modo) = 'P'; 
+            (inimigo->modo) = 'P';
     }
 }
 
@@ -214,9 +237,9 @@ void movInimigos (INIMIGO *inimigo, Rectangle posicaoInicial, PERSONAGEM *person
     float vp = 0; // serve pra mudar velocidade quandoe stiver em perseguição
 
     if ((inimigo->modo) == 'P') { //caso patrulha, muda sua orientação de acordo com a orientação do personagem
-        vp = 2; 
+        vp = 2;
         if ((colisaoInimigoCenario == TRUE) || (colisaoDoInimigo == TRUE)) {
-            vp = 0; 
+            vp = 0;
             (inimigo->modo) = 'N';
         }
 
@@ -235,85 +258,119 @@ void movInimigos (INIMIGO *inimigo, Rectangle posicaoInicial, PERSONAGEM *person
                 if (diferencaPosicoesX >= 0)
                     inimigo->orientacao = 270;
                 else if (diferencaPosicoesX < 0)
-                    inimigo->orientacao = 90;   
+                    inimigo->orientacao = 90;
             }
         }
     }
 
     if ( inimigo->modo == 'N') { //Normal (Patrulha)
         if (colisaoInimigoCenario == TRUE || colisaoDoInimigo == TRUE) {
-            vp = 0; 
+            vp = 0;
             switch (inimigo->orientacao) {
                 case 0: inimigo->posicao.y+= 5; break;
                 case 90: inimigo->posicao.x-= 5; break;
                 case 180: inimigo->posicao.y-= 5; break;
-                case 270: inimigo->posicao.x+= 5; break; 
+                case 270: inimigo->posicao.x+= 5; break;
             }
-            inimigo->orientacao -= 90*(pow(-1,i)); 
+            inimigo->orientacao -= 90*(pow(-1,i));
         }
-    } 
+    }
         if (inimigo->orientacao == -90)
-            inimigo->orientacao =270; 
+            inimigo->orientacao =270;
         if (inimigo->orientacao == 360)
-            inimigo->orientacao = 0; 
+            inimigo->orientacao = 0;
 
         switch(inimigo->orientacao) {
             case 0: {
-                inimigo->posicao.y -= (float)VELOCIDADE_INIMIGO +vp; 
-                if (inimigo->cor == 'R') 
-                    inimigo->textura =  inimigoRedUp; 
-                if (inimigo->cor == 'G') 
+                inimigo->posicao.y -= (float)VELOCIDADE_INIMIGO +vp;
+                if (inimigo->cor == 'R')
+                    inimigo->textura =  inimigoRedUp;
+                if (inimigo->cor == 'G')
                     inimigo->textura =  inimigoGreenUp;
-                break; 
-            } 
+                break;
+            }
             case 90: {
-                inimigo->posicao.x+= (float)VELOCIDADE_INIMIGO + vp ; 
-                if (inimigo->cor == 'R') 
-                    inimigo->textura =  inimigoRedRight; 
-                if (inimigo->cor == 'G') 
+                inimigo->posicao.x+= (float)VELOCIDADE_INIMIGO + vp ;
+                if (inimigo->cor == 'R')
+                    inimigo->textura =  inimigoRedRight;
+                if (inimigo->cor == 'G')
                     inimigo->textura =  inimigoGreenRight;
-                break; 
-            } 
+                break;
+            }
             case 180: {
-                inimigo->posicao.y += (float)VELOCIDADE_INIMIGO + vp ; 
-                if (inimigo->cor == 'R') 
-                    inimigo->textura =  inimigoRedDown; 
-                if (inimigo->cor == 'G')  
+                inimigo->posicao.y += (float)VELOCIDADE_INIMIGO + vp ;
+                if (inimigo->cor == 'R')
+                    inimigo->textura =  inimigoRedDown;
+                if (inimigo->cor == 'G')
                     inimigo->textura =  inimigoGreenDown;
                 break;
-            }                 
+            }
             case 270: {
-                inimigo->posicao.x-= (float)VELOCIDADE_INIMIGO + vp; 
+                inimigo->posicao.x-= (float)VELOCIDADE_INIMIGO + vp;
                 if (inimigo->cor == 'R')
-                    inimigo->textura =  inimigoRedLeft; 
-                if (inimigo->cor == 'G') 
-                    inimigo->textura =  inimigoGreenLeft; 
+                    inimigo->textura =  inimigoRedLeft;
+                if (inimigo->cor == 'G')
+                    inimigo->textura =  inimigoGreenLeft;
                 break;
             }
         }
 }
 
-
-int checaColisaoInimigos(int numeroDeInimigos, INIMIGO *inimigos, PERSONAGEM *personagem, int numeroInimigo, Rectangle *obstaculo, int nroBlocos) { // VERFICAR ENDEREÇOS AQUI
-    int colisaoDoInimigo = FALSE; 
+int checaColisaoInimigos(int numeroDeInimigos, INIMIGO *inimigos, PERSONAGEM *personagem, int numeroInimigo, OBSTACULO *obstaculo, int nroBlocos) { // VERFICAR ENDEREÇOS AQUI
+    int colisaoDoInimigo = FALSE;
 
     for (int i = 0; i<nroBlocos; i++) {
-        if ( CheckCollisionRecs(inimigos[numeroInimigo].posicao , (obstaculo[i])) ) {                 //checa colisao com tijolos
+        if ( CheckCollisionRecs(inimigos[numeroInimigo].posicao , (obstaculo[i].posicao)) && inimigos[numeroInimigo].vivo==TRUE && !obstaculo[i].destruido ) {                 //checa colisao com tijolos
             colisaoDoInimigo = TRUE;
         }
-        if ( CheckCollisionRecs(inimigos[numeroInimigo].posicao,(*personagem).posicao) ) {            //checa colisao com personagem
+        if ( CheckCollisionRecs(inimigos[numeroInimigo].posicao,(*personagem).posicao)&& inimigos[numeroInimigo].vivo==TRUE ) {            //checa colisao com personagem
             colisaoDoInimigo = TRUE;
         }
 
     }
     for (int i = 0; i<numeroDeInimigos; i++) {
-        if ( CheckCollisionRecs(inimigos[numeroInimigo].posicao, inimigos[i].posicao) ) {           //checa colisão com outros tanques
+        if ( CheckCollisionRecs(inimigos[numeroInimigo].posicao, inimigos[i].posicao) && inimigos[numeroInimigo].vivo==TRUE ) {           //checa colisão com outros tanques
                 if (numeroInimigo != i) {
-                    colisaoDoInimigo = TRUE;   
+                    colisaoDoInimigo = TRUE;
                 }
         }
     }
-     
-    return colisaoDoInimigo; 
+
+    return colisaoDoInimigo;
 }
+
+void administraTiroInimigos(INIMIGO *inimigo){
+    //Tiro aleatório se não estiver já atirando
+    if(!GetRandomValue(0,10) && !inimigo->tiro.atirando){
+        printf("Atirou");
+        inimigo->tiro.atirando = TRUE;
+        inimigo->tiro.posicao.x = inimigo->posicao.x +10;
+        inimigo->tiro.posicao.y = inimigo->posicao.y +10;
+        inimigo->tiro.inclinacao = inimigo->orientacao;
+
+    }
+
+    if(inimigo->tiro.atirando ==TRUE){
+        //printf("x:%f y:%f\n",inimigo->tiro.posicao.x, inimigo->tiro.posicao.y);
+        DrawRectangleRec(inimigo->tiro.posicao, RED);
+        switch(inimigo->tiro.inclinacao){
+            case 0:
+                inimigo->tiro.posicao.x += 10;//inimigo->tiro.velocidade;
+            break;
+            case 90:
+                inimigo->tiro.posicao.y -= 10;//inimigo->tiro.velocidade;
+            break;
+            case 180:
+                inimigo->tiro.posicao.x -= 10;//inimigo->tiro.velocidade;
+            break;
+            case 270:
+                inimigo->tiro.posicao.y += 10;//inimigo->tiro.velocidade;
+            break;
+        }
+
+    }
+
+
+}
+
 

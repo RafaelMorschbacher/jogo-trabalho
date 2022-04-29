@@ -23,7 +23,7 @@ typedef struct tiro {
     int atirando;
     int velocidade;
     int inclinacao;
-    int numBalas;
+    //int numBalas;
     } TIRO;
 
 typedef struct personagem {
@@ -51,8 +51,15 @@ typedef struct inimigo {
     int velocidade;
     int orientacao;         //indo para cima(o), baixo(180), direita(90), esquerda(270)
     char cor;
+    int vivo;
+    TIRO tiro;
 
     } INIMIGO;
+
+typedef struct obstaculo {
+Rectangle posicao;
+int destruido;
+} OBSTACULO;
 
 
 
@@ -65,16 +72,17 @@ int readLevel (FILE *level, float *positionX, float *positionY, char *tipo);
 // funcoes movimentacao
 void checaColisao(PERSONAGEM *personagem, Rectangle *obstaculo, Rectangle posicaoInicial);
 
-void checaColisaoArray(INIMIGO *inimigos, PERSONAGEM *personagem, Rectangle *obstaculos, int numObstaculos, Rectangle posicaoInicial,int nroInimigos);
-void administraPowerUp(POWERUP *powerUp, PERSONAGEM *personagem, Rectangle *obstaculos, int numObstaculos, int larguraTela, int alturaTela);
+void checaColisaoArray(INIMIGO *inimigos, PERSONAGEM *personagem, OBSTACULO *obstaculos, int numObstaculos, Rectangle posicaoInicial, int nroInimigos);
+void administraPowerUp(POWERUP *powerUp, PERSONAGEM *personagem, OBSTACULO *obstaculos, int numObstaculos, int larguraTela, int alturaTela);
 void atualizaPosicao(PERSONAGEM *personagem , Texture personagemRight, Texture personagemLeft, Texture personagemUp, Texture personagemDown);
 void desenhaCabecalho(PERSONAGEM *personagem, Texture2D iconeVidas,Font arcade, char *v);
-int spawnParede(POWERUP *powerUp, Rectangle obstaculos[], int numObstaculos);
-void administraTiro(PERSONAGEM *personagem, int larguraTela, int alturaTela);
+int spawnParede(POWERUP *powerUp, OBSTACULO obstaculos[], int numObstaculos);
+void administraTiro(PERSONAGEM *personagem, int larguraTela, int alturaTela, OBSTACULO obstaculos[] ,int nroBlocos, INIMIGO inimigos[], int nroInimigos, int *maxInimigos,int *inimigosMortos);
 
 // funcoes inimigos
-void criaInimigos(INIMIGO *inimigo, int nroInimigos, Texture inimigoTex, PERSONAGEM *personagem, Rectangle *obstaculo, int nroBlocos, char cor);
+void criaInimigos(INIMIGO *inimigos, int nroInimigos, Texture inimigoTex, PERSONAGEM *personagem, OBSTACULO *obstaculo, int nroBlocos, char cor);
 void modoInimigos (INIMIGO *inimigo, PERSONAGEM *personagem);
 void movInimigos ( INIMIGO *inimigo, Rectangle posicaoInicial, PERSONAGEM *personagem , int i, int colisaoInimigoCenario, int colisaoDoInimigo, char corInimigo, Texture inimigoRedUp, Texture inimigoRedDown, Texture inimigoRedLeft, Texture inimigoRedRight, Texture inimigoGreenUp, Texture inimigoGreenDown, Texture inimigoGreenLeft, Texture inimigoGreenRight);
-int checaColisaoInimigos(int nroDeInimigos, INIMIGO *inimigos, PERSONAGEM *personagem, int numeroInimigo, Rectangle *obstaculo, int nroBlocos);
+int checaColisaoInimigos(int nroDeInimigos, INIMIGO *inimigos, PERSONAGEM *personagem, int numeroInimigo, OBSTACULO *obstaculo, int nroBlocos);
+void administraTiroInimigos(INIMIGO *inimigo);
 #endif
