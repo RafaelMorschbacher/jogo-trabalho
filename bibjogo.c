@@ -59,6 +59,11 @@ int readLevel (FILE *level, float *positionX, float *positionY, char *tipo) { //
     return feof(level);
 }
 
+//FUNCOES FASES
+//criar funções para encurtar as fases
+
+
+
 // FUNCOES MOVIMENTAÇÃO & power UP
 void checaColisao(PERSONAGEM *personagem, Rectangle *obstaculo, Rectangle posicaoInicial) {
     if(CheckCollisionRecs(personagem->posicao,*obstaculo)) {

@@ -1,3 +1,25 @@
+/*
+PARA TROCAR DE FASE
+- >= 15 tanques destruidos E nenhum tanque na tela
+- contador quando inimigo.vida troca
+---- também aumenta os pontos
+- checar se não tem nenhum tanque na tela
+****pode ganhar pontos ao acertar um tijolo
+
+---o sobre pode ser uma parede cheia de tijolos sem inimigos, tem q derrubar tudo pra ler
+
+
+- salvar com S
+- scores
+- trocar de nível
+- continuar
+---se continuar, ainda troca de fase
+---ler no documento a fase
+
+*/
+
+
+
 #include "bibjogo.h"
 //#include "bibjogo.c"
 
@@ -8,30 +30,32 @@ float u;
 char tipo = ' ';
 int estadoChave = 1;
 char fase[3][10] = {"FASE 1"," FASE 2", "FASE 3"};
+
 //variaveis obstaculos
 float positionX = 0;                  //coordenada x de um objeto na tela
 float positionY = 1;                  //coordenada y de um objeto na tela
 int nroBlocos = 0;
 Rectangle obstaculos[600] ={{0,0,0,0}}; //posX, posY, largura, altura
+
 //variaveis movimentação
 int positionPlayer[1][2] = {0};
-//variaveis inimigos
 
+//variaveis inimigos
 int nroInimigos = 0;
 clock_t tempo[2];
 int aux = 1;
 char corInimigo;
 int colisaoDoInimigo = FALSE;
 int colisaoInimigoCenario = FALSE;
+INIMIGO inimigos[MAX_INIMIGOS] = {}; 
 
+//variaveis fases
+int fimDeJogo; 
 
-
-//testando variaveis aqui
-INIMIGO inimigos[MAX_INIMIGOS] = {}; //se chega no limite do tamanho bugaS
 
 #define screenHeight 650
 
-typedef enum gameScreen {MENU = 0, NOVOJOGO, CONTINUAR} gameScreen;
+typedef enum gameScreen {MENU = 0, NOVOJOGO, FASE1, FASE2, FASE3, FASE4, SCORES, SOBRE, CONTINUAR} gameScreen;
 
 int main(void) {
 
@@ -124,13 +148,14 @@ int main(void) {
                 if (estadoChave == 0)
                         estadoChave = 3;
                 if (estadoChave == 1 && IsKeyPressed(KEY_ENTER))
-                        currentScreen = NOVOJOGO;
+                        currentScreen = FASE1;
                 if (estadoChave == 2 && IsKeyPressed(KEY_ENTER))
                         currentScreen = CONTINUAR;
                 break;
             }
 
-            case NOVOJOGO: {
+            case FASE1: {
+                fimDeJogo = FALSE; 
                 //update dos obstaculos (tijolos)
                 while (readLevel(fileLevel, &positionX, &positionY,&tipo) == 0) { // enquanto tiver coisas para ler
                     if (tipo == '#') { // se a função parou num #, desenha o bloco
@@ -154,7 +179,6 @@ int main(void) {
                     tempo[0] = tempo[1] - 5000;
                     aux--;
                 }
-
                 int tempoPassado = ((tempo[1]-tempo[0])/1000);
 
                 if ((nroInimigos % 2) == 0)             // escolher cor dos inimigos
@@ -205,10 +229,45 @@ int main(void) {
                     personagem.posicao = posicaoInicial;
                 //Colisao Obstaculos
                 checaColisaoArray(inimigos, &personagem, obstaculos, nroBlocos,posicaoInicial,nroInimigos);
+
+                if (fimDeJogo == TRUE)      //para passagem de fases
+                    currentScreen = FASE2;  //falta inserir questão dos scores
+
+                break;
+
+                
+            }
+
+            case FASE2:{
+                fimDeJogo = FALSE; 
+
+                if (fimDeJogo == TRUE)     
+                    currentScreen = FASE3;  
+                break;
+            }    
+
+            case FASE3:{
+                fimDeJogo = FALSE; 
+
+                if (fimDeJogo == TRUE)     
+                    currentScreen = FASE4;  
+
+                break;
+            }
+
+            case FASE4: {
+                fimDeJogo = FALSE; 
+
+                if (fimDeJogo == TRUE)     
+                    currentScreen = SOBRE;  
                 break;
             }
 
             case CONTINUAR: {
+                break;
+            }
+
+            case SOBRE: {
                 break;
             }
         }
@@ -238,7 +297,7 @@ int main(void) {
                     break;
                 }
 
-                case NOVOJOGO: {
+                case FASE1: {
                     ClearBackground(RAYWHITE);
                     DrawRectangle(0,0,screenWidth,screenHeight,BLACK);
 
@@ -262,11 +321,28 @@ int main(void) {
 
                 }
 
+                 case FASE2:{
+                    break;
+                }    
+
+                case FASE3:{
+                    break;
+                }
+
+                case FASE4: {
+                    break;
+                }
+
                 case CONTINUAR:{
                     DrawRectangle(0, 0, screenWidth, screenHeight, BLACK);
                     DrawTextEx(arcade, "Continuar", (Vector2){200,350}, 75, 1,WHITE);
                     break;
                 }
+
+                case SOBRE: {
+                    break;
+                }
+
                 default: break;
             }
 
