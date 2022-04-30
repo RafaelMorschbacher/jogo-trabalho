@@ -6,7 +6,7 @@
 
 #define TRUE 1
 #define FALSE 0
-#define MAX_INIMIGOS 30
+#define MAX_INIMIGOS 30 
 #define VELOCIDADE_INIMIGO 1
 
 #include <stdio.h>

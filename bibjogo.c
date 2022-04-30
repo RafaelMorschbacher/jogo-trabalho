@@ -143,7 +143,7 @@ void movendoPersonagem (PERSONAGEM *personagem,int *nroBlocos, int *nroInimigos,
 }
 
 //FUNÇÕES CONTINUAR ---------------------------------------------------------------------------------------------------------------------
-
+/*
 //continuar fazendo essa função
 salvarJogo(PERSONAGEM *personagem) {
     FILE *savePointer; 
@@ -161,7 +161,7 @@ salvarJogo(PERSONAGEM *personagem) {
 
 
 }
-
+*/
 
 // FUNCOES MOVIMENTAÇÃO & power UP ------------------------------------------------------------------------------------------------------
 void checaColisao(PERSONAGEM *personagem, Rectangle *obstaculo, Rectangle posicaoInicial) {
