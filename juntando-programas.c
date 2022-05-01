@@ -195,8 +195,7 @@ int main(void) {
                         movInimigos (&inimigos[i], posicaoInicialInimigo, &personagem, i, colisaoInimigoCenario, colisaoDoInimigo, corInimigo, inimigoRedUp,  inimigoRedDown,  inimigoRedLeft,  inimigoRedRight,  inimigoGreenUp,  inimigoGreenDown,  inimigoGreenLeft,  inimigoGreenRight);
                         //faz a movimentação já levando em consideração o modo
 
-                        //Tiro dos inimigos
-                        administraTiroInimigos(&inimigos[i]);
+
                         }
 
                 }
@@ -270,6 +269,8 @@ int main(void) {
                         if(inimigos[i].vivo==FALSE)
                             DrawTexture(inimigoDead, (inimigos[i].posicao.x),  (inimigos[i].posicao.y), RAYWHITE);
 
+                        //Tiro dos inimigos
+                        administraTiroInimigos( &inimigos[i], screenWidth, screenHeight, obstaculos, nroBlocos, &personagem);
 
                     }
                     break;

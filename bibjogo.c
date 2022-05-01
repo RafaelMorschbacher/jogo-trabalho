@@ -159,7 +159,7 @@ void administraTiro(PERSONAGEM *personagem, int larguraTela, int alturaTela, OBS
 
     //Funções após o disparo
     if(personagem->tiro.atirando){
-        DrawRectangleRec(personagem->tiro.posicao, GREEN);
+        DrawRectangleRec(personagem->tiro.posicao, BLUE);
         //Animação de tiro
         switch(personagem->tiro.inclinacao){
             case 0:
@@ -177,7 +177,7 @@ void administraTiro(PERSONAGEM *personagem, int larguraTela, int alturaTela, OBS
 
         }
         //Tiro sai do cenário : destruir tiro
-        if(personagem->tiro.posicao.x > larguraTela || personagem->tiro.posicao.x < 0 || personagem->tiro.posicao.y >= alturaTela || personagem->tiro.posicao.y < 0){
+        if(personagem->tiro.posicao.x > larguraTela || personagem->tiro.posicao.x < 0 || personagem->tiro.posicao.y >= alturaTela || personagem->tiro.posicao.y < 40){
             personagem->tiro.atirando = FALSE;
     }
 
@@ -340,19 +340,29 @@ int checaColisaoInimigos(int numeroDeInimigos, INIMIGO *inimigos, PERSONAGEM *pe
     return colisaoDoInimigo;
 }
 
-void administraTiroInimigos(INIMIGO *inimigo){
+void administraTiroInimigos(INIMIGO *inimigo, int larguraTela, int alturaTela, OBSTACULO obstaculos[], int nroBlocos, PERSONAGEM *personagem){
     //Tiro aleatório se não estiver já atirando
-    if(!GetRandomValue(0,10) && !inimigo->tiro.atirando){
-        printf("Atirou");
+    if(!GetRandomValue(0,20) && !inimigo->tiro.atirando && inimigo->vivo == 1){
         inimigo->tiro.atirando = TRUE;
         inimigo->tiro.posicao.x = inimigo->posicao.x +10;
         inimigo->tiro.posicao.y = inimigo->posicao.y +10;
-        inimigo->tiro.inclinacao = inimigo->orientacao;
+        inimigo->tiro.posicao.height = 10;
+        inimigo->tiro.posicao.width = 10;
+        //Inclinação do tiro com correção (devido a referência de angulo diferente)
+        switch(inimigo->orientacao){
+            case 0: inimigo->tiro.inclinacao = 90;
+            break;
+            case 90: inimigo->tiro.inclinacao = 0;
+            break;
+            case 180: inimigo->tiro.inclinacao = 270;
+            break;
+            case 270: inimigo->tiro.inclinacao = 180;
+        }
+
 
     }
 
     if(inimigo->tiro.atirando ==TRUE){
-        //printf("x:%f y:%f\n",inimigo->tiro.posicao.x, inimigo->tiro.posicao.y);
         DrawRectangleRec(inimigo->tiro.posicao, RED);
         switch(inimigo->tiro.inclinacao){
             case 0:
@@ -369,6 +379,27 @@ void administraTiroInimigos(INIMIGO *inimigo){
             break;
         }
 
+        //Tiro sai do cenário : destruir tiro
+        if(inimigo->tiro.posicao.x > larguraTela || inimigo->tiro.posicao.x < 0 || inimigo->tiro.posicao.y >= alturaTela || inimigo->tiro.posicao.y < 40){
+            inimigo->tiro.atirando = FALSE;
+
+        }
+
+
+        //Tiro atinge parede
+        for(int i=0; i<nroBlocos; i++) {
+            if(CheckCollisionRecs(inimigo->tiro.posicao, obstaculos[i].posicao)&& !obstaculos[i].destruido){
+                obstaculos[i].destruido = TRUE;
+                inimigo->tiro.atirando = FALSE;
+
+            }
+        }
+
+        //Tiro atinge personagem
+        if(CheckCollisionRecs(inimigo->tiro.posicao , personagem->posicao)){
+            personagem->vidas--;
+            inimigo->tiro.atirando =0;
+        }
     }
 
 
