@@ -6,8 +6,8 @@
 
 #define TRUE 1
 #define FALSE 0
-#define MAX_INIMIGOS 5
-#define VELOCIDADE_INIMIGO 0.5
+#define MAX_INIMIGOS 30 
+#define VELOCIDADE_INIMIGO 1
 
 #include <stdio.h>
 #include <raylib.h>
@@ -48,12 +48,12 @@ typedef struct inimigo {
     char sentidoDesloc;         // Aleatorio ou seguindo
     Rectangle posicao;          //x,y, width, height
     Texture2D textura;
-    int velocidade;
-    int orientacao;         //indo para cima(o), baixo(180), direita(90), esquerda(270)
+    float velocidade;
+    int orientacao;             //indo para cima(o), baixo(180), direita(90), esquerda(270)
+    int colisao; 
     char cor;
     int vivo;
     TIRO tiro;
-
     } INIMIGO;
 
 typedef struct obstaculo {
@@ -82,7 +82,15 @@ void administraTiro(PERSONAGEM *personagem, int larguraTela, int alturaTela, OBS
 // funcoes inimigos
 void criaInimigos(INIMIGO *inimigos, int nroInimigos, Texture inimigoTex, PERSONAGEM *personagem, OBSTACULO *obstaculo, int nroBlocos, char cor);
 void modoInimigos (INIMIGO *inimigo, PERSONAGEM *personagem);
-void movInimigos ( INIMIGO *inimigo, Rectangle posicaoInicial, PERSONAGEM *personagem , int i, int colisaoInimigoCenario, int colisaoDoInimigo, char corInimigo, Texture inimigoRedUp, Texture inimigoRedDown, Texture inimigoRedLeft, Texture inimigoRedRight, Texture inimigoGreenUp, Texture inimigoGreenDown, Texture inimigoGreenLeft, Texture inimigoGreenRight);
-int checaColisaoInimigos(int nroDeInimigos, INIMIGO *inimigos, PERSONAGEM *personagem, int numeroInimigo, OBSTACULO *obstaculo, int nroBlocos);
+
+void movInimigos (INIMIGO *inimigo, Rectangle posicaoInicial, PERSONAGEM *personagem , int i, int colisaoInimigoCenario, int colisaoDoInimigo, char corInimigo, Texture inimigoRedUp, Texture inimigoRedDown, Texture inimigoRedLeft, Texture inimigoRedRight, Texture inimigoGreenUp, Texture inimigoGreenDown, Texture inimigoGreenLeft, Texture inimigoGreenRight);
+int checaColisaoInimigos(int nroDeInimigos, INIMIGO *inimigos, PERSONAGEM *personagem, int numeroInimigo, Rectangle *obstaculo, int nroBlocos);
+
+// funcoes niveis
+void criandoMapa(FILE *fileLevel, float *positionX, float *positionY, char *tipo, Rectangle obstaculos[], int *nroBlocos, PERSONAGEM *personagem);
+void criandoInimigos(clock_t tempo[], int *aux, int *nroInimigos, int *nroBlocos, char *corInimigo, INIMIGO inimigos[], Texture inimigoRedDown, Texture inimigoGreenDown, Rectangle obstaculos[], PERSONAGEM *personagem);
+void movendoInimigos (int screenHeight, int *nroInimigos, int *nroBlocos, int *colisaoInimigoCenario, int *colisaoDoInimigo, INIMIGO inimigos[], PERSONAGEM *personagem, Rectangle obstaculos[], char *corInimigo, Texture inimigoRedUp, Texture inimigoRedDown, Texture inimigoRedLeft, Texture inimigoRedRight, Texture inimigoGreenUp, Texture inimigoGreenDown, Texture inimigoGreenLeft, Texture inimigoGreenRight);
+void movendoPersonagem (PERSONAGEM *personagem,int *nroBlocos, int *nroInimigos, int screenHeight, INIMIGO inimigos[], Rectangle obstaculos[], Texture personagemRight, Texture personagemLeft, Texture personagemUp, Texture personagemDown);
 void administraTiroInimigos(INIMIGO *inimigo, int larguraTela, int alturaTela, OBSTACULO obstaculos[], int nroBlocos, PERSONAGEM *personagem);
+
 #endif
