@@ -340,19 +340,30 @@ int checaColisaoInimigos(int numeroDeInimigos, INIMIGO *inimigos, PERSONAGEM *pe
     return colisaoDoInimigo;
 }
 
-void administraTiroInimigos(INIMIGO *inimigo){
+void administraTiroInimigos(INIMIGO *inimigo, int larguraTela, int alturaTela, OBSTACULO obstaculos[], int nroBlocos, PERSONAGEM *personagem){
     //Tiro aleatório se não estiver já atirando
-    if(!GetRandomValue(0,10) && !inimigo->tiro.atirando){
+    if(!GetRandomValue(0,10) && !inimigo->tiro.atirando && inimigo->vivo == 1){
         printf("Atirou");
         inimigo->tiro.atirando = TRUE;
         inimigo->tiro.posicao.x = inimigo->posicao.x +10;
         inimigo->tiro.posicao.y = inimigo->posicao.y +10;
-        inimigo->tiro.inclinacao = inimigo->orientacao;
+        //Inclinação do tiro com correção (devido a referência de angulo diferente)
+        switch(inimigo->orientacao){
+            case 0: inimigo->tiro.inclinacao = 90;
+            break;
+            case 90: inimigo->tiro.inclinacao = 0;
+            break;
+            case 180: inimigo->tiro.inclinacao = 270;
+            break;
+            case 270: inimigo->tiro.inclinacao = 180;
+        }
+
 
     }
 
     if(inimigo->tiro.atirando ==TRUE){
         //printf("x:%f y:%f\n",inimigo->tiro.posicao.x, inimigo->tiro.posicao.y);
+        //printf("\n TIRO INDO \n");
         DrawRectangleRec(inimigo->tiro.posicao, RED);
         switch(inimigo->tiro.inclinacao){
             case 0:
@@ -367,6 +378,22 @@ void administraTiroInimigos(INIMIGO *inimigo){
             case 270:
                 inimigo->tiro.posicao.y += 10;//inimigo->tiro.velocidade;
             break;
+        }
+
+        //Tiro sai do cenário : destruir tiro
+        if(inimigo->tiro.posicao.x > larguraTela || inimigo->tiro.posicao.x < 0 || inimigo->tiro.posicao.y >= alturaTela || inimigo->tiro.posicao.y < 0){
+            inimigo->tiro.atirando = FALSE;
+            //printf("SAIU DA TELA\n");
+        }
+
+
+        //Tiro atinge parede
+        for(int i=0; i<nroBlocos; i++) {
+            if(CheckCollisionRecs(inimigo->tiro.posicao, obstaculos[i].posicao)&& !obstaculos[i].destruido){
+                obstaculos[i].destruido = TRUE;
+                inimigo->tiro.atirando = FALSE;
+               //printf("TIRO INIMIGO NA PAREDE\n");
+            }
         }
 
     }
