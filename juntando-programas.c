@@ -58,6 +58,15 @@ int maxInimigos =MAX_INIMIGOS;
 int fimDeJogo;
 int inimigosMortos = 0, inimigosEmTela = 0;
 
+//explosao inimigos
+//float frameWidth = 40.0, frameHeight = 40.0; 
+//int currentFrame = 0, currentLine = 0; 
+
+//Rectangle frameRec = { 0, 0, 40.0, 40.0 };
+//Vector2 positionEx = { 0.0f, 0.0f };
+
+
+
 #define screenHeight 650
 
 typedef enum gameScreen {MENU = 0, NOVOJOGO, FASE1, FASE2, FASE3, FASE4, SCORES, SOBRE, CONTINUAR} gameScreen;
@@ -89,6 +98,13 @@ int main(void) {
     Image brick = LoadImage("../assets/brick_texture2.png");
     ImageResize(&brick, 25, 40);
     Texture2D brickTexture = LoadTextureFromImage(brick);
+
+
+    //explosao obstaculos
+    Texture2D explosion = LoadTexture("../assets/explosion.png");
+    
+
+
 
     //texturas personagem
     Texture2D personagemUp = LoadTexture("../assets/personagem_up30x30.png");
@@ -128,7 +144,7 @@ int main(void) {
     personagem.tiro.posicao.height = 10;
     personagem.tiro.posicao.width = 10;
     personagem.tiro.velocidade = 10;
-    //personagem.tiro.numBalas = 3;
+  
 
     //Inicializando PowerUp
     POWERUP powerUp = {0};
@@ -383,7 +399,7 @@ int main(void) {
                     //DrawRectangleRec
 
                     administraPowerUp(&powerUp, &personagem, obstaculos, nroBlocos, screenHeight, screenWidth);
-                     administraTiro(&personagem, screenWidth, screenHeight, obstaculos, nroBlocos, inimigos, nroInimigos, &maxInimigos, &inimigosMortos, &inimigosEmTela);
+                    administraTiro(&personagem, screenWidth, screenHeight, obstaculos, nroBlocos, inimigos, nroInimigos, &maxInimigos, &inimigosMortos, &inimigosEmTela);
                     DrawTexture(personagem.textura, (personagem.posicao.x ), (personagem.posicao.y ), RAYWHITE);
                     desenhaCabecalho(&personagem, escudoTextura, arcade, fase[0]);
 

@@ -269,7 +269,8 @@ void atualizaPosicao(PERSONAGEM *personagem , Texture personagemRight, Texture p
     }
 }
 
-void administraTiro(PERSONAGEM *personagem, int larguraTela, int alturaTela, OBSTACULO obstaculos[] ,int nroBlocos, INIMIGO inimigos[], int nroInimigos, int *maxInimigos, int *inimigosMortos, int *inimigosEmTela){
+void administraTiro( PERSONAGEM *personagem, int larguraTela, int alturaTela, OBSTACULO obstaculos[] ,int nroBlocos, INIMIGO inimigos[], int nroInimigos, int *maxInimigos, int *inimigosMortos, int *inimigosEmTela){
+  
     //Atirando ao apertar SPACE
     if(IsKeyReleased(KEY_SPACE) && !personagem->tiro.atirando){
         personagem->tiro.atirando = TRUE;
@@ -307,9 +308,11 @@ void administraTiro(PERSONAGEM *personagem, int larguraTela, int alturaTela, OBS
         for(int i=0; i<nroBlocos; i++) {
             if(CheckCollisionRecs(personagem->tiro.posicao, obstaculos[i].posicao)&& !obstaculos[i].destruido){
                 obstaculos[i].destruido = TRUE;
+
                 personagem->tiro.atirando = FALSE;
             }
         }
+       
 
     //Tiro atinge inimigo
         for(int i=0; i<nroInimigos; i++){

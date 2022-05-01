@@ -9,6 +9,10 @@
 #define MAX_INIMIGOS 30
 #define VELOCIDADE_INIMIGO 1
 
+//explosao
+#define NUM_FRAMES_LINE 7
+#define NUM_LINES 1
+
 #include <stdio.h>
 #include <raylib.h>
 #include <string.h>
