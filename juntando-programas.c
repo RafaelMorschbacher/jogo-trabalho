@@ -312,26 +312,7 @@ int main(void) {
 
                         if(inimigos[i].vivo==FALSE){
                             DrawTexture(inimigoDead, (inimigos[i].posicao.x),  (inimigos[i].posicao.y), RAYWHITE);
-                            int numFrames = 5;
-
-                                if(inimigos[i].contadorAnimacao <= numFrames)
-                                    DrawTexture(inimigos[i].textura, (inimigos[i].posicao.x),  (inimigos[i].posicao.y), RAYWHITE);
-                                else if(inimigos[i].contadorAnimacao <= numFrames*2)
-                                    DrawTexture(explosaoVerde2, (inimigos[i].posicao.x),  (inimigos[i].posicao.y), RAYWHITE);
-                                else if(inimigos[i].contadorAnimacao <= numFrames*3)
-                                    DrawTexture(explosaoVerde3, (inimigos[i].posicao.x),  (inimigos[i].posicao.y), RAYWHITE);
-                                else if(inimigos[i].contadorAnimacao <= numFrames*4)
-                                    DrawTexture(explosaoVerde4, (inimigos[i].posicao.x),  (inimigos[i].posicao.y), RAYWHITE);
-                                else if(inimigos[i].contadorAnimacao <= numFrames*5)
-                                    DrawTexture(explosaoVerde5, (inimigos[i].posicao.x),  (inimigos[i].posicao.y), RAYWHITE);
-                                else if(inimigos[i].contadorAnimacao <= numFrames*6)
-                                    DrawTexture(explosaoVerde6, (inimigos[i].posicao.x),  (inimigos[i].posicao.y), RAYWHITE);
-                                else if(inimigos[i].contadorAnimacao <= numFrames*7)
-                                    DrawTexture(explosaoVerde7, (inimigos[i].posicao.x),  (inimigos[i].posicao.y), RAYWHITE);
-                                else
-                                    DrawTexture(inimigoDead, (inimigos[i].posicao.x),  (inimigos[i].posicao.y), RAYWHITE);
-
-                                inimigos[i].contadorAnimacao += 1;
+                            explodeInimigo(&inimigos[i], explosaoVerde2, explosaoVerde3, explosaoVerde4, explosaoVerde5, explosaoVerde6, explosaoVerde7);
                         } //testando
 
                         else {
@@ -371,6 +352,7 @@ int main(void) {
                             DrawTexture(inimigos[i].textura, (inimigos[i].posicao.x),  (inimigos[i].posicao.y), RAYWHITE);
                         if(inimigos[i].vivo==FALSE){
                                 DrawTexture(inimigoDead, (inimigos[i].posicao.x),  (inimigos[i].posicao.y), RAYWHITE);
+                                explodeInimigo(&inimigos[i], explosaoVerde2, explosaoVerde3, explosaoVerde4, explosaoVerde5, explosaoVerde6, explosaoVerde7);
                         }
 
 

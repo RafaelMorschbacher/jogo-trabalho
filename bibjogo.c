@@ -540,4 +540,25 @@ void administraTiroInimigos(INIMIGO *inimigo, int larguraTela, int alturaTela, O
 
 }
 
+void explodeInimigo(INIMIGO *inimigo,Texture frame1,Texture frame2,Texture frame3,Texture frame4,Texture frame5,Texture frame6){
+    int numFrames = 5;
 
+                                if(inimigo->contadorAnimacao <= numFrames)
+                                    DrawTexture(inimigo->textura, (inimigo->posicao.x),  (inimigo->posicao.y), RAYWHITE);
+                                else if(inimigo->contadorAnimacao <= numFrames*2)
+                                    DrawTexture(frame1, (inimigo->posicao.x), (inimigo->posicao.y), RAYWHITE);
+                                else if(inimigo->contadorAnimacao <= numFrames*3)
+                                    DrawTexture(frame2, (inimigo->posicao.x),  (inimigo->posicao.y), RAYWHITE);
+                                else if(inimigo->contadorAnimacao <= numFrames*4)
+                                    DrawTexture(frame3, (inimigo->posicao.x),  (inimigo->posicao.y), RAYWHITE);
+                                else if(inimigo->contadorAnimacao <= numFrames*5)
+                                    DrawTexture(frame4, (inimigo->posicao.x),  (inimigo->posicao.y), RAYWHITE);
+                                else if(inimigo->contadorAnimacao <= numFrames*6)
+                                    DrawTexture(frame5, (inimigo->posicao.x),  (inimigo->posicao.y), RAYWHITE);
+                                else if(inimigo->contadorAnimacao <= numFrames*7)
+                                    DrawTexture(frame6, (inimigo->posicao.x),  (inimigo->posicao.y), RAYWHITE);
+
+
+                                inimigo->contadorAnimacao += 1;
+
+}
