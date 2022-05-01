@@ -21,7 +21,7 @@ PARA TROCAR DE FASE
 
 
 #include "bibjogo.h"
-//#include "bibjogo.c"
+#include "bibjogo.c"
 
 
 //VARIÁVEIS ------------------------------------------------------------------------------------------------------------------------
@@ -175,7 +175,7 @@ int main(void) {
                 movendoInimigos (screenHeight, &nroInimigos, &nroBlocos, &colisaoInimigoCenario, &colisaoDoInimigo, inimigos, &personagem,  obstaculos, &corInimigo,  inimigoRedUp,  inimigoRedDown,  inimigoRedLeft,  inimigoRedRight,  inimigoGreenUp,  inimigoGreenDown,  inimigoGreenLeft,  inimigoGreenRight);
                 movendoPersonagem (&personagem, &nroBlocos, &nroInimigos,  screenHeight, inimigos, obstaculos,  personagemRight,  personagemLeft,  personagemUp,  personagemDown);
 
-                
+
 
 
 
@@ -307,7 +307,7 @@ int main(void) {
                             administraTiroInimigos( &inimigos[i],  screenWidth, screenHeight, obstaculos,  nroBlocos,  &personagem);
                             DrawTexture(inimigos[i].textura, (inimigos[i].posicao.x),  (inimigos[i].posicao.y), RAYWHITE);
                         }
-                        
+
 
                     }
                     break;
