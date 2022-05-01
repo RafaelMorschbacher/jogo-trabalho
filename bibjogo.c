@@ -559,6 +559,7 @@ void explodeInimigo(INIMIGO *inimigo,Texture frame1,Texture frame2,Texture frame
                                     DrawTexture(frame6, (inimigo->posicao.x),  (inimigo->posicao.y), RAYWHITE);
 
 
-                                inimigo->contadorAnimacao += 1;
+                                if(inimigo->contadorAnimacao<= numFrames*7)
+                                    inimigo->contadorAnimacao += 1;
 
 }
