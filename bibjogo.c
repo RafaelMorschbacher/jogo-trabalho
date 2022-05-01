@@ -343,7 +343,6 @@ int checaColisaoInimigos(int numeroDeInimigos, INIMIGO *inimigos, PERSONAGEM *pe
 void administraTiroInimigos(INIMIGO *inimigo, int larguraTela, int alturaTela, OBSTACULO obstaculos[], int nroBlocos, PERSONAGEM *personagem){
     //Tiro aleatório se não estiver já atirando
     if(!GetRandomValue(0,20) && !inimigo->tiro.atirando && inimigo->vivo == 1){
-        printf("Atirou");
         inimigo->tiro.atirando = TRUE;
         inimigo->tiro.posicao.x = inimigo->posicao.x +10;
         inimigo->tiro.posicao.y = inimigo->posicao.y +10;
@@ -364,8 +363,6 @@ void administraTiroInimigos(INIMIGO *inimigo, int larguraTela, int alturaTela, O
     }
 
     if(inimigo->tiro.atirando ==TRUE){
-        //printf("x:%f y:%f\n",inimigo->tiro.posicao.x, inimigo->tiro.posicao.y);
-        //printf("\n TIRO INDO \n");
         DrawRectangleRec(inimigo->tiro.posicao, RED);
         switch(inimigo->tiro.inclinacao){
             case 0:
@@ -385,7 +382,7 @@ void administraTiroInimigos(INIMIGO *inimigo, int larguraTela, int alturaTela, O
         //Tiro sai do cenário : destruir tiro
         if(inimigo->tiro.posicao.x > larguraTela || inimigo->tiro.posicao.x < 0 || inimigo->tiro.posicao.y >= alturaTela || inimigo->tiro.posicao.y < 40){
             inimigo->tiro.atirando = FALSE;
-            //printf("SAIU DA TELA\n");
+
         }
 
 
@@ -394,10 +391,15 @@ void administraTiroInimigos(INIMIGO *inimigo, int larguraTela, int alturaTela, O
             if(CheckCollisionRecs(inimigo->tiro.posicao, obstaculos[i].posicao)&& !obstaculos[i].destruido){
                 obstaculos[i].destruido = TRUE;
                 inimigo->tiro.atirando = FALSE;
-               //printf("TIRO INIMIGO NA PAREDE\n");
+
             }
         }
 
+        //Tiro atinge personagem
+        if(CheckCollisionRecs(inimigo->tiro.posicao , personagem->posicao)){
+            personagem->vidas--;
+            inimigo->tiro.atirando =0;
+        }
     }
 
 
