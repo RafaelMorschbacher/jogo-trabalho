@@ -563,3 +563,27 @@ void explodeInimigo(INIMIGO *inimigo,Texture frame1,Texture frame2,Texture frame
                                     inimigo->contadorAnimacao += 1;
 
 }
+
+void explodeObstaculo(OBSTACULO *obstaculo,Texture frame1,Texture frame2,Texture frame3,Texture frame4,Texture frame5,Texture frame6, Texture frame7){
+    int numFrames = 5;
+
+    if(obstaculo->contadorAnimacao <= numFrames)
+        DrawTexture(frame1, (obstaculo->posicao.x),  (obstaculo->posicao.y), RAYWHITE);
+    else if(obstaculo->contadorAnimacao <= numFrames*2)
+        DrawTexture(frame2, (obstaculo->posicao.x), (obstaculo->posicao.y), RAYWHITE);
+    else if(obstaculo->contadorAnimacao <= numFrames*3)
+        DrawTexture(frame3, (obstaculo->posicao.x), (obstaculo->posicao.y), RAYWHITE);
+    else if(obstaculo->contadorAnimacao <= numFrames*4)
+        DrawTexture(frame4, (obstaculo->posicao.x), (obstaculo->posicao.y), RAYWHITE);
+    else if(obstaculo->contadorAnimacao <= numFrames*5)
+        DrawTexture(frame5, (obstaculo->posicao.x), (obstaculo->posicao.y), RAYWHITE);
+    else if(obstaculo->contadorAnimacao <= numFrames*6)
+        DrawTexture(frame6, (obstaculo->posicao.x), (obstaculo->posicao.y), RAYWHITE);
+    else if(obstaculo->contadorAnimacao <= numFrames*7)
+        DrawTexture(frame7, (obstaculo->posicao.x), (obstaculo->posicao.y), RAYWHITE);
+
+
+    if(obstaculo->contadorAnimacao<= numFrames*7)
+        obstaculo->contadorAnimacao += 1;
+
+}

@@ -60,6 +60,7 @@ typedef struct inimigo {
 typedef struct obstaculo {
 Rectangle posicao;
 int destruido;
+int contadorAnimacao;
 } OBSTACULO;
 
 
@@ -94,5 +95,6 @@ void movendoInimigos (int screenHeight, int *nroInimigos, int *nroBlocos, int *c
 void movendoPersonagem (PERSONAGEM *personagem,int *nroBlocos, int *nroInimigos, int screenHeight, INIMIGO inimigos[], OBSTACULO obstaculos[], Texture personagemRight, Texture personagemLeft, Texture personagemUp, Texture personagemDown);
 void administraTiroInimigos(INIMIGO *inimigo, int larguraTela, int alturaTela, OBSTACULO obstaculos[], int nroBlocos, PERSONAGEM *personagem);
 void explodeInimigo(INIMIGO *inimigo,Texture frame1,Texture frame2,Texture frame3,Texture frame4,Texture frame5,Texture frame6);
+void explodeObstaculo(OBSTACULO *obstaculo,Texture frame1,Texture frame2,Texture frame3,Texture frame4,Texture frame5,Texture frame6, Texture frame7);
 
 #endif

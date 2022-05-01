@@ -125,6 +125,14 @@ int main(void) {
     Texture2D explosaoVerde6 = LoadTexture("../assets/inimigo-verde/explosao-verde-6.png");
     Texture2D explosaoVerde7 = LoadTexture("../assets/inimigo-verde/explosao-verde-7.png");
 
+    //Textuta explosão (Obstaculo)
+    Texture2D expObst1 = LoadTexture("../assets/tijolo/explosao-tijolo-1.png");
+    Texture2D expObst2 = LoadTexture("../assets/tijolo/explosao-tijolo-2.png");
+    Texture2D expObst3 = LoadTexture("../assets/tijolo/explosao-tijolo-3.png");
+    Texture2D expObst4 = LoadTexture("../assets/tijolo/explosao-tijolo-4.png");
+    Texture2D expObst5 = LoadTexture("../assets/tijolo/explosao-tijolo-5.png");
+    Texture2D expObst6 = LoadTexture("../assets/tijolo/explosao-tijolo-6.png");
+    Texture2D expObst7 = LoadTexture("../assets/tijolo/explosao-tijolo-7.png");
 
     //Inicialização do Personagem
     PERSONAGEM personagem = {0};
@@ -299,6 +307,8 @@ int main(void) {
                         int yvec =  obstaculos[j].posicao.y;
                         if (!obstaculos[j].destruido)
                             DrawTexture(brickTexture, xvec, yvec, WHITE);
+                        if(obstaculos[j].destruido ==TRUE)
+                            explodeObstaculo(&obstaculos[j], expObst1, expObst2, expObst3, expObst4, expObst5, expObst6, expObst7);
                     }
                     //DrawRectangleRec
 
