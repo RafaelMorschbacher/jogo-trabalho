@@ -128,14 +128,14 @@ void movendoInimigos (int screenHeight, int *nroInimigos, int *nroBlocos, int *c
             inimigos[i].posicao = posicaoInicialInimigo;
 
         modoInimigos(&inimigos[i], personagem); //mando o endereço de um inimigo em especifico
-        if(inimigos[i].vivo) 
+        if(inimigos[i].vivo)
             movInimigos (&inimigos[i], posicaoInicialInimigo, personagem, i, (*colisaoInimigoCenario), (*colisaoDoInimigo), (*corInimigo), inimigoRedUp,  inimigoRedDown,  inimigoRedLeft,  inimigoRedRight,  inimigoGreenUp,  inimigoGreenDown,  inimigoGreenLeft,  inimigoGreenRight);
         //faz a movimentação já levando em consideração o modo
-        
-        
+
+
       //  administraTiroInimigos( &inimigos[i], screenWidth, screenHeight, obstaculos, *nroBlocos, personagem); //Tiro dos inimigos
 
-        
+
     }
 }
 
@@ -315,6 +315,7 @@ void administraTiro(PERSONAGEM *personagem, int larguraTela, int alturaTela, OBS
         for(int i=0; i<nroInimigos; i++){
             if(CheckCollisionRecs(personagem->tiro.posicao, inimigos[i].posicao) && inimigos[i].vivo == 1){
                 inimigos[i].vivo = FALSE;
+                inimigos[i].contadorAnimacao = 0;
                 personagem->tiro.atirando = FALSE;
                 *maxInimigos +=1;
                 *inimigosMortos += 1;

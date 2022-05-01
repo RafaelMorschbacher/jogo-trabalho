@@ -54,6 +54,7 @@ typedef struct inimigo {
     char cor;
     int vivo;
     TIRO tiro;
+    int contadorAnimacao;
     } INIMIGO;
 
 typedef struct obstaculo {

@@ -116,6 +116,15 @@ int main(void) {
     Texture2D inimigoGreenLeft = LoadTexture("../assets/inimigo-verde_left30x30.png");
     Texture2D inimigoGreenRight = LoadTexture("../assets/inimigo-verde_right30x30.png");
 
+    //Textuta explosão (Inimigo)
+    Texture2D explosaoVerde1 = LoadTexture("../assets/inimigo-verde/explosao-verde-1.png");
+    Texture2D explosaoVerde2 = LoadTexture("../assets/inimigo-verde/explosao-verde-2.png");
+    Texture2D explosaoVerde3 = LoadTexture("../assets/inimigo-verde/explosao-verde-3.png");
+    Texture2D explosaoVerde4 = LoadTexture("../assets/inimigo-verde/explosao-verde-4.png");
+    Texture2D explosaoVerde5 = LoadTexture("../assets/inimigo-verde/explosao-verde-5.png");
+    Texture2D explosaoVerde6 = LoadTexture("../assets/inimigo-verde/explosao-verde-6.png");
+    Texture2D explosaoVerde7 = LoadTexture("../assets/inimigo-verde/explosao-verde-7.png");
+
 
     //Inicialização do Personagem
     PERSONAGEM personagem = {0};
@@ -301,8 +310,30 @@ int main(void) {
                     //desenhando inimigos na tela
                     for (int i = 0; i<nroInimigos; i++) {
 
-                        if(inimigos[i].vivo==FALSE) //testando
+                        if(inimigos[i].vivo==FALSE){
                             DrawTexture(inimigoDead, (inimigos[i].posicao.x),  (inimigos[i].posicao.y), RAYWHITE);
+                            int numFrames = 5;
+
+                                if(inimigos[i].contadorAnimacao <= numFrames)
+                                    DrawTexture(inimigos[i].textura, (inimigos[i].posicao.x),  (inimigos[i].posicao.y), RAYWHITE);
+                                else if(inimigos[i].contadorAnimacao <= numFrames*2)
+                                    DrawTexture(explosaoVerde2, (inimigos[i].posicao.x),  (inimigos[i].posicao.y), RAYWHITE);
+                                else if(inimigos[i].contadorAnimacao <= numFrames*3)
+                                    DrawTexture(explosaoVerde3, (inimigos[i].posicao.x),  (inimigos[i].posicao.y), RAYWHITE);
+                                else if(inimigos[i].contadorAnimacao <= numFrames*4)
+                                    DrawTexture(explosaoVerde4, (inimigos[i].posicao.x),  (inimigos[i].posicao.y), RAYWHITE);
+                                else if(inimigos[i].contadorAnimacao <= numFrames*5)
+                                    DrawTexture(explosaoVerde5, (inimigos[i].posicao.x),  (inimigos[i].posicao.y), RAYWHITE);
+                                else if(inimigos[i].contadorAnimacao <= numFrames*6)
+                                    DrawTexture(explosaoVerde6, (inimigos[i].posicao.x),  (inimigos[i].posicao.y), RAYWHITE);
+                                else if(inimigos[i].contadorAnimacao <= numFrames*7)
+                                    DrawTexture(explosaoVerde7, (inimigos[i].posicao.x),  (inimigos[i].posicao.y), RAYWHITE);
+                                else
+                                    DrawTexture(inimigoDead, (inimigos[i].posicao.x),  (inimigos[i].posicao.y), RAYWHITE);
+
+                                inimigos[i].contadorAnimacao += 1;
+                        } //testando
+
                         else {
                             administraTiroInimigos( &inimigos[i],  screenWidth, screenHeight, obstaculos,  nroBlocos,  &personagem);
                             DrawTexture(inimigos[i].textura, (inimigos[i].posicao.x),  (inimigos[i].posicao.y), RAYWHITE);
@@ -338,8 +369,10 @@ int main(void) {
                     for (int i = 0; i<nroInimigos; i++) {
                         if(inimigos[i].vivo==TRUE)
                             DrawTexture(inimigos[i].textura, (inimigos[i].posicao.x),  (inimigos[i].posicao.y), RAYWHITE);
-                        if(inimigos[i].vivo==FALSE)
-                            DrawTexture(inimigoDead, (inimigos[i].posicao.x),  (inimigos[i].posicao.y), RAYWHITE);
+                        if(inimigos[i].vivo==FALSE){
+                                DrawTexture(inimigoDead, (inimigos[i].posicao.x),  (inimigos[i].posicao.y), RAYWHITE);
+                        }
+
 
                         //Tiro dos inimigos
                         administraTiroInimigos( &inimigos[i], screenWidth, screenHeight, obstaculos, nroBlocos, &personagem);
