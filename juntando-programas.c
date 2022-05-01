@@ -35,8 +35,8 @@ char fase[3][10] = {"FASE 1"," FASE 2", "FASE 3"};
 float positionX = 0;                  //coordenada x de um objeto na tela
 float positionY = 1;                  //coordenada y de um objeto na tela
 int nroBlocos = 0;
-Rectangle obstaculos[600] ={{0,0,0,0}}; //posX, posY, largura, altura
 
+OBSTACULO obstaculos[600] ={0}; //posX, posY, largura, altura
 //variaveis movimentação
 int positionPlayer[1][2] = {0};
 
@@ -47,7 +47,13 @@ int aux = 1;
 char corInimigo;
 int colisaoDoInimigo = FALSE;
 int colisaoInimigoCenario = FALSE;
+
 INIMIGO inimigos[MAX_INIMIGOS] = {}; 
+
+int maxInimigos =MAX_INIMIGOS;
+int inimigosEmTela = 0;
+int inimigosMortos =0;
+
 
 //variaveis fases
 int fimDeJogo; 
@@ -103,6 +109,7 @@ int main(void) {
     Texture2D inimigoRedDown = LoadTexture("../assets/inimigo-vermelho_down30x30.png");
     Texture2D inimigoRedLeft = LoadTexture("../assets/inimigo-vermelho_left30x30.png");
     Texture2D inimigoRedRight = LoadTexture("../assets/inimigo-vermelho_right30x30.png");
+    Texture2D inimigoDead = LoadTexture("../assets/inimigo-destruido30x30.png");
 
     //textura inimigo verde
     Texture2D inimigoGreenUp = LoadTexture("../assets/inimigo-verde_up30x30.png");
@@ -122,7 +129,7 @@ int main(void) {
     personagem.tiro.posicao.height = 10;
     personagem.tiro.posicao.width = 10;
     personagem.tiro.velocidade = 10;
-    personagem.tiro.numBalas = 3;
+    //personagem.tiro.numBalas = 3;
 
     //Inicializando PowerUp
     POWERUP powerUp = {0};
@@ -134,7 +141,7 @@ int main(void) {
         powerUp.posicao.y = GetRandomValue(powerUp.posicao.height+40,GetScreenHeight()- powerUp.posicao.height);
     }while(spawnParede(&powerUp, obstaculos, nroBlocos));
 
-    //Inicializando Inimigos ***preciso mesmo inicializar??
+    //Inicializando Inimigos:
     //normal(patrulha) ou perseguição
     //aleatorio ou seguindo? ***ver se precisa pois já tem MODO.
 
@@ -163,6 +170,7 @@ int main(void) {
                 //lembrar de zerar as variáveis importantes
                 fimDeJogo = FALSE;
 
+
                 criandoMapa (Level1p, &positionX, &positionY, &tipo, obstaculos, &nroBlocos, &personagem); 
                 criandoInimigos(tempo, &aux, &nroInimigos, &nroBlocos,&corInimigo, inimigos,inimigoRedDown,inimigoGreenDown,obstaculos,&personagem);
                 movendoInimigos (screenHeight, &nroInimigos, &nroBlocos, &colisaoInimigoCenario, &colisaoDoInimigo, inimigos, &personagem,  obstaculos, &corInimigo,  inimigoRedUp,  inimigoRedDown,  inimigoRedLeft,  inimigoRedRight,  inimigoGreenUp,  inimigoGreenDown,  inimigoGreenLeft,  inimigoGreenRight);
@@ -171,8 +179,10 @@ int main(void) {
                 if (inimigosMortos >= 15 && !inimigosEmTela)
                     fimDeJogo == TRUE; 
 
+
                 if (fimDeJogo == TRUE)      //para passagem de fases
                     currentScreen = FASE2;  //falta inserir questão dos scores
+
 
                 break;
             }
@@ -209,6 +219,7 @@ int main(void) {
 
                 if (fimDeJogo == TRUE)     
                     currentScreen = FASE4;  
+
 
                 break;
             }
@@ -296,20 +307,31 @@ int main(void) {
                     DrawRectangle(0,0,screenWidth,screenHeight,BLACK);
 
                     for (int j = 0; j < nroBlocos; j++ ) {
-                        int xvec = obstaculos[j].x;
-                        int yvec =  obstaculos[j].y;
-                        DrawTexture(brickTexture, xvec, yvec, WHITE);
+                        //Desenhar apenas Blocos nao destruidos
+                        if(!obstaculos[j].destruido){
+                            int xvec = obstaculos[j].posicao.x;
+                            int yvec =  obstaculos[j].posicao.y;
+                            DrawTexture(brickTexture, xvec, yvec, WHITE);
+                        }
+
                     }
                     //DrawRectangleRec
 
                     administraPowerUp(&powerUp, &personagem, obstaculos, nroBlocos, screenHeight, screenWidth);
-                    administraTiro(&personagem, screenWidth, screenHeight);
+                    administraTiro(&personagem, screenWidth, screenHeight, obstaculos, nroBlocos, inimigos, nroInimigos, &maxInimigos, &inimigosMortos, &inimigosEmTela);
                     DrawTexture(personagem.textura, (personagem.posicao.x ), (personagem.posicao.y ), RAYWHITE);
                     desenhaCabecalho(&personagem, escudoTextura, arcade, fase[0]);
 
                     //desenhando inimigos na tela
                     for (int i = 0; i<nroInimigos; i++) {
-                        DrawTexture(inimigos[i].textura, (inimigos[i].posicao.x),  (inimigos[i].posicao.y), RAYWHITE);
+                        if(inimigos[i].vivo==TRUE)
+                            DrawTexture(inimigos[i].textura, (inimigos[i].posicao.x),  (inimigos[i].posicao.y), RAYWHITE);
+                        if(inimigos[i].vivo==FALSE)
+                            DrawTexture(inimigoDead, (inimigos[i].posicao.x),  (inimigos[i].posicao.y), RAYWHITE);
+
+                        //Tiro dos inimigos
+                        administraTiroInimigos( &inimigos[i], screenWidth, screenHeight, obstaculos, nroBlocos, &personagem);
+
                     }
                     break;
                 }    
