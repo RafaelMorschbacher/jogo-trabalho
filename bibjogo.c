@@ -64,20 +64,20 @@ int readLevel (FILE *level, float *positionX, float *positionY, char *tipo) { //
 //FUNCOES FASES ---------------------------------------------------------------------------------------------------------------------------
 //criar funções para encurtar as fases
 
-void criandoMapa(FILE *fileLevel, float *positionX, float *positionY, char *tipo, Rectangle obstaculos[], int *nroBlocos, PERSONAGEM *personagem) {
-  
+void criandoMapa(FILE *fileLevel, float *positionX, float *positionY, char *tipo, OBSTACULO obstaculos[], int *nroBlocos, PERSONAGEM *personagem) {
+
     while (readLevel(fileLevel, positionX, positionY,tipo) == 0) { // enquanto tiver coisas para ler
         if (*tipo == '#') { // se a função parou num #, desenha o bloco
             //adicionando as características pro array de structs obstaculos
-            obstaculos[*nroBlocos].x = ((*positionX)-1)*25;
-            obstaculos[*nroBlocos].y = (((*positionY)-1)*40)+50;
-            obstaculos[*nroBlocos].width = 25.0;
-            obstaculos[*nroBlocos].height = 40.0;
+            obstaculos[*nroBlocos].posicao.x = ((*positionX)-1)*25;
+            obstaculos[*nroBlocos].posicao.y = (((*positionY)-1)*40)+50;
+            obstaculos[*nroBlocos].posicao.width = 25.0;
+            obstaculos[*nroBlocos].posicao.height = 40.0;
             (*nroBlocos)++;
         }
         else if (*tipo == 'T') { // se parou num T, encontra a posição do jogador
             personagem->posicao.x = ((*positionX)-1)*25;
-            personagem->posicao.y = (((*positionY)-1)*40)+50;                
+            personagem->posicao.y = (((*positionY)-1)*40)+50;
         }
     }
 }
@@ -90,7 +90,7 @@ void criandoInimigos(clock_t tempo[], int *aux, int *nroInimigos, int *nroBlocos
         (*aux)--;
     }
     int tempoPassado = ((tempo[1]-tempo[0])/1000);
-    
+
 
     if (((*nroInimigos) % 2) == 0)             // escolher cor dos inimigos
             (*corInimigo) = 'R';
@@ -98,7 +98,7 @@ void criandoInimigos(clock_t tempo[], int *aux, int *nroInimigos, int *nroBlocos
             (*corInimigo) = 'G';
 
     if (tempoPassado == 5) {
-        if ((*nroInimigos) < MAX_INIMIGOS) { 
+        if ((*nroInimigos) < MAX_INIMIGOS) {
            (*nroInimigos)++; //aumenta os inimigos q vão aparecendo
             if ((*corInimigo) == 'R')
                 criaInimigos(inimigos, *nroInimigos, inimigoRedDown, personagem, obstaculos, *nroBlocos, *corInimigo); //adicionar corretamente //mando o array de structs
@@ -121,7 +121,7 @@ void movendoInimigos (int screenHeight, int *nroInimigos, int *nroBlocos, int *c
             inimigos[i].posicao = posicaoInicialInimigo;
             (*colisaoInimigoCenario) = TRUE; // manda a informação de q colidiu com algo (nesse caso, extremos da janela)
         }
-                  
+
         inimigos[i].colisao = FALSE; //variavel que será usada para colisão entre inimigos
         (*colisaoDoInimigo) = checaColisaoInimigos((*nroInimigos), inimigos, personagem, i, obstaculos, (*nroBlocos));
         if((*colisaoDoInimigo))
@@ -130,7 +130,7 @@ void movendoInimigos (int screenHeight, int *nroInimigos, int *nroBlocos, int *c
         modoInimigos(&inimigos[i], personagem); //mando o endereço de um inimigo em especifico
         movInimigos (&inimigos[i], posicaoInicialInimigo, personagem, i, (*colisaoInimigoCenario), (*colisaoDoInimigo), (*corInimigo), inimigoRedUp,  inimigoRedDown,  inimigoRedLeft,  inimigoRedRight,  inimigoGreenUp,  inimigoGreenDown,  inimigoGreenLeft,  inimigoGreenRight);
         //faz a movimentação já levando em consideração o modo
-    }    
+    }
 }
 
 void movendoPersonagem (PERSONAGEM *personagem,int *nroBlocos, int *nroInimigos, int screenHeight, INIMIGO inimigos[], Rectangle obstaculos[], Texture personagemRight, Texture personagemLeft, Texture personagemUp, Texture personagemDown) {
@@ -148,15 +148,15 @@ void movendoPersonagem (PERSONAGEM *personagem,int *nroBlocos, int *nroInimigos,
 /*
 //continuar fazendo essa função
 salvarJogo(PERSONAGEM *personagem) {
-    FILE *savePointer; 
+    FILE *savePointer;
     savePointer = fopen("../levels/continuar.txt", "wb");
 
-    fwrite (personagem, sizeof(PERSONAGEM), 1, savePointer); 
+    fwrite (personagem, sizeof(PERSONAGEM), 1, savePointer);
 
     for (i = 0, )
-    
-    
-    fclose(savePointer); 
+
+
+    fclose(savePointer);
 
 
 
@@ -334,20 +334,20 @@ void criaInimigos(INIMIGO *inimigos, int nroInimigos, Texture inimigoTex, PERSON
 }
 // FUNÇÃO P MODO (ALEATORIO OU PERSEGUIÇÃO) // OK
 void modoInimigos (INIMIGO *inimigo, PERSONAGEM *personagem) {
-  
+
     if ( (fabs(inimigo->posicao.x - (*personagem).posicao.x) < 7) || (fabs(inimigo->posicao.y - (*personagem).posicao.y) < 7 ) ){
-            (inimigo->modo) = 'P'; 
+            (inimigo->modo) = 'P';
 
     }
 }
 
 // to mandando &inimigos[i], ou seja, aqui to recebendo o endereço de uma struct inimigo
 void movInimigos (INIMIGO *inimigo, Rectangle posicaoInicial, PERSONAGEM *personagem , int i, int colisaoInimigoCenario, int colisaoDoInimigo, char corInimigo, Texture inimigoRedUp, Texture inimigoRedDown, Texture inimigoRedLeft, Texture inimigoRedRight, Texture inimigoGreenUp, Texture inimigoGreenDown, Texture inimigoGreenLeft, Texture inimigoGreenRight) {
-    
+
     if ((inimigo->modo) == 'P') { //caso patrulha, muda sua orientação de acordo com a orientação do personagem
-       
-        inimigo->velocidade = ((float)VELOCIDADE_INIMIGO + 2.0); 
-    
+
+        inimigo->velocidade = ((float)VELOCIDADE_INIMIGO + 2.0);
+
         if ((colisaoInimigoCenario == TRUE) || (colisaoDoInimigo == TRUE)) {
 
             (inimigo->modo) = 'N';
@@ -374,60 +374,60 @@ void movInimigos (INIMIGO *inimigo, Rectangle posicaoInicial, PERSONAGEM *person
     }
 
 
-        if ( inimigo->modo == 'N') { 
-             inimigo->velocidade =VELOCIDADE_INIMIGO; 
-            if (colisaoInimigoCenario == TRUE || colisaoDoInimigo == TRUE) { 
+        if ( inimigo->modo == 'N') {
+             inimigo->velocidade =VELOCIDADE_INIMIGO;
+            if (colisaoInimigoCenario == TRUE || colisaoDoInimigo == TRUE) {
                 switch (inimigo->orientacao) {
                     case 0:   inimigo->posicao.y+= 5; break;
                     case 90:  inimigo->posicao.x-= 5; break;
                     case 180: inimigo->posicao.y-= 5; break;
-                    case 270: inimigo->posicao.x+= 5; break; 
+                    case 270: inimigo->posicao.x+= 5; break;
                 }
-                inimigo->orientacao -= 90*(pow(-1,i)); 
-            } 
+                inimigo->orientacao -= 90*(pow(-1,i));
+            }
 
         }
 
             if (inimigo->orientacao == -90)
-                inimigo->orientacao = 270; 
+                inimigo->orientacao = 270;
             if (inimigo->orientacao == 360)
-                inimigo->orientacao = 0; 
+                inimigo->orientacao = 0;
 
             switch(inimigo->orientacao) {
                 case 0: {
                 //  inimigo->posicao.y -= VELOCIDADE_INIMIGO ; //era assim, vou alterar para testes
-                    inimigo->posicao.y -=  inimigo->velocidade; 
-                    if (inimigo->cor == 'R') 
-                        inimigo->textura =  inimigoRedUp; 
-                    if (inimigo->cor == 'G') 
+                    inimigo->posicao.y -=  inimigo->velocidade;
+                    if (inimigo->cor == 'R')
+                        inimigo->textura =  inimigoRedUp;
+                    if (inimigo->cor == 'G')
                         inimigo->textura =  inimigoGreenUp;
-                    break; 
-                } 
+                    break;
+                }
                 case 90: {
-                // inimigo->posicao.x+= VELOCIDADE_INIMIGO; 
-                inimigo->posicao.x +=  inimigo->velocidade; 
-                    if (inimigo->cor == 'R') 
-                        inimigo->textura =  inimigoRedRight; 
-                    if (inimigo->cor == 'G') 
+                // inimigo->posicao.x+= VELOCIDADE_INIMIGO;
+                inimigo->posicao.x +=  inimigo->velocidade;
+                    if (inimigo->cor == 'R')
+                        inimigo->textura =  inimigoRedRight;
+                    if (inimigo->cor == 'G')
                         inimigo->textura =  inimigoGreenRight;
-                    break; 
-                } 
+                    break;
+                }
                 case 180: {
-                // inimigo->posicao.y += VELOCIDADE_INIMIGO; 
-                inimigo->posicao.y +=  inimigo->velocidade; 
-                    if (inimigo->cor == 'R') 
-                        inimigo->textura =  inimigoRedDown; 
-                    if (inimigo->cor == 'G')  
+                // inimigo->posicao.y += VELOCIDADE_INIMIGO;
+                inimigo->posicao.y +=  inimigo->velocidade;
+                    if (inimigo->cor == 'R')
+                        inimigo->textura =  inimigoRedDown;
+                    if (inimigo->cor == 'G')
                         inimigo->textura =  inimigoGreenDown;
                     break;
-                }                 
+                }
                 case 270: {
-                // inimigo->posicao.x-= VELOCIDADE_INIMIGO; 
+                // inimigo->posicao.x-= VELOCIDADE_INIMIGO;
                 inimigo->posicao.x-=inimigo->velocidade;
                     if (inimigo->cor == 'R')
-                        inimigo->textura =  inimigoRedLeft; 
-                    if (inimigo->cor == 'G') 
-                        inimigo->textura =  inimigoGreenLeft; 
+                        inimigo->textura =  inimigoRedLeft;
+                    if (inimigo->cor == 'G')
+                        inimigo->textura =  inimigoGreenLeft;
                     break;
                 }
             }
