@@ -30,7 +30,7 @@ char menuOptions[5][10] =  {"Novo Jogo", "Continuar","Fases", "Sobre", "Sair"};
 float u;
 char tipo = ' ';
 int estadoChave = 1;
-char fase[4][10] = {"FASE 1"," FASE 2", "FASE 3", "FASE 4"};
+char fase[4][10] = {"FASE 1","FASE 2", "FASE 3", "FASE 4"};
 
 //variaveis obstaculos
 float positionX = 0;                  //coordenada x de um objeto na tela
@@ -58,13 +58,9 @@ int maxInimigos =MAX_INIMIGOS;
 int fimDeJogo;
 int inimigosMortos = 0, inimigosEmTela = 0;
 
-//explosao inimigos
-//float frameWidth = 40.0, frameHeight = 40.0; 
-//int currentFrame = 0, currentLine = 0; 
-
-//Rectangle frameRec = { 0, 0, 40.0, 40.0 };
-//Vector2 positionEx = { 0.0f, 0.0f };
-
+//variaveis escolher fase
+int estadoChaveFase = 1; 
+int faseUnica = FALSE; 
 
 
 #define screenHeight 650
@@ -207,12 +203,18 @@ int main(void) {
                 movendoPersonagem (&personagem, &nroBlocos, &nroInimigos,  screenHeight, inimigos, obstaculos,  personagemRight,  personagemLeft,  personagemUp,  personagemDown);
 
 
-                if (inimigosMortos >= 5 && inimigosEmTela == 0) {
+                if (inimigosMortos >= 15 && inimigosEmTela == 0) {
                     fimDeJogo = TRUE;
                 }
                     
+
                 if (fimDeJogo == TRUE)  {    //para passagem de fases
-                    currentScreen = FASE2;  //falta inserir questão dos scores
+                    if(faseUnica) {
+                        faseUnica = FALSE;
+                        currentScreen = MENU;
+                    }
+                    else
+                        currentScreen = FASE2;  //falta inserir questão dos scores
                 }
                 break;
             }
@@ -235,11 +237,17 @@ int main(void) {
                 movendoInimigos (screenHeight, &nroInimigos, &nroBlocos, &colisaoInimigoCenario, &colisaoDoInimigo, inimigos, &personagem,  obstaculos, &corInimigo,  inimigoRedUp,  inimigoRedDown,  inimigoRedLeft,  inimigoRedRight,  inimigoGreenUp,  inimigoGreenDown,  inimigoGreenLeft,  inimigoGreenRight);
                 movendoPersonagem (&personagem, &nroBlocos, &nroInimigos,  screenHeight, inimigos, obstaculos,  personagemRight,  personagemLeft,  personagemUp,  personagemDown);
 
-                if (inimigosMortos >= 5 && !inimigosEmTela)
+                if (inimigosMortos >= 15 && !inimigosEmTela)
                     fimDeJogo = TRUE;
 
-                if (fimDeJogo == TRUE)
-                    currentScreen = FASE3;
+                if (fimDeJogo == TRUE)  {    //para passagem de fases
+                    if(faseUnica) {
+                        faseUnica = FALSE;
+                        currentScreen = MENU;
+                    }
+                    else
+                        currentScreen = FASE3;  //falta inserir questão dos scores
+                }
                 break;
             }
 
@@ -260,11 +268,17 @@ int main(void) {
                 movendoInimigos (screenHeight, &nroInimigos, &nroBlocos, &colisaoInimigoCenario, &colisaoDoInimigo, inimigos, &personagem,  obstaculos, &corInimigo,  inimigoRedUp,  inimigoRedDown,  inimigoRedLeft,  inimigoRedRight,  inimigoGreenUp,  inimigoGreenDown,  inimigoGreenLeft,  inimigoGreenRight);
                 movendoPersonagem (&personagem, &nroBlocos, &nroInimigos,  screenHeight, inimigos, obstaculos,  personagemRight,  personagemLeft,  personagemUp,  personagemDown);
 
-                if (inimigosMortos >= 5 && !inimigosEmTela)
+                if (inimigosMortos >= 15 && !inimigosEmTela)
                     fimDeJogo = TRUE;
 
-                if (fimDeJogo == TRUE)
-                    currentScreen = FASE4;
+                if (fimDeJogo == TRUE)  {    //para passagem de fases
+                    if(faseUnica) {
+                        faseUnica = FALSE;
+                        currentScreen = MENU;
+                    }
+                    else
+                        currentScreen = FASE4;  //falta inserir questão dos scores
+                }
                 break;
             }
 
@@ -288,11 +302,17 @@ int main(void) {
                 movendoPersonagem (&personagem, &nroBlocos, &nroInimigos,  screenHeight, inimigos, obstaculos,  personagemRight,  personagemLeft,  personagemUp,  personagemDown);
 
 
-                if (inimigosMortos >= 5 && !inimigosEmTela)
+                if (inimigosMortos >= 15 && !inimigosEmTela)
                     fimDeJogo = TRUE;
 
-                if (fimDeJogo == TRUE)
-                    currentScreen = SOBRE;
+                if (fimDeJogo == TRUE)  {    //para passagem de fases
+                    if(faseUnica) {
+                        faseUnica = FALSE;
+                        currentScreen = MENU;
+                    }
+                    else
+                        currentScreen = SOBRE;  //falta inserir questão dos scores
+                }
                 break;
 
             }
@@ -306,6 +326,26 @@ int main(void) {
             }
 
             case ESCOLHAFASE: {
+                if (IsKeyPressed(KEY_DOWN))
+                        estadoChaveFase++;
+                if (IsKeyPressed(KEY_UP))
+                        estadoChaveFase--;
+
+                if (estadoChaveFase == 5)
+                        estadoChaveFase = 1;
+                if (estadoChaveFase == 0)
+                        estadoChaveFase = 4;
+
+                faseUnica = TRUE; 
+                if (estadoChaveFase == 1 && IsKeyPressed(KEY_ENTER))    //novo jogo
+                        currentScreen = FASE1; //onde começa     
+                if (estadoChaveFase == 2 && IsKeyPressed(KEY_ENTER ))   //continuar 
+                        currentScreen = FASE2;
+                if (estadoChaveFase == 3 && IsKeyPressed(KEY_ENTER))    //escolher fase
+                        currentScreen = FASE3;
+                if (estadoChaveFase == 4 && IsKeyPressed(KEY_ENTER))    // sobre
+                        currentScreen = FASE4;
+
                 break;
             }
         }
@@ -471,6 +511,7 @@ int main(void) {
                 }
 
                 case CONTINUAR:{
+                    ClearBackground(RAYWHITE);
                     DrawRectangle(0, 0, screenWidth, screenHeight, BLACK);
                     DrawTextEx(arcade, "Continuar", (Vector2){200,350}, 75, 1,WHITE);
                     break;
@@ -481,6 +522,31 @@ int main(void) {
                 }
 
                 case ESCOLHAFASE: {
+                    ClearBackground(RAYWHITE);
+                    DrawRectangle(0, 0, screenWidth, screenHeight, BLACK);
+                    DrawRectangle(100, 50, 800, 550, GRAY);
+                    DrawRectangle(125, 75, 750, 500, BLACK);
+                    
+
+
+                     u = 0; //escreve menu
+                    for (int i = 0; i < 4; i++) {
+                        DrawTextEx(arcade, fase[i], (Vector2){(alignCenterFont(fase[i],i,40, arcade)),(250 + u) }, 40, 1,WHITE);
+                        u+= 50.0;
+                    }
+
+                    switch (estadoChaveFase) {//deixa amarelo
+                        case 1: DrawTextEx(arcade, fase[0], (Vector2){(alignCenterFont(fase[0],0,40, arcade)),250 }, 40, 1,YELLOW);
+                            break;
+                        case 2: DrawTextEx(arcade, fase[1], (Vector2){(alignCenterFont(fase[1],1,40, arcade)),(300) }, 40, 1,YELLOW);
+                            break;
+                        case 3: DrawTextEx(arcade, fase[2], (Vector2){(alignCenterFont(fase[2],2,40, arcade)),(350) }, 40, 1,YELLOW);
+                            break;
+                        case 4: DrawTextEx(arcade, fase[3], (Vector2){(alignCenterFont(fase[3],2,40, arcade)),(400) }, 40, 1,YELLOW);
+                            break;
+                        
+                        default: break;
+                    }
                     break;
                 }
 
