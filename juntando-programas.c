@@ -1,4 +1,27 @@
+/*
+PARA TROCAR DE FASE
+- >= 15 tanques destruidos E nenhum tanque na tela
+- contador quando inimigo.vida troca
+---- também aumenta os pontos
+- checar se não tem nenhum tanque na tela
+****pode ganhar pontos ao acertar um tijolo
+
+---o sobre pode ser uma parede cheia de tijolos sem inimigos, tem q derrubar tudo pra ler
+
+
+- salvar com S
+- scores
+- trocar de nível
+- continuar
+---se continuar, ainda troca de fase
+---ler no documento a fase
+
+*/
+
+
+
 #include "bibjogo.h"
+#include "bibjogo.c"
 //#include "bibjogo.c"
 
 //VARIÁVEIS ------------------------------------------------------------------------------------------------------------------------
@@ -8,13 +31,16 @@ float u;
 char tipo = ' ';
 int estadoChave = 1;
 char fase[3][10] = {"FASE 1"," FASE 2", "FASE 3"};
+
 //variaveis obstaculos
 float positionX = 0;                  //coordenada x de um objeto na tela
 float positionY = 1;                  //coordenada y de um objeto na tela
 int nroBlocos = 0;
+
 OBSTACULO obstaculos[600] ={0}; //posX, posY, largura, altura
 //variaveis movimentação
 int positionPlayer[1][2] = {0};
+
 //variaveis inimigos
 int nroInimigos = 0;
 clock_t tempo[2];
@@ -22,16 +48,19 @@ int aux = 1;
 char corInimigo;
 int colisaoDoInimigo = FALSE;
 int colisaoInimigoCenario = FALSE;
-int maxInimigos =MAX_INIMIGOS;
-int inimigosEmTela = 0;
-int inimigosMortos =0;
 
-//testando variaveis aqui
-INIMIGO inimigos[MAX_INIMIGOS] = {}; //se chega no limite do tamanho buga
+INIMIGO inimigos[MAX_INIMIGOS] = {};
+
+int maxInimigos =MAX_INIMIGOS;
+
+
+//variaveis fases
+int fimDeJogo;
+int inimigosMortos = 0, inimigosEmTela = 0;
 
 #define screenHeight 650
 
-typedef enum gameScreen {MENU = 0, NOVOJOGO, CONTINUAR} gameScreen;
+typedef enum gameScreen {MENU = 0, NOVOJOGO, FASE1, FASE2, FASE3, FASE4, SCORES, SOBRE, CONTINUAR} gameScreen;
 
 int main(void) {
 
@@ -41,9 +70,14 @@ int main(void) {
 
 
     //Arquivo
-
-    FILE *fileLevel; // lembrar de colocar if else com problema pra abrir arquivo ou nao
-    fileLevel = fopen("../levels/nivel1.txt", "r");
+    FILE *Level1p; // lembrar de colocar if else com problema pra abrir arquivo ou nao
+    Level1p = fopen("../levels/nivel1.txt", "r");
+    FILE *Level2p; // lembrar de colocar if else com problema pra abrir arquivo ou nao
+    Level2p = fopen("../levels/nivel2.txt", "r");
+    FILE *Level3p; // lembrar de colocar if else com problema pra abrir arquivo ou nao
+    Level3p = fopen("../levels/nivel3.txt", "r");
+    FILE *Level4p; // lembrar de colocar if else com problema pra abrir arquivo ou nao
+    Level4p = fopen("../levels/nivel4.txt", "r");
 
     // Load------------------------------------------------------------------------------------------------------------------------
     Image titulo = LoadImage("../assets/battleInf.png");
@@ -125,96 +159,95 @@ int main(void) {
                 if (estadoChave == 0)
                         estadoChave = 3;
                 if (estadoChave == 1 && IsKeyPressed(KEY_ENTER))
-                        currentScreen = NOVOJOGO;
+                        currentScreen = FASE1; //onde começa
                 if (estadoChave == 2 && IsKeyPressed(KEY_ENTER))
                         currentScreen = CONTINUAR;
                 break;
             }
 
-            case NOVOJOGO: {
-                //update dos obstaculos (tijolos)
-                while (readLevel(fileLevel, &positionX, &positionY,&tipo) == 0) { // enquanto tiver coisas para ler
-                    if (tipo == '#') { // se a função parou num #, desenha o bloco
-                        //adicionando as características pro array de structs obstaculos
-                        obstaculos[nroBlocos].posicao.x = (positionX-1)*25;
-                        obstaculos[nroBlocos].posicao.y = ((positionY-1)*40)+50;
-                        obstaculos[nroBlocos].posicao.width = 25.0;
-                        obstaculos[nroBlocos].posicao.height = 40.0;
-                        nroBlocos++;
-                    }
-                    else if (tipo == 'T') { // se parou num T, encontra a posição do jogador
-                        personagem.posicao.x = (positionX-1)*25;
-                        personagem.posicao.y = ((positionY-1)*40)+50;
-                    }
-                }
+            case FASE1: {
+                //lembrar de zerar as variáveis importantes
+                fimDeJogo = FALSE;
 
-                //Update dos inimigos
-                //---- criar novos inimigos a cada 5seg
-                tempo[1] = clock();
-                if (aux == 1) {                         // para entrar pela primeira vez no while
-                    tempo[0] = tempo[1] - 5000;
-                    aux--;
-                }
 
-                int tempoPassado = ((tempo[1]-tempo[0])/1000);
+                criandoMapa (Level1p, &positionX, &positionY, &tipo, obstaculos, &nroBlocos, &personagem);
+                criandoInimigos(tempo, &aux, &nroInimigos, &nroBlocos,&corInimigo, inimigos,inimigoRedDown,inimigoGreenDown,obstaculos,&personagem);
+                movendoInimigos (screenHeight, &nroInimigos, &nroBlocos, &colisaoInimigoCenario, &colisaoDoInimigo, inimigos, &personagem,  obstaculos, &corInimigo,  inimigoRedUp,  inimigoRedDown,  inimigoRedLeft,  inimigoRedRight,  inimigoGreenUp,  inimigoGreenDown,  inimigoGreenLeft,  inimigoGreenRight);
+                movendoPersonagem (&personagem, &nroBlocos, &nroInimigos,  screenHeight, inimigos, obstaculos,  personagemRight,  personagemLeft,  personagemUp,  personagemDown);
 
-                if ((nroInimigos % 2) == 0)             // escolher cor dos inimigos
-                    corInimigo = 'R';
-                else if ((nroInimigos % 2) == 1)
-                    corInimigo = 'G';
+                if (inimigosMortos >= 15 && !inimigosEmTela)
+                    fimDeJogo == TRUE;
 
-                if (tempoPassado == 5) {
-                    if (nroInimigos < maxInimigos) {
-                        nroInimigos++; //aumenta os inimigos q vão aparecendo
-                        inimigosEmTela++;
-                        if (corInimigo == 'R')
-                            criaInimigos(inimigos, nroInimigos, inimigoRedDown, &personagem, obstaculos, nroBlocos, corInimigo); //adicionar corretamente //mando o array de structs
-                        else if (corInimigo == 'G')
-                            criaInimigos(inimigos, nroInimigos, inimigoGreenDown, &personagem, obstaculos, nroBlocos, corInimigo);
-                        tempo[0] = clock();
-                    }
-                }
 
-                //---- faze-los andar
+                if (fimDeJogo == TRUE)      //para passagem de fases
+                    currentScreen = FASE2;  //falta inserir questão dos scores
 
-                for (int i = 0; i < nroInimigos; i++) { // vai um a um nos inimigos, até o último (nroInimigos)
-                    if(inimigos[i].vivo == TRUE){
-                        Rectangle posicaoInicialInimigo = inimigos[i].posicao;
-                        colisaoInimigoCenario = FALSE;
-                        colisaoDoInimigo = FALSE;
-                        bool ultrapassaCenario = (inimigos[i].posicao.x > screenWidth - inimigos[i].posicao.width) || (inimigos[i].posicao.x < 0) || (inimigos[i].posicao.y > screenHeight - inimigos[i].posicao.height) || (inimigos[i].posicao.y < 50);
-                        if(ultrapassaCenario) {
-                            inimigos[i].posicao = posicaoInicialInimigo;
-                            colisaoInimigoCenario = TRUE; // manda a informação de q colidiu com algo (nesse caso, extremos da janela)
-                        }
-                        colisaoDoInimigo = checaColisaoInimigos(nroInimigos, inimigos, &personagem, i, obstaculos, nroBlocos);
-                        if(colisaoDoInimigo)
-                            inimigos[i].posicao = posicaoInicialInimigo;
 
-                        modoInimigos(&inimigos[i], &personagem); //mando o endereço de um inimigo em especifico
-                        movInimigos (&inimigos[i], posicaoInicialInimigo, &personagem, i, colisaoInimigoCenario, colisaoDoInimigo, corInimigo, inimigoRedUp,  inimigoRedDown,  inimigoRedLeft,  inimigoRedRight,  inimigoGreenUp,  inimigoGreenDown,  inimigoGreenLeft,  inimigoGreenRight);
-                        //faz a movimentação já levando em consideração o modo
-
-                        //Tiro dos inimigos
-                        administraTiroInimigos(&inimigos[i], screenWidth,  screenHeight, obstaculos, nroBlocos,  &personagem);
-
-                        }
-
-                }
-
-                //Update da posicao e textura do personagem
-                Rectangle posicaoInicial = personagem.posicao;// Guardando posicao inicial antes de colisoes, etc
-                atualizaPosicao(&personagem, personagemRight, personagemLeft, personagemUp, personagemDown);
-                //Colisao Cenario
-                bool ultrapassaCenario = (personagem.posicao.x > screenWidth - personagem.posicao.width) || (personagem.posicao.x <0) || (personagem.posicao.y > screenHeight - personagem.posicao.height) || (personagem.posicao.y <50);
-                if(ultrapassaCenario)
-                    personagem.posicao = posicaoInicial;
-                //Colisao Obstaculos
-                checaColisaoArray(inimigos, &personagem, obstaculos, nroBlocos,posicaoInicial,nroInimigos);
                 break;
             }
 
+            case FASE2:{
+                //lembrar de zerar as variáveis importantes
+                fimDeJogo = FALSE;
+
+                criandoMapa (Level2p, &positionX, &positionY, &tipo, obstaculos, &nroBlocos, &personagem);
+                criandoInimigos(tempo, &aux, &nroInimigos, &nroBlocos,&corInimigo, inimigos,inimigoRedDown,inimigoGreenDown,obstaculos,&personagem);
+                movendoInimigos (screenHeight, &nroInimigos, &nroBlocos, &colisaoInimigoCenario, &colisaoDoInimigo, inimigos, &personagem,  obstaculos, &corInimigo,  inimigoRedUp,  inimigoRedDown,  inimigoRedLeft,  inimigoRedRight,  inimigoGreenUp,  inimigoGreenDown,  inimigoGreenLeft,  inimigoGreenRight);
+                movendoPersonagem (&personagem, &nroBlocos, &nroInimigos,  screenHeight, inimigos, obstaculos,  personagemRight,  personagemLeft,  personagemUp,  personagemDown);
+
+
+                if (inimigosMortos >= 15 && !inimigosEmTela)
+                    fimDeJogo == TRUE;
+
+                if (fimDeJogo == TRUE)
+                    currentScreen = FASE3;
+                break;
+            }
+
+            case FASE3:{
+                //lembrar de zerar as variáveis importantes
+                fimDeJogo = FALSE;
+
+                criandoMapa (Level3p, &positionX, &positionY, &tipo, obstaculos, &nroBlocos, &personagem);
+                criandoInimigos(tempo, &aux, &nroInimigos, &nroBlocos,&corInimigo, inimigos,inimigoRedDown,inimigoGreenDown,obstaculos,&personagem);
+                movendoInimigos (screenHeight, &nroInimigos, &nroBlocos, &colisaoInimigoCenario, &colisaoDoInimigo, inimigos, &personagem,  obstaculos, &corInimigo,  inimigoRedUp,  inimigoRedDown,  inimigoRedLeft,  inimigoRedRight,  inimigoGreenUp,  inimigoGreenDown,  inimigoGreenLeft,  inimigoGreenRight);
+                movendoPersonagem (&personagem, &nroBlocos, &nroInimigos,  screenHeight, inimigos, obstaculos,  personagemRight,  personagemLeft,  personagemUp,  personagemDown);
+
+                if (inimigosMortos >= 15 && !inimigosEmTela)
+                    fimDeJogo == TRUE;
+
+                if (fimDeJogo == TRUE)
+                    currentScreen = FASE4;
+
+
+                break;
+            }
+
+            case FASE4: {
+                fimDeJogo = FALSE;
+                //lembrar de zerar as variáveis importantes
+                fimDeJogo = FALSE;
+
+                criandoMapa (Level4p, &positionX, &positionY, &tipo, obstaculos, &nroBlocos, &personagem);
+                criandoInimigos(tempo, &aux, &nroInimigos, &nroBlocos,&corInimigo, inimigos,inimigoRedDown,inimigoGreenDown,obstaculos,&personagem);
+                movendoInimigos (screenHeight, &nroInimigos, &nroBlocos, &colisaoInimigoCenario, &colisaoDoInimigo, inimigos, &personagem,  obstaculos, &corInimigo,  inimigoRedUp,  inimigoRedDown,  inimigoRedLeft,  inimigoRedRight,  inimigoGreenUp,  inimigoGreenDown,  inimigoGreenLeft,  inimigoGreenRight);
+                movendoPersonagem (&personagem, &nroBlocos, &nroInimigos,  screenHeight, inimigos, obstaculos,  personagemRight,  personagemLeft,  personagemUp,  personagemDown);
+
+
+                if (inimigosMortos >= 15 && !inimigosEmTela)
+                    fimDeJogo == TRUE;
+
+                if (fimDeJogo == TRUE)
+                    currentScreen = SOBRE;
+                break;
+
+            }
+
             case CONTINUAR: {
+                break;
+            }
+
+            case SOBRE: {
                 break;
             }
         }
@@ -244,7 +277,31 @@ int main(void) {
                     break;
                 }
 
-                case NOVOJOGO: {
+                case FASE1: {
+                    ClearBackground(RAYWHITE);
+                    DrawRectangle(0,0,screenWidth,screenHeight,BLACK);
+
+                    for (int j = 0; j < nroBlocos; j++ ) {
+                        int xvec = obstaculos[j].posicao.x;
+                        int yvec =  obstaculos[j].posicao.y;
+                        DrawTexture(brickTexture, xvec, yvec, WHITE);
+                    }
+                    //DrawRectangleRec
+
+                    administraPowerUp(&powerUp, &personagem, obstaculos, nroBlocos, screenHeight, screenWidth);
+                    administraTiro(&personagem, screenWidth, screenHeight, obstaculos , nroBlocos,  inimigos, nroInimigos, &maxInimigos, &inimigosMortos, &inimigosEmTela);
+                    DrawTexture(personagem.textura, (personagem.posicao.x ), (personagem.posicao.y ), RAYWHITE);
+                    desenhaCabecalho(&personagem, escudoTextura, arcade, fase[0]);
+
+                    //desenhando inimigos na tela
+                    for (int i = 0; i<nroInimigos; i++) {
+                        DrawTexture(inimigos[i].textura, (inimigos[i].posicao.x),  (inimigos[i].posicao.y), RAYWHITE);
+                    }
+                    break;
+
+                }
+
+                 case FASE2:{
                     ClearBackground(RAYWHITE);
                     DrawRectangle(0,0,screenWidth,screenHeight,BLACK);
 
@@ -271,10 +328,57 @@ int main(void) {
                         if(inimigos[i].vivo==FALSE)
                             DrawTexture(inimigoDead, (inimigos[i].posicao.x),  (inimigos[i].posicao.y), RAYWHITE);
 
+                        //Tiro dos inimigos
+                        administraTiroInimigos( &inimigos[i], screenWidth, screenHeight, obstaculos, nroBlocos, &personagem);
 
                     }
                     break;
+                }
 
+                case FASE3:{
+                    ClearBackground(RAYWHITE);
+                    DrawRectangle(0,0,screenWidth,screenHeight,BLACK);
+
+                    for (int j = 0; j < nroBlocos; j++ ) {
+                        int xvec = obstaculos[j].posicao.x;
+                        int yvec =  obstaculos[j].posicao.y;
+                        DrawTexture(brickTexture, xvec, yvec, WHITE);
+                    }
+                    //DrawRectangleRec
+
+                    administraPowerUp(&powerUp, &personagem, obstaculos, nroBlocos, screenHeight, screenWidth);
+                     administraTiro(&personagem, screenWidth, screenHeight, obstaculos, nroBlocos, inimigos, nroInimigos, &maxInimigos, &inimigosMortos, &inimigosEmTela);
+                    DrawTexture(personagem.textura, (personagem.posicao.x ), (personagem.posicao.y ), RAYWHITE);
+                    desenhaCabecalho(&personagem, escudoTextura, arcade, fase[0]);
+
+                    //desenhando inimigos na tela
+                    for (int i = 0; i<nroInimigos; i++) {
+                        DrawTexture(inimigos[i].textura, (inimigos[i].posicao.x),  (inimigos[i].posicao.y), RAYWHITE);
+                    }
+                    break;
+                }
+
+                case FASE4: {
+                    ClearBackground(RAYWHITE);
+                    DrawRectangle(0,0,screenWidth,screenHeight,BLACK);
+
+                    for (int j = 0; j < nroBlocos; j++ ) {
+                        int xvec = obstaculos[j].posicao.x;
+                        int yvec =  obstaculos[j].posicao.y;
+                        DrawTexture(brickTexture, xvec, yvec, WHITE);
+                    }
+                    //DrawRectangleRec
+
+                    administraPowerUp(&powerUp, &personagem, obstaculos, nroBlocos, screenHeight, screenWidth);
+                     administraTiro(&personagem, screenWidth, screenHeight, obstaculos, nroBlocos, inimigos, nroInimigos, &maxInimigos, &inimigosMortos, &inimigosEmTela);
+                    DrawTexture(personagem.textura, (personagem.posicao.x ), (personagem.posicao.y ), RAYWHITE);
+                    desenhaCabecalho(&personagem, escudoTextura, arcade, fase[0]);
+
+                    //desenhando inimigos na tela
+                    for (int i = 0; i<nroInimigos; i++) {
+                        DrawTexture(inimigos[i].textura, (inimigos[i].posicao.x),  (inimigos[i].posicao.y), RAYWHITE);
+                    }
+                    break;
                 }
 
                 case CONTINUAR:{
@@ -282,6 +386,11 @@ int main(void) {
                     DrawTextEx(arcade, "Continuar", (Vector2){200,350}, 75, 1,WHITE);
                     break;
                 }
+
+                case SOBRE: {
+                    break;
+                }
+
                 default: break;
             }
 
@@ -291,7 +400,10 @@ int main(void) {
 
     //Unload
     UnloadTexture(tituloTex);
-    fclose (fileLevel);
+    fclose (Level1p);
+    fclose (Level2p);
+    fclose (Level3p);
+    fclose (Level4p);
 
     CloseWindow();
     return 0;

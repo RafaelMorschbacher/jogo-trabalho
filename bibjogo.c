@@ -82,7 +82,7 @@ void criandoMapa(FILE *fileLevel, float *positionX, float *positionY, char *tipo
     }
 }
 
-void criandoInimigos(clock_t tempo[], int *aux, int *nroInimigos, int *nroBlocos, char *corInimigo, INIMIGO inimigos[], Texture inimigoRedDown, Texture inimigoGreenDown, OBSTACULO obstaculos[], PERSONAGEM *personagem) {
+void criandoInimigos(clock_t tempo[], int *aux, int *nroInimigos, int *nroBlocos, char *corInimigo, INIMIGO inimigos[], Texture inimigoRedDown, Texture inimigoGreenDown, Rectangle obstaculos[], PERSONAGEM *personagem) {
 
     tempo[1] = clock();
     if ((*aux) == 1) {                         // para entrar pela primeira vez no while
@@ -109,7 +109,7 @@ void criandoInimigos(clock_t tempo[], int *aux, int *nroInimigos, int *nroBlocos
     }
 }
 
-void movendoInimigos (int screenHeight, int *nroInimigos, int *nroBlocos, int *colisaoInimigoCenario, int *colisaoDoInimigo, INIMIGO inimigos[], PERSONAGEM *personagem, OBSTACULO obstaculos[], char *corInimigo, Texture inimigoRedUp, Texture inimigoRedDown, Texture inimigoRedLeft, Texture inimigoRedRight, Texture inimigoGreenUp, Texture inimigoGreenDown, Texture inimigoGreenLeft, Texture inimigoGreenRight) {
+void movendoInimigos (int screenHeight, int *nroInimigos, int *nroBlocos, int *colisaoInimigoCenario, int *colisaoDoInimigo, INIMIGO inimigos[], PERSONAGEM *personagem, Rectangle obstaculos[], char *corInimigo, Texture inimigoRedUp, Texture inimigoRedDown, Texture inimigoRedLeft, Texture inimigoRedRight, Texture inimigoGreenUp, Texture inimigoGreenDown, Texture inimigoGreenLeft, Texture inimigoGreenRight) {
     for (int i = 0; i < (*nroInimigos); i++) { // vai um a um nos inimigos, até o último (nroInimigos)
 
         Rectangle posicaoInicialInimigo = inimigos[i].posicao;
@@ -133,7 +133,7 @@ void movendoInimigos (int screenHeight, int *nroInimigos, int *nroBlocos, int *c
     }
 }
 
-void movendoPersonagem (PERSONAGEM *personagem,int *nroBlocos, int *nroInimigos, int screenHeight, INIMIGO inimigos[], OBSTACULO obstaculos[], Texture personagemRight, Texture personagemLeft, Texture personagemUp, Texture personagemDown) {
+void movendoPersonagem (PERSONAGEM *personagem,int *nroBlocos, int *nroInimigos, int screenHeight, INIMIGO inimigos[], Rectangle obstaculos[], Texture personagemRight, Texture personagemLeft, Texture personagemUp, Texture personagemDown) {
     Rectangle posicaoInicial = personagem->posicao;// Guardando posicao inicial antes de colisoes, etc
     atualizaPosicao(personagem, personagemRight, personagemLeft, personagemUp, personagemDown);
     //Colisao Cenario
@@ -166,14 +166,8 @@ salvarJogo(PERSONAGEM *personagem) {
 */
 
 // FUNCOES MOVIMENTAÇÃO & power UP ------------------------------------------------------------------------------------------------------
-void checaColisao(PERSONAGEM *personagem, OBSTACULO *obstaculo, Rectangle posicaoInicial) {
-    if(CheckCollisionRecs(personagem->posicao,obstaculo->posicao)) {
-        personagem->posicao = posicaoInicial;
-    }
-}
-
-void checaColisaoAux(PERSONAGEM *personagem, INIMIGO *inimigo, Rectangle posicaoInicial) {
-    if(CheckCollisionRecs(personagem->posicao,inimigo->posicao)) {
+void checaColisao(PERSONAGEM *personagem, Rectangle *obstaculo, Rectangle posicaoInicial) {
+    if(CheckCollisionRecs(personagem->posicao,*obstaculo)) {
         personagem->posicao = posicaoInicial;
     }
 }
@@ -182,11 +176,11 @@ void checaColisaoArray(INIMIGO *inimigos, PERSONAGEM *personagem, OBSTACULO *obs
 
         for(int i=0; i<numObstaculos; i++) {
              if(!obstaculos[i].destruido)
-                checaColisao(&(*personagem), obstaculos, posicaoInicial);
+                checaColisao(&(*personagem), &obstaculos[i].posicao, posicaoInicial);
 
         }
         for (int i=0;i<nroInimigos;i++) {
-            checaColisaoAux(&(*personagem), inimigos, posicaoInicial); //antes tava com [i]
+            checaColisao(&(*personagem), &(inimigos[i].posicao), posicaoInicial);
         }
 }
 int spawnParede(POWERUP *powerUp, OBSTACULO obstaculos[], int numObstaculos)
