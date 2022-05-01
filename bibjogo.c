@@ -73,6 +73,7 @@ void criandoMapa(FILE *fileLevel, float *positionX, float *positionY, char *tipo
             obstaculos[*nroBlocos].posicao.y = (((*positionY)-1)*40)+50;
             obstaculos[*nroBlocos].posicao.width = 25.0;
             obstaculos[*nroBlocos].posicao.height = 40.0;
+            obstaculos[*nroBlocos].destruido = FALSE; 
             (*nroBlocos)++;
         }
         else if (*tipo == 'T') { // se parou num T, encontra a posição do jogador
@@ -82,7 +83,7 @@ void criandoMapa(FILE *fileLevel, float *positionX, float *positionY, char *tipo
     }
 }
 
-void criandoInimigos(clock_t tempo[], int *aux, int *nroInimigos, int *nroBlocos, char *corInimigo, INIMIGO inimigos[], Texture inimigoRedDown, Texture inimigoGreenDown, OBSTACULO obstaculos[], PERSONAGEM *personagem) {
+void criandoInimigos(int *inimigosEmTela, clock_t tempo[], int *aux, int *nroInimigos, int *nroBlocos, char *corInimigo, INIMIGO inimigos[], Texture inimigoRedDown, Texture inimigoGreenDown, OBSTACULO obstaculos[], PERSONAGEM *personagem) {
 
     tempo[1] = clock();
     if ((*aux) == 1) {                         // para entrar pela primeira vez no while
@@ -99,6 +100,7 @@ void criandoInimigos(clock_t tempo[], int *aux, int *nroInimigos, int *nroBlocos
 
     if (tempoPassado == 5) {
         if ((*nroInimigos) < MAX_INIMIGOS) {
+            (*inimigosEmTela)++; 
            (*nroInimigos)++; //aumenta os inimigos q vão aparecendo
             if ((*corInimigo) == 'R')
                 criaInimigos(inimigos, *nroInimigos, inimigoRedDown, personagem, obstaculos, *nroBlocos, *corInimigo); //adicionar corretamente //mando o array de structs
@@ -159,7 +161,7 @@ salvarJogo(PERSONAGEM *personagem) {
 
     fwrite (personagem, sizeof(PERSONAGEM), 1, savePointer);
 
-    for (i = 0, )
+    for (i = 0,  )
 
 
     fclose(savePointer);
@@ -168,8 +170,8 @@ salvarJogo(PERSONAGEM *personagem) {
 
 
 
-}
-*/
+}*/
+
 
 // FUNCOES MOVIMENTAÇÃO & power UP ------------------------------------------------------------------------------------------------------
 void checaColisao(PERSONAGEM *personagem, Rectangle obstaculo, Rectangle posicaoInicial) {
@@ -322,14 +324,15 @@ void administraTiro( PERSONAGEM *personagem, int larguraTela, int alturaTela, OB
                 *maxInimigos +=1;
                 *inimigosMortos += 1;
                 *inimigosEmTela -=1;
-                printf("%d\n", *inimigosMortos);
+                printf("inimigos mortos %d\n", *inimigosMortos);
+                printf("inimigos em tela %d\n", *inimigosEmTela);
             }
         }
     }
 
 
-
 }
+
 
 //FUNÇÕES ESPECIFICAS INIMIGOS
 void criaInimigos(INIMIGO *inimigos, int nroInimigos, Texture inimigoTex, PERSONAGEM *personagem, OBSTACULO obstaculo[], int nroBlocos, char cor) {
