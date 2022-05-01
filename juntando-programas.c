@@ -21,8 +21,8 @@ PARA TROCAR DE FASE
 
 
 #include "bibjogo.h"
-#include "bibjogo.c"
 //#include "bibjogo.c"
+
 
 //VARIÁVEIS ------------------------------------------------------------------------------------------------------------------------
 //variaveis menu
@@ -175,6 +175,10 @@ int main(void) {
                 movendoInimigos (screenHeight, &nroInimigos, &nroBlocos, &colisaoInimigoCenario, &colisaoDoInimigo, inimigos, &personagem,  obstaculos, &corInimigo,  inimigoRedUp,  inimigoRedDown,  inimigoRedLeft,  inimigoRedRight,  inimigoGreenUp,  inimigoGreenDown,  inimigoGreenLeft,  inimigoGreenRight);
                 movendoPersonagem (&personagem, &nroBlocos, &nroInimigos,  screenHeight, inimigos, obstaculos,  personagemRight,  personagemLeft,  personagemUp,  personagemDown);
 
+                
+
+
+
                 if (inimigosMortos >= 15 && !inimigosEmTela)
                     fimDeJogo == TRUE;
 
@@ -284,7 +288,8 @@ int main(void) {
                     for (int j = 0; j < nroBlocos; j++ ) {
                         int xvec = obstaculos[j].posicao.x;
                         int yvec =  obstaculos[j].posicao.y;
-                        DrawTexture(brickTexture, xvec, yvec, WHITE);
+                        if (!obstaculos[j].destruido)
+                            DrawTexture(brickTexture, xvec, yvec, WHITE);
                     }
                     //DrawRectangleRec
 
@@ -295,7 +300,15 @@ int main(void) {
 
                     //desenhando inimigos na tela
                     for (int i = 0; i<nroInimigos; i++) {
-                        DrawTexture(inimigos[i].textura, (inimigos[i].posicao.x),  (inimigos[i].posicao.y), RAYWHITE);
+
+                        if(inimigos[i].vivo==FALSE) //testando
+                            DrawTexture(inimigoDead, (inimigos[i].posicao.x),  (inimigos[i].posicao.y), RAYWHITE);
+                        else {
+                            administraTiroInimigos( &inimigos[i],  screenWidth, screenHeight, obstaculos,  nroBlocos,  &personagem);
+                            DrawTexture(inimigos[i].textura, (inimigos[i].posicao.x),  (inimigos[i].posicao.y), RAYWHITE);
+                        }
+                        
+
                     }
                     break;
 

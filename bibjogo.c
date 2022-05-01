@@ -82,7 +82,7 @@ void criandoMapa(FILE *fileLevel, float *positionX, float *positionY, char *tipo
     }
 }
 
-void criandoInimigos(clock_t tempo[], int *aux, int *nroInimigos, int *nroBlocos, char *corInimigo, INIMIGO inimigos[], Texture inimigoRedDown, Texture inimigoGreenDown, Rectangle obstaculos[], PERSONAGEM *personagem) {
+void criandoInimigos(clock_t tempo[], int *aux, int *nroInimigos, int *nroBlocos, char *corInimigo, INIMIGO inimigos[], Texture inimigoRedDown, Texture inimigoGreenDown, OBSTACULO obstaculos[], PERSONAGEM *personagem) {
 
     tempo[1] = clock();
     if ((*aux) == 1) {                         // para entrar pela primeira vez no while
@@ -109,7 +109,7 @@ void criandoInimigos(clock_t tempo[], int *aux, int *nroInimigos, int *nroBlocos
     }
 }
 
-void movendoInimigos (int screenHeight, int *nroInimigos, int *nroBlocos, int *colisaoInimigoCenario, int *colisaoDoInimigo, INIMIGO inimigos[], PERSONAGEM *personagem, Rectangle obstaculos[], char *corInimigo, Texture inimigoRedUp, Texture inimigoRedDown, Texture inimigoRedLeft, Texture inimigoRedRight, Texture inimigoGreenUp, Texture inimigoGreenDown, Texture inimigoGreenLeft, Texture inimigoGreenRight) {
+void movendoInimigos (int screenHeight, int *nroInimigos, int *nroBlocos, int *colisaoInimigoCenario, int *colisaoDoInimigo, INIMIGO inimigos[], PERSONAGEM *personagem, OBSTACULO obstaculos[], char *corInimigo, Texture inimigoRedUp, Texture inimigoRedDown, Texture inimigoRedLeft, Texture inimigoRedRight, Texture inimigoGreenUp, Texture inimigoGreenDown, Texture inimigoGreenLeft, Texture inimigoGreenRight) {
     for (int i = 0; i < (*nroInimigos); i++) { // vai um a um nos inimigos, até o último (nroInimigos)
 
         Rectangle posicaoInicialInimigo = inimigos[i].posicao;
@@ -128,12 +128,18 @@ void movendoInimigos (int screenHeight, int *nroInimigos, int *nroBlocos, int *c
             inimigos[i].posicao = posicaoInicialInimigo;
 
         modoInimigos(&inimigos[i], personagem); //mando o endereço de um inimigo em especifico
-        movInimigos (&inimigos[i], posicaoInicialInimigo, personagem, i, (*colisaoInimigoCenario), (*colisaoDoInimigo), (*corInimigo), inimigoRedUp,  inimigoRedDown,  inimigoRedLeft,  inimigoRedRight,  inimigoGreenUp,  inimigoGreenDown,  inimigoGreenLeft,  inimigoGreenRight);
+        if(inimigos[i].vivo) 
+            movInimigos (&inimigos[i], posicaoInicialInimigo, personagem, i, (*colisaoInimigoCenario), (*colisaoDoInimigo), (*corInimigo), inimigoRedUp,  inimigoRedDown,  inimigoRedLeft,  inimigoRedRight,  inimigoGreenUp,  inimigoGreenDown,  inimigoGreenLeft,  inimigoGreenRight);
         //faz a movimentação já levando em consideração o modo
+        
+        
+      //  administraTiroInimigos( &inimigos[i], screenWidth, screenHeight, obstaculos, *nroBlocos, personagem); //Tiro dos inimigos
+
+        
     }
 }
 
-void movendoPersonagem (PERSONAGEM *personagem,int *nroBlocos, int *nroInimigos, int screenHeight, INIMIGO inimigos[], Rectangle obstaculos[], Texture personagemRight, Texture personagemLeft, Texture personagemUp, Texture personagemDown) {
+void movendoPersonagem (PERSONAGEM *personagem,int *nroBlocos, int *nroInimigos, int screenHeight, INIMIGO inimigos[], OBSTACULO obstaculos[], Texture personagemRight, Texture personagemLeft, Texture personagemUp, Texture personagemDown) {
     Rectangle posicaoInicial = personagem->posicao;// Guardando posicao inicial antes de colisoes, etc
     atualizaPosicao(personagem, personagemRight, personagemLeft, personagemUp, personagemDown);
     //Colisao Cenario
@@ -166,21 +172,31 @@ salvarJogo(PERSONAGEM *personagem) {
 */
 
 // FUNCOES MOVIMENTAÇÃO & power UP ------------------------------------------------------------------------------------------------------
-void checaColisao(PERSONAGEM *personagem, Rectangle *obstaculo, Rectangle posicaoInicial) {
-    if(CheckCollisionRecs(personagem->posicao,*obstaculo)) {
+void checaColisao(PERSONAGEM *personagem, Rectangle obstaculo, Rectangle posicaoInicial) {
+    if(CheckCollisionRecs(personagem->posicao, obstaculo)) {
         personagem->posicao = posicaoInicial;
     }
 }
 
-void checaColisaoArray(INIMIGO *inimigos, PERSONAGEM *personagem, OBSTACULO *obstaculos, int numObstaculos, Rectangle posicaoInicial, int nroInimigos) {
+
+/*
+void checaColisaoAux(PERSONAGEM *personagem, Rectangle *inimigo, Rectangle posicaoInicial) { // criei
+    if(CheckCollisionRecs(personagem->posicao,*inimigo)) {
+        personagem->posicao = posicaoInicial;
+    }
+}
+*/
+
+void checaColisaoArray(INIMIGO *inimigos, PERSONAGEM *personagem, OBSTACULO obstaculos[], int numObstaculos, Rectangle posicaoInicial, int nroInimigos) {
 
         for(int i=0; i<numObstaculos; i++) {
-             if(!obstaculos[i].destruido)
-                checaColisao(&(*personagem), &obstaculos[i].posicao, posicaoInicial);
+             if(!obstaculos[i].destruido) {
+                checaColisao(&(*personagem), obstaculos[i].posicao, posicaoInicial);
+             }
 
         }
         for (int i=0;i<nroInimigos;i++) {
-            checaColisao(&(*personagem), &(inimigos[i].posicao), posicaoInicial);
+            checaColisao(&(*personagem), inimigos[i].posicao, posicaoInicial);
         }
 }
 int spawnParede(POWERUP *powerUp, OBSTACULO obstaculos[], int numObstaculos)
@@ -313,7 +329,7 @@ void administraTiro(PERSONAGEM *personagem, int larguraTela, int alturaTela, OBS
 }
 
 //FUNÇÕES ESPECIFICAS INIMIGOS
-void criaInimigos(INIMIGO *inimigos, int nroInimigos, Texture inimigoTex, PERSONAGEM *personagem, OBSTACULO *obstaculo, int nroBlocos, char cor) {
+void criaInimigos(INIMIGO *inimigos, int nroInimigos, Texture inimigoTex, PERSONAGEM *personagem, OBSTACULO obstaculo[], int nroBlocos, char cor) {
     (inimigos[nroInimigos-1]).posicao.width = 25;
     (inimigos[nroInimigos-1]).posicao.height = 25;
     (inimigos[nroInimigos-1]).textura = inimigoTex;
@@ -323,7 +339,7 @@ void criaInimigos(INIMIGO *inimigos, int nroInimigos, Texture inimigoTex, PERSON
     do {
         (inimigos[nroInimigos-1]).posicao.x = (float)GetRandomValue(25, screenWidth-25);
         (inimigos[nroInimigos-1]).posicao.y = (float)GetRandomValue(75, 650-25);
-    } while ((checaColisaoInimigos(nroInimigos, inimigos, personagem, (nroInimigos-1), &(*obstaculo), nroBlocos)) == TRUE); //para q nao seja criado em cima de onde n da
+    } while ((checaColisaoInimigos(nroInimigos, inimigos, personagem, (nroInimigos-1), obstaculo, nroBlocos)) == TRUE); //para q nao seja criado em cima de onde n da
 
     (inimigos[nroInimigos-1]).modo = 'N';
 
@@ -434,14 +450,14 @@ void movInimigos (INIMIGO *inimigo, Rectangle posicaoInicial, PERSONAGEM *person
     }
 
 
-int checaColisaoInimigos(int numeroDeInimigos, INIMIGO *inimigos, PERSONAGEM *personagem, int numeroInimigo, OBSTACULO *obstaculo, int nroBlocos) { // VERFICAR ENDEREÇOS AQUI
+int checaColisaoInimigos(int numeroDeInimigos, INIMIGO inimigos[], PERSONAGEM *personagem, int numeroInimigo, OBSTACULO obstaculo[], int nroBlocos) { // VERFICAR ENDEREÇOS AQUI
     int colisaoDoInimigo = FALSE;
 
     for (int i = 0; i<nroBlocos; i++) {
         if ( CheckCollisionRecs(inimigos[numeroInimigo].posicao , (obstaculo[i].posicao)) && inimigos[numeroInimigo].vivo==TRUE && !obstaculo[i].destruido ) {                 //checa colisao com tijolos
             colisaoDoInimigo = TRUE;
         }
-        if ( CheckCollisionRecs(inimigos[numeroInimigo].posicao,(*personagem).posicao)&& inimigos[numeroInimigo].vivo==TRUE ) {            //checa colisao com personagem
+        if ( CheckCollisionRecs(inimigos[numeroInimigo].posicao,(*personagem).posicao) && inimigos[numeroInimigo].vivo==TRUE ) {            //checa colisao com personagem
             colisaoDoInimigo = TRUE;
 
         }

@@ -70,9 +70,9 @@ float alignCenterFont (char *v, int i, int fontSize, Font arcade);
 int readLevel (FILE *level, float *positionX, float *positionY, char *tipo);
 
 // funcoes movimentacao
-void checaColisao(PERSONAGEM *personagem, Rectangle *obstaculo, Rectangle posicaoInicial);
+void checaColisao(PERSONAGEM *personagem, Rectangle obstaculo, Rectangle posicaoInicial);
 
-void checaColisaoArray(INIMIGO *inimigos, PERSONAGEM *personagem, OBSTACULO *obstaculos, int numObstaculos, Rectangle posicaoInicial, int nroInimigos);
+void checaColisaoArray(INIMIGO *inimigos, PERSONAGEM *personagem, OBSTACULO obstaculos[], int numObstaculos, Rectangle posicaoInicial, int nroInimigos);
 void administraPowerUp(POWERUP *powerUp, PERSONAGEM *personagem, OBSTACULO *obstaculos, int numObstaculos, int larguraTela, int alturaTela);
 void atualizaPosicao(PERSONAGEM *personagem , Texture personagemRight, Texture personagemLeft, Texture personagemUp, Texture personagemDown);
 void desenhaCabecalho(PERSONAGEM *personagem, Texture2D iconeVidas,Font arcade, char *v);
@@ -80,17 +80,17 @@ int spawnParede(POWERUP *powerUp, OBSTACULO obstaculos[], int numObstaculos);
 void administraTiro(PERSONAGEM *personagem, int larguraTela, int alturaTela, OBSTACULO obstaculos[] ,int nroBlocos, INIMIGO inimigos[], int nroInimigos, int *maxInimigos,int *inimigosMortos, int *inimigosEmTela);
 
 // funcoes inimigos
-void criaInimigos(INIMIGO *inimigos, int nroInimigos, Texture inimigoTex, PERSONAGEM *personagem, OBSTACULO *obstaculo, int nroBlocos, char cor);
+void criaInimigos(INIMIGO *inimigos, int nroInimigos, Texture inimigoTex, PERSONAGEM *personagem, OBSTACULO obstaculo[], int nroBlocos, char cor);
 void modoInimigos (INIMIGO *inimigo, PERSONAGEM *personagem);
 
 void movInimigos (INIMIGO *inimigo, Rectangle posicaoInicial, PERSONAGEM *personagem , int i, int colisaoInimigoCenario, int colisaoDoInimigo, char corInimigo, Texture inimigoRedUp, Texture inimigoRedDown, Texture inimigoRedLeft, Texture inimigoRedRight, Texture inimigoGreenUp, Texture inimigoGreenDown, Texture inimigoGreenLeft, Texture inimigoGreenRight);
-checaColisaoInimigos(int numeroDeInimigos, INIMIGO *inimigos, PERSONAGEM *personagem, int numeroInimigo, OBSTACULO *obstaculo, int nroBlocos);
+int checaColisaoInimigos(int numeroDeInimigos, INIMIGO inimigos[], PERSONAGEM *personagem, int numeroInimigo, OBSTACULO obstaculo[], int nroBlocos);
 
 // funcoes niveis
 void criandoMapa(FILE *fileLevel, float *positionX, float *positionY, char *tipo, OBSTACULO obstaculos[], int *nroBlocos, PERSONAGEM *personagem);
-void criandoInimigos(clock_t tempo[], int *aux, int *nroInimigos, int *nroBlocos, char *corInimigo, INIMIGO inimigos[], Texture inimigoRedDown, Texture inimigoGreenDown, Rectangle obstaculos[], PERSONAGEM *personagem);
-void movendoInimigos (int screenHeight, int *nroInimigos, int *nroBlocos, int *colisaoInimigoCenario, int *colisaoDoInimigo, INIMIGO inimigos[], PERSONAGEM *personagem, Rectangle obstaculos[], char *corInimigo, Texture inimigoRedUp, Texture inimigoRedDown, Texture inimigoRedLeft, Texture inimigoRedRight, Texture inimigoGreenUp, Texture inimigoGreenDown, Texture inimigoGreenLeft, Texture inimigoGreenRight);
-void movendoPersonagem (PERSONAGEM *personagem,int *nroBlocos, int *nroInimigos, int screenHeight, INIMIGO inimigos[], Rectangle obstaculos[], Texture personagemRight, Texture personagemLeft, Texture personagemUp, Texture personagemDown);
+void criandoInimigos(clock_t tempo[], int *aux, int *nroInimigos, int *nroBlocos, char *corInimigo, INIMIGO inimigos[], Texture inimigoRedDown, Texture inimigoGreenDown, OBSTACULO obstaculos[], PERSONAGEM *personagem);
+void movendoInimigos (int screenHeight, int *nroInimigos, int *nroBlocos, int *colisaoInimigoCenario, int *colisaoDoInimigo, INIMIGO inimigos[], PERSONAGEM *personagem, OBSTACULO obstaculos[], char *corInimigo, Texture inimigoRedUp, Texture inimigoRedDown, Texture inimigoRedLeft, Texture inimigoRedRight, Texture inimigoGreenUp, Texture inimigoGreenDown, Texture inimigoGreenLeft, Texture inimigoGreenRight);
+void movendoPersonagem (PERSONAGEM *personagem,int *nroBlocos, int *nroInimigos, int screenHeight, INIMIGO inimigos[], OBSTACULO obstaculos[], Texture personagemRight, Texture personagemLeft, Texture personagemUp, Texture personagemDown);
 void administraTiroInimigos(INIMIGO *inimigo, int larguraTela, int alturaTela, OBSTACULO obstaculos[], int nroBlocos, PERSONAGEM *personagem);
 
 #endif
