@@ -13,8 +13,21 @@ float alignCenterFont (char *v, int i, int fontSize, Font arcade) {
 
 //cabeçalho
 void desenhaCabecalho(PERSONAGEM *personagem, Texture2D iconeVidas, Font arcade, char *v) {
+
+    char pontos[10] = {};
+  
+
+    switch (personagem->fase) {
+        case 1: sprintf(pontos,"%i",personagem->pontos[0]); break;
+        case 2: sprintf(pontos,"%i",personagem->pontos[1]); break;
+        case 3: sprintf(pontos,"%i",personagem->pontos[2]); break;
+        case 4: sprintf(pontos,"%i",personagem->pontos[3]); break;
+    }
+    
     DrawRectangle(0,0,screenWidth,50,GRAY);
+
     DrawTextEx(arcade, "Vidas ", (Vector2){100, 17}, 22, 1, LIGHTGRAY);
+
     int espacamento = 0;
     if((*personagem).vidas>0) {
         for(int i= (*personagem).vidas; i>0; i--) {
@@ -22,7 +35,13 @@ void desenhaCabecalho(PERSONAGEM *personagem, Texture2D iconeVidas, Font arcade,
             espacamento +=40;
         }
     }
-    DrawTextEx(arcade, v, (Vector2){alignCenterFont(v,1,30,arcade), 12}, 30, 1, LIGHTGRAY);
+
+    DrawTextEx(arcade, "Pontos ", (Vector2){850, 17}, 22, 1, LIGHTGRAY);
+    DrawText(pontos, 935, 17, 22, LIGHTGRAY);
+
+    DrawTextEx(arcade, personagem->nome, (Vector2){alignCenterFont(personagem->nome,1,20,arcade), 27}, 20, 1, LIGHTGRAY);
+
+    DrawTextEx(arcade, v, (Vector2){alignCenterFont(v,1,30,arcade), 6}, 30, 1, LIGHTGRAY);
 }
 
 // -- carregando mapa
@@ -152,27 +171,99 @@ void movendoPersonagem (PERSONAGEM *personagem,int *nroBlocos, int *nroInimigos,
     checaColisaoArray(inimigos, personagem, obstaculos, (*nroBlocos), posicaoInicial, (*nroInimigos));
 }
 
+
 //FUNÇÕES CONTINUAR ---------------------------------------------------------------------------------------------------------------------
-/*
+
 //continuar fazendo essa função
-salvarJogo(PERSONAGEM *personagem) {
+void salvarJogo(PERSONAGEM *personagem, INIMIGO inimigos[], OBSTACULO obstaculos[], int *nroInimigos, int *nroObstaculos, int *inimigosMortos, int *inimigosEmTela, int *maxInimigos) {
     FILE *savePointer;
     savePointer = fopen("../levels/continuar.txt", "wb");
 
-    fwrite (personagem, sizeof(PERSONAGEM), 1, savePointer);
+    if (savePointer != NULL){
+        fwrite (personagem, sizeof(PERSONAGEM), 1, savePointer);
 
-    for (i = 0,  )
+        fwrite (inimigosMortos, sizeof(int), 1, savePointer);
+        fwrite (inimigosEmTela, sizeof(int), 1, savePointer);
+        fwrite (maxInimigos, sizeof(int), 1, savePointer);
 
+        fwrite (nroInimigos, sizeof(int), 1, savePointer);
+        fwrite (nroObstaculos, sizeof(int), 1, savePointer);
 
+        for (int i = 0; i < (*nroInimigos); i++) {
+            fwrite (&inimigos[i], sizeof(INIMIGO), 1, savePointer);
+        }
+
+        for (int i = 0; i < (*nroObstaculos); i++) {
+            fwrite (&obstaculos[i], sizeof(OBSTACULO), 1, savePointer);
+        }
+    }
     fclose(savePointer);
+}
 
 
+void lerJogo(PERSONAGEM *personagem, INIMIGO inimigos[], OBSTACULO obstaculos[], int *nroInimigos, int *nroObstaculos, int *inimigosMortos, int *inimigosEmTela, int *maxInimigos) {
+    FILE *savePointer;
+    savePointer = fopen("../levels/continuar.txt", "rb");
+
+    if (savePointer != NULL){
+        fread (personagem, sizeof(PERSONAGEM), 1, savePointer);     //lendo personagem
+       
+        fread (inimigosMortos, sizeof(int), 1, savePointer);        //lendo numero de inimigos mortos
+        fread (inimigosEmTela, sizeof(int), 1, savePointer);        //lendo numero de inimigos em tela
+        fread (maxInimigos, sizeof(int), 1, savePointer);
+
+        fread (nroInimigos, sizeof(int), 1, savePointer);           //lendo numero de inimigos
+        fread (nroObstaculos, sizeof(int), 1, savePointer);         //lendo numero de obstaculos
+
+        for (int i = 0; i < (*nroInimigos); i++) {
+            fread(&inimigos[i], sizeof(INIMIGO), 1, savePointer);       //lendo STRUCT inimigos um a um
+        }
+
+        for (int i = 0; i < (*nroObstaculos); i++) {
+            fread(&obstaculos[i], sizeof(OBSTACULO), 1, savePointer);   //lendo STRUCT obstaculos um a um 
+        }
+    }
+    fclose(savePointer);
+}
+
+//FUNCAO SCORE -------------------------------------------------------------------------------------------------------------------------
+void salvaScore (HIGHSCORE recordistas[], int recorde, PERSONAGEM *personagem){
+   
+    FILE *scoresPointer;
+    scoresPointer = fopen("../levels/highscores.bin", "rb");
 
 
+    int indice = 6; 
+   
 
-}*/
+    for (int i = 0; i < 5; i++) {
+        fread(&recordistas[i], sizeof(HIGHSCORE), 1, scoresPointer);      //le o arquivo binario para struct
+    }
 
+    for (int i = 4; i >= 0; i--) {
+        if (recorde > recordistas[i].pontos) {                          //passa pelas structs e salva o ultimo valor q o recorde é maior
+            indice = i;                                                 //(de 0, maior, até 4, menor)
+        }
+    }
+    if (indice != 6) {
+        for (int i = 4; i < indice; i--){                               //reorganiza os recordes
+            recordistas[i] = recordistas[i-1]; 
+        }
+        recordistas[indice].pontos = recorde;                           //substitui o nome recorde em sua posição
+        strcpy (recordistas[indice].nome, personagem->nome); 
+    }
+    fclose(scoresPointer); 
 
+    scoresPointer = fopen("../levels/highscores.bin", "wb");
+
+    for (int i = 0; i < 5; i++) {
+        fwrite(&recordistas[i], sizeof(HIGHSCORE), 1, scoresPointer);      //escreve structs de volta no arquivo
+    }
+    fclose(scoresPointer); 
+
+}
+
+            
 // FUNCOES MOVIMENTAÇÃO & power UP ------------------------------------------------------------------------------------------------------
 void checaColisao(PERSONAGEM *personagem, Rectangle obstaculo, Rectangle posicaoInicial) {
     if(CheckCollisionRecs(personagem->posicao, obstaculo)) {
@@ -310,8 +401,16 @@ void administraTiro( PERSONAGEM *personagem, int larguraTela, int alturaTela, OB
         for(int i=0; i<nroBlocos; i++) {
             if(CheckCollisionRecs(personagem->tiro.posicao, obstaculos[i].posicao)&& !obstaculos[i].destruido){
                 obstaculos[i].destruido = TRUE;
-
                 personagem->tiro.atirando = FALSE;
+
+                switch (personagem->fase) {
+                    case 1: personagem->pontos[0] -= 50; break;
+                    case 2: personagem->pontos[1] -= 50; break;
+                    case 3: personagem->pontos[2] -= 50; break;
+                    case 4: personagem->pontos[3] -= 50; break;
+                }
+                
+                 
             }
         }
        
@@ -324,8 +423,12 @@ void administraTiro( PERSONAGEM *personagem, int larguraTela, int alturaTela, OB
                 *maxInimigos +=1;
                 *inimigosMortos += 1;
                 *inimigosEmTela -=1;
-                printf("inimigos mortos %d\n", *inimigosMortos);
-                printf("inimigos em tela %d\n", *inimigosEmTela);
+                switch (personagem->fase) {
+                    case 1: personagem->pontos[0] += 800; break;
+                    case 2: personagem->pontos[1] += 800; break;
+                    case 3: personagem->pontos[2] += 800; break;
+                    case 4: personagem->pontos[3] += 800; break;
+                } 
             }
         }
     }

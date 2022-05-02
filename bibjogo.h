@@ -37,6 +37,9 @@ typedef struct personagem {
     int velocidadeAtual;
     int inclinacao;
     int vidas;
+    int pontos[4];
+    int fase; 
+    char nome[20]; 
     TIRO tiro;
     } PERSONAGEM;
 
@@ -65,7 +68,10 @@ Rectangle posicao;
 int destruido;
 } OBSTACULO;
 
-
+typedef struct highScore {
+    int pontos;
+    char nome[20];
+} HIGHSCORE;
 
 // funcoes ------------------------------------------------------------------------------------------------------------------
 
@@ -86,7 +92,6 @@ void administraTiro(PERSONAGEM *personagem, int larguraTela, int alturaTela, OBS
 // funcoes inimigos
 void criaInimigos(INIMIGO *inimigos, int nroInimigos, Texture inimigoTex, PERSONAGEM *personagem, OBSTACULO obstaculo[], int nroBlocos, char cor);
 void modoInimigos (INIMIGO *inimigo, PERSONAGEM *personagem);
-
 void movInimigos (INIMIGO *inimigo, Rectangle posicaoInicial, PERSONAGEM *personagem , int i, int colisaoInimigoCenario, int colisaoDoInimigo, char corInimigo, Texture inimigoRedUp, Texture inimigoRedDown, Texture inimigoRedLeft, Texture inimigoRedRight, Texture inimigoGreenUp, Texture inimigoGreenDown, Texture inimigoGreenLeft, Texture inimigoGreenRight);
 int checaColisaoInimigos(int numeroDeInimigos, INIMIGO inimigos[], PERSONAGEM *personagem, int numeroInimigo, OBSTACULO obstaculo[], int nroBlocos);
 
@@ -96,5 +101,14 @@ void criandoInimigos(int *inimigosEmTela, clock_t tempo[], int *aux, int *nroIni
 void movendoInimigos (int screenHeight, int *nroInimigos, int *nroBlocos, int *colisaoInimigoCenario, int *colisaoDoInimigo, INIMIGO inimigos[], PERSONAGEM *personagem, OBSTACULO obstaculos[], char *corInimigo, Texture inimigoRedUp, Texture inimigoRedDown, Texture inimigoRedLeft, Texture inimigoRedRight, Texture inimigoGreenUp, Texture inimigoGreenDown, Texture inimigoGreenLeft, Texture inimigoGreenRight);
 void movendoPersonagem (PERSONAGEM *personagem,int *nroBlocos, int *nroInimigos, int screenHeight, INIMIGO inimigos[], OBSTACULO obstaculos[], Texture personagemRight, Texture personagemLeft, Texture personagemUp, Texture personagemDown);
 void administraTiroInimigos(INIMIGO *inimigo, int larguraTela, int alturaTela, OBSTACULO obstaculos[], int nroBlocos, PERSONAGEM *personagem);
+
+// funcoes continuar
+void salvarJogo(PERSONAGEM *personagem, INIMIGO inimigos[], OBSTACULO obstaculos[], int *nroInimigos, int *nroObstaculos, int *inimigosMortos, int *inimigosEmTela, int *maxInimigos);
+void lerJogo (PERSONAGEM *personagem, INIMIGO inimigos[], OBSTACULO obstaculos[], int *nroInimigos, int *nroObstaculos, int *inimigosMortos, int *inimigosEmTela, int *maxInimigos);
+
+//funcoes score
+
+void salvaScore (HIGHSCORE recordistas[], int recorde, PERSONAGEM *personagem);
+
 
 #endif
