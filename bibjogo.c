@@ -177,7 +177,7 @@ void movendoPersonagem (PERSONAGEM *personagem,int *nroBlocos, int *nroInimigos,
 //continuar fazendo essa função
 void salvarJogo(PERSONAGEM *personagem, INIMIGO inimigos[], OBSTACULO obstaculos[], int *nroInimigos, int *nroObstaculos, int *inimigosMortos, int *inimigosEmTela, int *maxInimigos) {
     FILE *savePointer;
-    savePointer = fopen("../levels/continuar.txt", "wb");
+    savePointer = fopen("../levels/continuar.bin", "wb");
 
     if (savePointer != NULL){
         fwrite (personagem, sizeof(PERSONAGEM), 1, savePointer);
@@ -203,7 +203,7 @@ void salvarJogo(PERSONAGEM *personagem, INIMIGO inimigos[], OBSTACULO obstaculos
 
 void lerJogo(PERSONAGEM *personagem, INIMIGO inimigos[], OBSTACULO obstaculos[], int *nroInimigos, int *nroObstaculos, int *inimigosMortos, int *inimigosEmTela, int *maxInimigos) {
     FILE *savePointer;
-    savePointer = fopen("../levels/continuar.txt", "rb");
+    savePointer = fopen("../levels/continuar.bin", "rb");
 
     if (savePointer != NULL){
         fread (personagem, sizeof(PERSONAGEM), 1, savePointer);     //lendo personagem

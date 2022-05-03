@@ -1,6 +1,5 @@
 
 #include "bibjogo.h"
-#include "bibjogo.c"
 
 
 #define screenHeight 650
@@ -72,7 +71,7 @@ int main(void) {
     sobreP = fopen("../levels/sobre.txt", "r");
 
     FILE *savePointer;
-    savePointer = fopen("../levels/continuar.txt", "rb");
+    savePointer = fopen("../levels/continuar.bin", "rb");
 
 
 
@@ -166,18 +165,6 @@ int main(void) {
         powerUp.posicao.y = GetRandomValue(powerUp.posicao.height+40,GetScreenHeight()- powerUp.posicao.height);
     }while(spawnParede(&powerUp, obstaculos, nroBlocos));
 
-    //inicializando recordistas
-   // strcpy (recordistas[0].nome, "Bilbo");
-   // recordistas[0].pontos = 20000;
-   // strcpy (recordistas[1].nome, "Frodo");
-   // recordistas[1].pontos = 14000;
-   // strcpy (recordistas[2].nome, "Legolas");
-   // recordistas[2].pontos = 10000;
-   // strcpy (recordistas[3].nome, "Aragorn");
-   // recordistas[3].pontos = 7000;
-   // strcpy (recordistas[4].nome, "Gandalf");
-   // recordistas[4].pontos = 5000;
-
 
     FILE *scoresPointer;
     scoresPointer = fopen("../levels/highscores.bin", "rb");
@@ -265,7 +252,7 @@ int main(void) {
                     fimDeJogo = TRUE;
                 }
                 if (fimDeJogo == TRUE)  {  
-                    aux =1;  //para passagem de fases
+                    aux = 1;  //para passagem de fases
                     if(faseUnica) {
                         faseUnica = FALSE;
                         currentScreen = MENU;
@@ -435,17 +422,13 @@ int main(void) {
             case CONTINUAR: {
 
                 if (auxC) {
-
                     rewind(savePointer); 
                     inimigosMortos = 0;  
-
-
                     nroBlocos = nroInimigos = 0;
                     maxInimigos =MAX_INIMIGOS;
                     fimDeJogo = FALSE;
                     personagem.posicao.x = 0;
                     personagem.posicao.y = 0;
-
                     personagem.vidas = 3; 
                     lerJogo(&personagem,inimigos, obstaculos, &nroInimigos, &nroBlocos, &inimigosMortos, &inimigosEmTela, &maxInimigos); 
                     recorde = 0; 
