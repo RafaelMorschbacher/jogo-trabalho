@@ -149,14 +149,14 @@ void movendoInimigos (int screenHeight, int *nroInimigos, int *nroBlocos, int *c
             inimigos[i].posicao = posicaoInicialInimigo;
 
         modoInimigos(&inimigos[i], personagem); //mando o endereço de um inimigo em especifico
-        if(inimigos[i].vivo) 
+        if(inimigos[i].vivo)
             movInimigos (&inimigos[i], posicaoInicialInimigo, personagem, i, (*colisaoInimigoCenario), (*colisaoDoInimigo), (*corInimigo), inimigoRedUp,  inimigoRedDown,  inimigoRedLeft,  inimigoRedRight,  inimigoGreenUp,  inimigoGreenDown,  inimigoGreenLeft,  inimigoGreenRight);
         //faz a movimentação já levando em consideração o modo
-        
-        
+
+
       //  administraTiroInimigos( &inimigos[i], screenWidth, screenHeight, obstaculos, *nroBlocos, personagem); //Tiro dos inimigos
 
-        
+
     }
 }
 
@@ -419,6 +419,7 @@ void administraTiro( PERSONAGEM *personagem, int larguraTela, int alturaTela, OB
         for(int i=0; i<nroInimigos; i++){
             if(CheckCollisionRecs(personagem->tiro.posicao, inimigos[i].posicao) && inimigos[i].vivo == 1){
                 inimigos[i].vivo = FALSE;
+                inimigos[i].contadorAnimacao = 0;
                 personagem->tiro.atirando = FALSE;
                 *maxInimigos +=1;
                 *inimigosMortos += 1;
@@ -648,4 +649,50 @@ void administraTiroInimigos(INIMIGO *inimigo, int larguraTela, int alturaTela, O
 
 }
 
+void explodeInimigo(INIMIGO *inimigo,Texture frame1,Texture frame2,Texture frame3,Texture frame4,Texture frame5,Texture frame6){
+    int numFrames = 5;
 
+                                if(inimigo->contadorAnimacao <= numFrames)
+                                    DrawTexture(inimigo->textura, (inimigo->posicao.x),  (inimigo->posicao.y), RAYWHITE);
+                                else if(inimigo->contadorAnimacao <= numFrames*2)
+                                    DrawTexture(frame1, (inimigo->posicao.x), (inimigo->posicao.y), RAYWHITE);
+                                else if(inimigo->contadorAnimacao <= numFrames*3)
+                                    DrawTexture(frame2, (inimigo->posicao.x),  (inimigo->posicao.y), RAYWHITE);
+                                else if(inimigo->contadorAnimacao <= numFrames*4)
+                                    DrawTexture(frame3, (inimigo->posicao.x),  (inimigo->posicao.y), RAYWHITE);
+                                else if(inimigo->contadorAnimacao <= numFrames*5)
+                                    DrawTexture(frame4, (inimigo->posicao.x),  (inimigo->posicao.y), RAYWHITE);
+                                else if(inimigo->contadorAnimacao <= numFrames*6)
+                                    DrawTexture(frame5, (inimigo->posicao.x),  (inimigo->posicao.y), RAYWHITE);
+                                else if(inimigo->contadorAnimacao <= numFrames*7)
+                                    DrawTexture(frame6, (inimigo->posicao.x),  (inimigo->posicao.y), RAYWHITE);
+
+
+                                if(inimigo->contadorAnimacao<= numFrames*7)
+                                    inimigo->contadorAnimacao += 1;
+
+}
+
+void explodeObstaculo(OBSTACULO *obstaculo,Texture frame1,Texture frame2,Texture frame3,Texture frame4,Texture frame5,Texture frame6, Texture frame7){
+    int numFrames = 5;
+
+    if(obstaculo->contadorAnimacao <= numFrames)
+        DrawTexture(frame1, (obstaculo->posicao.x),  (obstaculo->posicao.y), RAYWHITE);
+    else if(obstaculo->contadorAnimacao <= numFrames*2)
+        DrawTexture(frame2, (obstaculo->posicao.x), (obstaculo->posicao.y), RAYWHITE);
+    else if(obstaculo->contadorAnimacao <= numFrames*3)
+        DrawTexture(frame3, (obstaculo->posicao.x), (obstaculo->posicao.y), RAYWHITE);
+    else if(obstaculo->contadorAnimacao <= numFrames*4)
+        DrawTexture(frame4, (obstaculo->posicao.x), (obstaculo->posicao.y), RAYWHITE);
+    else if(obstaculo->contadorAnimacao <= numFrames*5)
+        DrawTexture(frame5, (obstaculo->posicao.x), (obstaculo->posicao.y), RAYWHITE);
+    else if(obstaculo->contadorAnimacao <= numFrames*6)
+        DrawTexture(frame6, (obstaculo->posicao.x), (obstaculo->posicao.y), RAYWHITE);
+    else if(obstaculo->contadorAnimacao <= numFrames*7)
+        DrawTexture(frame7, (obstaculo->posicao.x), (obstaculo->posicao.y), RAYWHITE);
+
+
+    if(obstaculo->contadorAnimacao<= numFrames*7)
+        obstaculo->contadorAnimacao += 1;
+
+}
