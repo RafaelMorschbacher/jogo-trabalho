@@ -1,6 +1,5 @@
 
 #include "bibjogo.h"
-#include "bibjogo.c"
 
 
 #define screenHeight 650
