@@ -70,9 +70,7 @@ int main(void) {
     FILE *sobreP; // lembrar de colocar if else com problema pra abrir arquivo ou nao
     sobreP = fopen("../levels/sobre.txt", "r");
 
-    FILE *savePointer;
-    savePointer = fopen("../levels/continuar.bin", "rb");
-
+    
 
 
 
@@ -215,6 +213,7 @@ int main(void) {
 
             case FASE1: {
 
+                
                 if (aux) {
                     rewind(Level1p);
                     currentScreen = NOME;
@@ -236,7 +235,6 @@ int main(void) {
                 movendoPersonagem (&personagem, &nroBlocos, &nroInimigos,  screenHeight, inimigos, obstaculos,  personagemRight,  personagemLeft,  personagemUp,  personagemDown);
 
                 if (IsKeyPressed(KEY_S)) {
-                    rewind(savePointer);
                     salvarJogo(&personagem, inimigos, obstaculos, &nroInimigos, &nroBlocos, &inimigosMortos, &inimigosEmTela, &maxInimigos);
                 }
 
@@ -288,7 +286,6 @@ int main(void) {
 
 
                 if (IsKeyPressed(KEY_S)) {
-                    rewind(savePointer);
                     salvarJogo(&personagem, inimigos, obstaculos, &nroInimigos, &nroBlocos, &inimigosMortos, &inimigosEmTela, &maxInimigos);
                 }
 
@@ -338,7 +335,6 @@ int main(void) {
 
 
                 if (IsKeyPressed(KEY_S)) {
-                    rewind(savePointer);
                     salvarJogo(&personagem, inimigos, obstaculos, &nroInimigos, &nroBlocos, &inimigosMortos, &inimigosEmTela, &maxInimigos);
                 }
 
@@ -391,7 +387,6 @@ int main(void) {
 
 
                 if (IsKeyPressed(KEY_S)) {
-                    rewind(savePointer);
                     salvarJogo(&personagem, inimigos, obstaculos, &nroInimigos, &nroBlocos, &inimigosMortos, &inimigosEmTela, &maxInimigos);
                 }
 
@@ -422,11 +417,9 @@ int main(void) {
 
             case CONTINUAR: {
 
+
                 if (auxC) {
-
-                    rewind(savePointer); 
                     inimigosMortos = 0;  
-
                     nroBlocos = nroInimigos = 0;
                     maxInimigos =MAX_INIMIGOS;
                     fimDeJogo = FALSE;
@@ -443,8 +436,12 @@ int main(void) {
                 auxPersonagem.x = personagem.posicao.x;
                 auxPersonagem.y = personagem.posicao.y;
                //ler jogo antigo
-
+                FILE *savePointer;
+                savePointer = fopen("../levels/continuar.bin", "rb");
+   
                 criandoMapa (savePointer, &positionX, &positionY, &tipo, obstaculos, &nroBlocos, &personagem);
+                fclose (savePointer);
+
                 if (auxC) {
                     personagem.posicao.x = auxPersonagem.x;
                     personagem.posicao.y = auxPersonagem.y;
@@ -453,10 +450,10 @@ int main(void) {
                 movendoInimigos (screenHeight, &nroInimigos, &nroBlocos, &colisaoInimigoCenario, &colisaoDoInimigo, inimigos, &personagem,  obstaculos, &corInimigo,  inimigoRedUp,  inimigoRedDown,  inimigoRedLeft,  inimigoRedRight,  inimigoGreenUp,  inimigoGreenDown,  inimigoGreenLeft,  inimigoGreenRight);
                 movendoPersonagem (&personagem, &nroBlocos, &nroInimigos,  screenHeight, inimigos, obstaculos,  personagemRight,  personagemLeft,  personagemUp,  personagemDown);
 
-                if (IsKeyPressed(KEY_S)) {
-                    rewind(savePointer);
-                    salvarJogo(&personagem, inimigos, obstaculos, &nroInimigos, &nroBlocos, &inimigosMortos, &inimigosEmTela, &maxInimigos);
-                }
+               // if (IsKeyPressed(KEY_S)) {
+              //      rewind(savePointer);
+             //       salvarJogo(&personagem, inimigos, obstaculos, &nroInimigos, &nroBlocos, &inimigosMortos, &inimigosEmTela, &maxInimigos);
+             //   }
 
 
 
@@ -938,7 +935,7 @@ int main(void) {
     fclose (Level2p);
     fclose (Level3p);
     fclose (Level4p);
-    fclose (savePointer);
+
     fclose (sobreP);
 
     CloseWindow();
