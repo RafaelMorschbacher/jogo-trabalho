@@ -236,7 +236,7 @@ int main(void) {
                 movendoPersonagem (&personagem, &nroBlocos, &nroInimigos,  screenHeight, inimigos, obstaculos,  personagemRight,  personagemLeft,  personagemUp,  personagemDown);
 
                 if (IsKeyPressed(KEY_S)) {
-                    rewind(savePointer); 
+                    rewind(savePointer);
                     salvarJogo(&personagem, inimigos, obstaculos, &nroInimigos, &nroBlocos, &inimigosMortos, &inimigosEmTela, &maxInimigos);
                 }
 
@@ -253,6 +253,7 @@ int main(void) {
                 }
                 if (fimDeJogo == TRUE)  {  
                     aux = 1;  //para passagem de fases
+
                     if(faseUnica) {
                         faseUnica = FALSE;
                         currentScreen = MENU;
@@ -287,7 +288,7 @@ int main(void) {
 
 
                 if (IsKeyPressed(KEY_S)) {
-                    rewind(savePointer); 
+                    rewind(savePointer);
                     salvarJogo(&personagem, inimigos, obstaculos, &nroInimigos, &nroBlocos, &inimigosMortos, &inimigosEmTela, &maxInimigos);
                 }
 
@@ -303,7 +304,7 @@ int main(void) {
                     fimDeJogo = TRUE;
 
                 if (fimDeJogo == TRUE)  {    //para passagem de fases
-                    aux1 = 1; 
+                    aux1 = 1;
                     if(faseUnica) {
                         faseUnica = FALSE;
                         currentScreen = MENU;
@@ -337,7 +338,7 @@ int main(void) {
 
 
                 if (IsKeyPressed(KEY_S)) {
-                    rewind(savePointer); 
+                    rewind(savePointer);
                     salvarJogo(&personagem, inimigos, obstaculos, &nroInimigos, &nroBlocos, &inimigosMortos, &inimigosEmTela, &maxInimigos);
                 }
 
@@ -354,7 +355,7 @@ int main(void) {
                     fimDeJogo = TRUE;
 
                 if (fimDeJogo == TRUE)  {    //para passagem de fases
-                    aux2 = 1; 
+                    aux2 = 1;
                     if(faseUnica) {
                         faseUnica = FALSE;
                         currentScreen = MENU;
@@ -390,7 +391,7 @@ int main(void) {
 
 
                 if (IsKeyPressed(KEY_S)) {
-                    rewind(savePointer); 
+                    rewind(savePointer);
                     salvarJogo(&personagem, inimigos, obstaculos, &nroInimigos, &nroBlocos, &inimigosMortos, &inimigosEmTela, &maxInimigos);
                 }
 
@@ -407,7 +408,7 @@ int main(void) {
                     fimDeJogo = TRUE;
 
                 if (fimDeJogo == TRUE)  {    //para passagem de fases
-                    aux3 = 1; 
+                    aux3 = 1;
                     if(faseUnica) {
                         faseUnica = FALSE;
                         currentScreen = MENU;
@@ -422,8 +423,10 @@ int main(void) {
             case CONTINUAR: {
 
                 if (auxC) {
+
                     rewind(savePointer); 
                     inimigosMortos = 0;  
+
                     nroBlocos = nroInimigos = 0;
                     maxInimigos =MAX_INIMIGOS;
                     fimDeJogo = FALSE;
@@ -432,6 +435,7 @@ int main(void) {
                     personagem.vidas = 3; 
                     lerJogo(&personagem,inimigos, obstaculos, &nroInimigos, &nroBlocos, &inimigosMortos, &inimigosEmTela, &maxInimigos); 
                     recorde = 0; 
+
 
                 }
 
@@ -450,7 +454,7 @@ int main(void) {
                 movendoPersonagem (&personagem, &nroBlocos, &nroInimigos,  screenHeight, inimigos, obstaculos,  personagemRight,  personagemLeft,  personagemUp,  personagemDown);
 
                 if (IsKeyPressed(KEY_S)) {
-                    rewind(savePointer); 
+                    rewind(savePointer);
                     salvarJogo(&personagem, inimigos, obstaculos, &nroInimigos, &nroBlocos, &inimigosMortos, &inimigosEmTela, &maxInimigos);
                 }
 
@@ -473,7 +477,7 @@ int main(void) {
                     fimDeJogo = TRUE;
 
                 if (fimDeJogo == TRUE)  {    //para passagem de fases
-                    auxC = 1; 
+                    auxC = 1;
                     if(faseUnica) {
                         faseUnica = FALSE;
                         currentScreen = MENU;
@@ -777,11 +781,13 @@ int main(void) {
                     ClearBackground(RAYWHITE);
                     DrawRectangle(0,0,screenWidth,screenHeight,BLACK);
 
-                    for (int j = 0; j < nroBlocos; j++) {
+                    for (int j = 0; j < nroBlocos; j++ ) {
                         int xvec = obstaculos[j].posicao.x;
                         int yvec =  obstaculos[j].posicao.y;
                         if (!obstaculos[j].destruido)
                             DrawTexture(brickTexture, xvec, yvec, WHITE);
+                        if(obstaculos[j].destruido ==TRUE)
+                            explodeObstaculo(&obstaculos[j], expObst1, expObst2, expObst3, expObst4, expObst5, expObst6, expObst7);
                     }
 
                     administraPowerUp(&powerUp, &personagem, obstaculos, nroBlocos, screenHeight, screenWidth);
@@ -791,11 +797,14 @@ int main(void) {
 
                     //desenhando inimigos na tela
                     for (int i = 0; i<nroInimigos; i++) {
-                        if(inimigos[i].vivo==FALSE) //testando
+
+                        if(inimigos[i].vivo==FALSE){
                             DrawTexture(inimigoDead, (inimigos[i].posicao.x),  (inimigos[i].posicao.y), RAYWHITE);
+                            explodeInimigo(&inimigos[i], explosaoVerde2, explosaoVerde3, explosaoVerde4, explosaoVerde5, explosaoVerde6, explosaoVerde7);
+                        } //testando
+
                         else {
-                            administraTiroInimigos( &inimigos[i],  screenWidth, screenHeight, obstaculos,  nroBlocos,  &personagem);
-                            DrawTexture(inimigos[i].textura, (inimigos[i].posicao.x),  (inimigos[i].posicao.y), RAYWHITE);
+                            administraTiroInimigos( &inimigos[i],  screenWidth, screenHeight, obstaculos,  nroBlocos,  &personagem);                                DrawTexture(inimigos[i].textura, (inimigos[i].posicao.x),  (inimigos[i].posicao.y), RAYWHITE);
                         }
                     }
 
