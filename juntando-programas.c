@@ -1,6 +1,6 @@
 
 #include "bibjogo.h"
-//#include "bibjogo.c"
+#include "bibjogo.c"
 
 
 #define screenHeight 650
@@ -23,7 +23,7 @@ int main(void) {
     float positionY = 1;                  //coordenada y de um objeto na tela
     int nroBlocos = 0;
     OBSTACULO obstaculos[600] ={0}; //posX, posY, largura, altura
-   
+
     //variaveis inimigos
     int nroInimigos = 0;
     clock_t tempo[2];
@@ -38,14 +38,14 @@ int main(void) {
     //variaveis fases
     int fimDeJogo = FALSE;
     int inimigosMortos = 0, inimigosEmTela = 0;
-    
+
     //variaveis escolher fase
-    int estadoChaveFase = 1; 
-    int faseUnica = FALSE; 
+    int estadoChaveFase = 1;
+    int faseUnica = FALSE;
 
     //variaveis highscore
-    HIGHSCORE recordistas[5] = {}; 
-    int recorde = 0; 
+    HIGHSCORE recordistas[5] = {};
+    int recorde = 0;
 
     //variaveis inserir nome
     int letterCount = 0;
@@ -74,9 +74,9 @@ int main(void) {
     FILE *savePointer;
     savePointer = fopen("../levels/continuar.txt", "rb");
 
-    
 
-    
+
+
 
 
     // Load------------------------------------------------------------------------------------------------------------------------
@@ -93,7 +93,7 @@ int main(void) {
 
     //explosao obstaculos
    // Texture2D explosion = LoadTexture("../assets/explosion.png");
-    
+
 
 
 
@@ -149,12 +149,12 @@ int main(void) {
     personagem.velocidadeAtual = personagem.velocidadeBase;
     personagem.textura = personagemUp;
     personagem.vidas = 3;
-    personagem.fase = 0; 
+    personagem.fase = 0;
     personagem.tiro.posicao.height = 10;
     personagem.tiro.posicao.width = 10;
     personagem.tiro.velocidade = 10;
     strcpy(personagem.nome, "\0");
-  
+
 
     //Inicializando PowerUp
     POWERUP powerUp = {0};
@@ -167,16 +167,16 @@ int main(void) {
     }while(spawnParede(&powerUp, obstaculos, nroBlocos));
 
     //inicializando recordistas
-   // strcpy (recordistas[0].nome, "Bilbo"); 
-   // recordistas[0].pontos = 20000; 
-   // strcpy (recordistas[1].nome, "Frodo"); 
-   // recordistas[1].pontos = 14000; 
-   // strcpy (recordistas[2].nome, "Legolas"); 
-   // recordistas[2].pontos = 10000; 
-   // strcpy (recordistas[3].nome, "Aragorn"); 
-   // recordistas[3].pontos = 7000; 
-   // strcpy (recordistas[4].nome, "Gandalf"); 
-   // recordistas[4].pontos = 5000; 
+   // strcpy (recordistas[0].nome, "Bilbo");
+   // recordistas[0].pontos = 20000;
+   // strcpy (recordistas[1].nome, "Frodo");
+   // recordistas[1].pontos = 14000;
+   // strcpy (recordistas[2].nome, "Legolas");
+   // recordistas[2].pontos = 10000;
+   // strcpy (recordistas[3].nome, "Aragorn");
+   // recordistas[3].pontos = 7000;
+   // strcpy (recordistas[4].nome, "Gandalf");
+   // recordistas[4].pontos = 5000;
 
 
     FILE *scoresPointer;
@@ -197,7 +197,7 @@ int main(void) {
             case MENU:{
                 if (auxM == 1) {
                     estadoChave = 1;
-                    auxM = 0; 
+                    auxM = 0;
                 }
 
 
@@ -212,8 +212,8 @@ int main(void) {
                         estadoChave = 6;
 
                 if (estadoChave == 1 && IsKeyPressed(KEY_ENTER))    //novo jogo
-                        currentScreen = FASE1; //onde começa     
-                if (estadoChave == 2 && IsKeyPressed(KEY_ENTER ))   //continuar 
+                        currentScreen = FASE1; //onde começa
+                if (estadoChave == 2 && IsKeyPressed(KEY_ENTER ))   //continuar
                         currentScreen = CONTINUAR;
                 if (estadoChave == 3 && IsKeyPressed(KEY_ENTER))    //escolher fase
                         currentScreen = ESCOLHAFASE;
@@ -227,22 +227,22 @@ int main(void) {
             }
 
             case FASE1: {
-                
+
                 if (aux) {
                     rewind(Level1p);
-                    currentScreen = NOME; 
-                    inimigosMortos = 0; 
+                    currentScreen = NOME;
+                    inimigosMortos = 0;
                     positionX = 0;
-                    positionY = 1; 
+                    positionY = 1;
                     nroBlocos = nroInimigos = 0;
                     maxInimigos = MAX_INIMIGOS;
                     personagem.vidas = 3;
-                    personagem.pontos[0] = 0; 
-                    personagem.fase = 1; 
+                    personagem.pontos[0] = 0;
+                    personagem.fase = 1;
                     fimDeJogo = FALSE;
-                    recorde = 0; 
+                    recorde = 0;
                 }
-            
+
                 criandoMapa (Level1p, &positionX, &positionY, &tipo, obstaculos, &nroBlocos, &personagem);
                 criandoInimigos(&inimigosEmTela, tempo, &aux, &nroInimigos, &nroBlocos,&corInimigo, inimigos,inimigoRedDown,inimigoGreenDown,obstaculos,&personagem);
                 movendoInimigos (screenHeight, &nroInimigos, &nroBlocos, &colisaoInimigoCenario, &colisaoDoInimigo, inimigos, &personagem,  obstaculos, &corInimigo,  inimigoRedUp,  inimigoRedDown,  inimigoRedLeft,  inimigoRedRight,  inimigoGreenUp,  inimigoGreenDown,  inimigoGreenLeft,  inimigoGreenRight);
@@ -253,14 +253,14 @@ int main(void) {
                     salvarJogo(&personagem, inimigos, obstaculos, &nroInimigos, &nroBlocos, &inimigosMortos, &inimigosEmTela, &maxInimigos);
                 }
 
-                
+
                 if (personagem.vidas == -1)  {
-                    aux = 1; 
-                    recorde = personagem.pontos[0]; 
+                    aux = 1;
+                    recorde = personagem.pontos[0];
                     salvaScore (recordistas, recorde, &personagem);
-                    currentScreen = MENU; 
+                    currentScreen = MENU;
                 }
-                    
+
                 if (inimigosMortos >= 15 && inimigosEmTela == 0) {
                     fimDeJogo = TRUE;
                 }
@@ -281,16 +281,16 @@ int main(void) {
 
                 if (aux1) {
                     rewind(Level2p);
-                    inimigosMortos = 0; 
+                    inimigosMortos = 0;
                     positionX = 0;
-                    positionY = 1; 
+                    positionY = 1;
                     nroBlocos = nroInimigos = 0;
                     maxInimigos = MAX_INIMIGOS;
                     personagem.vidas = 3;
                     fimDeJogo = FALSE;
-                    personagem.fase = 2; 
-                    personagem.pontos[1] = 0; 
-                    recorde = 0; 
+                    personagem.fase = 2;
+                    personagem.pontos[1] = 0;
+                    recorde = 0;
                 }
 
                 criandoMapa (Level2p, &positionX, &positionY, &tipo, obstaculos, &nroBlocos, &personagem);
@@ -306,10 +306,10 @@ int main(void) {
 
 
                 if (personagem.vidas == -1)  {
-                    aux1 = 1; 
-                    recorde = personagem.pontos[0] + personagem.pontos[1]; 
+                    aux1 = 1;
+                    recorde = personagem.pontos[0] + personagem.pontos[1];
                     salvaScore (recordistas, recorde, &personagem);
-                    currentScreen = MENU; 
+                    currentScreen = MENU;
                 }
 
                 if (inimigosMortos >= 15 && !inimigosEmTela)
@@ -331,18 +331,18 @@ int main(void) {
                 //lembrar de zerar as variáveis importantes
                  if (aux2) {
                     rewind(Level3p);
-                    inimigosMortos = 0; 
+                    inimigosMortos = 0;
                     positionX = 0;
-                    positionY = 1; 
+                    positionY = 1;
                     nroBlocos = nroInimigos = 0;
                     maxInimigos= MAX_INIMIGOS;
                     fimDeJogo = FALSE;
                     personagem.vidas = 3;
-                    personagem.pontos[2] = 0; 
-                    personagem.fase = 3; 
-                    recorde = 0; 
+                    personagem.pontos[2] = 0;
+                    personagem.fase = 3;
+                    recorde = 0;
                 }
-                
+
                 criandoMapa (Level3p, &positionX, &positionY, &tipo, obstaculos, &nroBlocos, &personagem);
                 criandoInimigos(&inimigosEmTela,tempo, &aux2, &nroInimigos, &nroBlocos,&corInimigo, inimigos,inimigoRedDown,inimigoGreenDown,obstaculos,&personagem);
                 movendoInimigos (screenHeight, &nroInimigos, &nroBlocos, &colisaoInimigoCenario, &colisaoDoInimigo, inimigos, &personagem,  obstaculos, &corInimigo,  inimigoRedUp,  inimigoRedDown,  inimigoRedLeft,  inimigoRedRight,  inimigoGreenUp,  inimigoGreenDown,  inimigoGreenLeft,  inimigoGreenRight);
@@ -356,10 +356,10 @@ int main(void) {
 
 
                 if (personagem.vidas == -1)  {
-                    aux2 = 1; 
-                    recorde = personagem.pontos[0] + personagem.pontos[1] + personagem.pontos[2]; 
+                    aux2 = 1;
+                    recorde = personagem.pontos[0] + personagem.pontos[1] + personagem.pontos[2];
                     salvaScore (recordistas, recorde, &personagem);
-                    currentScreen = MENU; 
+                    currentScreen = MENU;
                 }
 
 
@@ -379,22 +379,22 @@ int main(void) {
             }
 
             case FASE4: {
-                
+
                 if (aux3) {
                     rewind(Level4p);
-                    inimigosMortos = 0; 
+                    inimigosMortos = 0;
                     positionX = 0;
-                    positionY = 1;  
+                    positionY = 1;
                     nroBlocos = nroInimigos = 0;
                     maxInimigos =MAX_INIMIGOS;
                     fimDeJogo = FALSE;
                     personagem.vidas = 3;
-                    personagem.pontos[3] = 0; 
-                    personagem.fase = 4; 
-                    recorde = 0; 
+                    personagem.pontos[3] = 0;
+                    personagem.fase = 4;
+                    recorde = 0;
                 }
                 //lembrar de zerar as variáveis importantes
-                
+
 
                 criandoMapa (Level4p, &positionX, &positionY, &tipo, obstaculos, &nroBlocos, &personagem);
                 criandoInimigos(&inimigosEmTela,tempo, &aux3, &nroInimigos, &nroBlocos,&corInimigo, inimigos,inimigoRedDown,inimigoGreenDown,obstaculos,&personagem);
@@ -409,10 +409,10 @@ int main(void) {
 
 
                 if (personagem.vidas == -1)  {
-                    aux3 = 1; 
-                    recorde = personagem.pontos[0] + personagem.pontos[1] + personagem.pontos[2] + personagem.pontos[3]; 
+                    aux3 = 1;
+                    recorde = personagem.pontos[0] + personagem.pontos[1] + personagem.pontos[2] + personagem.pontos[3];
                     salvaScore (recordistas, recorde, &personagem);
-                    currentScreen = MENU; 
+                    currentScreen = MENU;
                 }
 
 
@@ -433,29 +433,34 @@ int main(void) {
             }
 
             case CONTINUAR: {
-            
+
                 if (auxC) {
+
                     rewind(savePointer); 
                     inimigosMortos = 0;  
+
+
                     nroBlocos = nroInimigos = 0;
                     maxInimigos =MAX_INIMIGOS;
                     fimDeJogo = FALSE;
                     personagem.posicao.x = 0;
                     personagem.posicao.y = 0;
+
                     personagem.vidas = 3; 
                     lerJogo(&personagem,inimigos, obstaculos, &nroInimigos, &nroBlocos, &inimigosMortos, &inimigosEmTela, &maxInimigos); 
                     recorde = 0; 
+
                 }
 
                 Rectangle auxPersonagem;
                 auxPersonagem.x = personagem.posicao.x;
                 auxPersonagem.y = personagem.posicao.y;
                //ler jogo antigo
-                
+
                 criandoMapa (savePointer, &positionX, &positionY, &tipo, obstaculos, &nroBlocos, &personagem);
                 if (auxC) {
                     personagem.posicao.x = auxPersonagem.x;
-                    personagem.posicao.y = auxPersonagem.y; 
+                    personagem.posicao.y = auxPersonagem.y;
                 }
                 criandoInimigos(&inimigosEmTela,tempo, &auxC, &nroInimigos, &nroBlocos,&corInimigo, inimigos,inimigoRedDown,inimigoGreenDown,obstaculos,&personagem);
                 movendoInimigos (screenHeight, &nroInimigos, &nroBlocos, &colisaoInimigoCenario, &colisaoDoInimigo, inimigos, &personagem,  obstaculos, &corInimigo,  inimigoRedUp,  inimigoRedDown,  inimigoRedLeft,  inimigoRedRight,  inimigoGreenUp,  inimigoGreenDown,  inimigoGreenLeft,  inimigoGreenRight);
@@ -467,9 +472,9 @@ int main(void) {
                 }
 
 
-                
+
                 if (personagem.vidas == -1)  {
-                    auxC = 1; 
+                    auxC = 1;
                     switch (personagem.fase) {
                         case 1:  recorde = personagem.pontos[0]; break;
                         case 2:  recorde = personagem.pontos[0] + personagem.pontos[1]; break;
@@ -478,7 +483,7 @@ int main(void) {
                         default: break;
                         salvaScore (recordistas, recorde, &personagem);
                     }
-                    currentScreen = MENU; 
+                    currentScreen = MENU;
                 }
 
                 if (inimigosMortos >= 15 && !inimigosEmTela)
@@ -492,17 +497,17 @@ int main(void) {
                     }
                     else {
                         switch (personagem.fase)  {
-                            case 1: 
+                            case 1:
                                 currentScreen = FASE2;
                                 break;
-                            case 2: 
-                                currentScreen = FASE3; 
+                            case 2:
+                                currentScreen = FASE3;
                                 break;
-                            case 3: 
+                            case 3:
                                 currentScreen = FASE4;
                                 break;
-                            case 4: 
-                                currentScreen = SOBRE; 
+                            case 4:
+                                currentScreen = SOBRE;
                                 break;
                         }
                     }
@@ -515,16 +520,16 @@ int main(void) {
                  if (auxSobre) {
                     rewind(sobreP);
                     positionX = 0;
-                    positionY = 1;  
+                    positionY = 1;
                     nroBlocos= 0;
-                    auxSobre = 0; 
+                    auxSobre = 0;
                 }
                 criandoMapa (sobreP, &positionX, &positionY, &tipo, obstaculos, &nroBlocos, &personagem);
                 movendoPersonagem (&personagem, &nroBlocos, &nroInimigos,  screenHeight, inimigos, obstaculos,  personagemRight,  personagemLeft,  personagemUp,  personagemDown);
 
                 if (IsKeyPressed(KEY_DELETE)){
-                    currentScreen = MENU; 
-                    auxSobre = 1; 
+                    currentScreen = MENU;
+                    auxSobre = 1;
                 }
                 break;
             }
@@ -532,7 +537,7 @@ int main(void) {
             case ESCOLHAFASE: {
 
                 if (IsKeyPressed(KEY_DELETE)){
-                    currentScreen = MENU; 
+                    currentScreen = MENU;
                 }
 
                 if (IsKeyPressed(KEY_DOWN))
@@ -545,21 +550,21 @@ int main(void) {
                 if (estadoChaveFase == 0)
                         estadoChaveFase = 4;
 
-                faseUnica = TRUE; 
-                if (estadoChaveFase == 1 && IsKeyPressed(KEY_ENTER))    
-                        currentScreen = FASE1;     
-                if (estadoChaveFase == 2 && IsKeyPressed(KEY_ENTER ))    
+                faseUnica = TRUE;
+                if (estadoChaveFase == 1 && IsKeyPressed(KEY_ENTER))
+                        currentScreen = FASE1;
+                if (estadoChaveFase == 2 && IsKeyPressed(KEY_ENTER ))
                         currentScreen = FASE2;
-                if (estadoChaveFase == 3 && IsKeyPressed(KEY_ENTER))    
+                if (estadoChaveFase == 3 && IsKeyPressed(KEY_ENTER))
                         currentScreen = FASE3;
-                if (estadoChaveFase == 4 && IsKeyPressed(KEY_ENTER))    
+                if (estadoChaveFase == 4 && IsKeyPressed(KEY_ENTER))
                         currentScreen = FASE4;
 
                 break;
             }
             case SCORES: {
                 if (IsKeyPressed(KEY_DELETE)){
-                    currentScreen = MENU; 
+                    currentScreen = MENU;
                 }
                 break;
             }
@@ -603,15 +608,15 @@ int main(void) {
                 if (mouseOnText) framesCounter++;
                 else framesCounter = 0;
 
-                if (IsKeyPressed(KEY_ENTER)) 
+                if (IsKeyPressed(KEY_ENTER))
                     currentScreen = FASE1;
-                    
-                
+
+
 
                 //----------------------------------------------------------------------------------
             }
-        
-            
+
+
             default: break;
         }
 
@@ -649,7 +654,7 @@ int main(void) {
                 case FASE1: {
                     ClearBackground(RAYWHITE);
                     DrawRectangle(0,0,screenWidth,screenHeight,BLACK);
-                    
+
 
                     for (int j = 0; j < nroBlocos; j++ ) {
                         int xvec = obstaculos[j].posicao.x;
@@ -664,7 +669,7 @@ int main(void) {
                     administraTiro(&personagem, screenWidth, screenHeight, obstaculos , nroBlocos,  inimigos, nroInimigos, &maxInimigos, &inimigosMortos, &inimigosEmTela);
                     DrawTexture(personagem.textura, (personagem.posicao.x ), (personagem.posicao.y ), RAYWHITE);
                     desenhaCabecalho(&personagem, escudoTextura, arcade, fase[0]);
-                        
+
                     //desenhando inimigos na tela
                     for (int i = 0; i<nroInimigos; i++) {
 
@@ -677,7 +682,7 @@ int main(void) {
                             administraTiroInimigos( &inimigos[i],  screenWidth, screenHeight, obstaculos,  nroBlocos,  &personagem);                                DrawTexture(inimigos[i].textura, (inimigos[i].posicao.x),  (inimigos[i].posicao.y), RAYWHITE);
                         }
                     }
-                  
+
                     break;
                 }
 
@@ -686,12 +691,12 @@ int main(void) {
                     DrawRectangle(0,0,screenWidth,screenHeight,BLACK);
 
                     for (int j = 0; j < nroBlocos; j++ ) {
-                        //Desenhar apenas Blocos nao destruidos
-                        if(!obstaculos[j].destruido){
-                            int xvec = obstaculos[j].posicao.x;
-                            int yvec =  obstaculos[j].posicao.y;
+                        int xvec = obstaculos[j].posicao.x;
+                        int yvec =  obstaculos[j].posicao.y;
+                        if (!obstaculos[j].destruido)
                             DrawTexture(brickTexture, xvec, yvec, WHITE);
-                        }
+                        if(obstaculos[j].destruido ==TRUE)
+                            explodeObstaculo(&obstaculos[j], expObst1, expObst2, expObst3, expObst4, expObst5, expObst6, expObst7);
                     }
                     //DrawRectangleRec
 
@@ -702,17 +707,15 @@ int main(void) {
 
                     //desenhando inimigos na tela
                     for (int i = 0; i<nroInimigos; i++) {
-                        if(inimigos[i].vivo==TRUE)
-                            DrawTexture(inimigos[i].textura, (inimigos[i].posicao.x),  (inimigos[i].posicao.y), RAYWHITE);
+
                         if(inimigos[i].vivo==FALSE){
-                                DrawTexture(inimigoDead, (inimigos[i].posicao.x),  (inimigos[i].posicao.y), RAYWHITE);
-                                explodeInimigo(&inimigos[i], explosaoVerde2, explosaoVerde3, explosaoVerde4, explosaoVerde5, explosaoVerde6, explosaoVerde7);
+                            DrawTexture(inimigoDead, (inimigos[i].posicao.x),  (inimigos[i].posicao.y), RAYWHITE);
+                            explodeInimigo(&inimigos[i], explosaoVerde2, explosaoVerde3, explosaoVerde4, explosaoVerde5, explosaoVerde6, explosaoVerde7);
+                        } //testando
+
+                        else {
+                            administraTiroInimigos( &inimigos[i],  screenWidth, screenHeight, obstaculos,  nroBlocos,  &personagem);                                DrawTexture(inimigos[i].textura, (inimigos[i].posicao.x),  (inimigos[i].posicao.y), RAYWHITE);
                         }
-
-
-                        //Tiro dos inimigos
-                        administraTiroInimigos( &inimigos[i], screenWidth, screenHeight, obstaculos, nroBlocos, &personagem);
-
                     }
                     break;
                 }
@@ -721,13 +724,13 @@ int main(void) {
                     ClearBackground(RAYWHITE);
                     DrawRectangle(0,0,screenWidth,screenHeight,BLACK);
 
-                    for (int j = 0; j < nroBlocos; j++ ) {
-                        //Desenhar apenas Blocos nao destruidos
-                        if(!obstaculos[j].destruido){
-                            int xvec = obstaculos[j].posicao.x;
-                            int yvec =  obstaculos[j].posicao.y;
+                   for (int j = 0; j < nroBlocos; j++ ) {
+                        int xvec = obstaculos[j].posicao.x;
+                        int yvec =  obstaculos[j].posicao.y;
+                        if (!obstaculos[j].destruido)
                             DrawTexture(brickTexture, xvec, yvec, WHITE);
-                        }
+                        if(obstaculos[j].destruido ==TRUE)
+                            explodeObstaculo(&obstaculos[j], expObst1, expObst2, expObst3, expObst4, expObst5, expObst6, expObst7);
                     }
                     //DrawRectangleRec
 
@@ -738,16 +741,15 @@ int main(void) {
 
                     //desenhando inimigos na tela
                     for (int i = 0; i<nroInimigos; i++) {
-                        if(inimigos[i].vivo==TRUE)
-                            DrawTexture(inimigos[i].textura, (inimigos[i].posicao.x),  (inimigos[i].posicao.y), RAYWHITE);
-                        if(inimigos[i].vivo==FALSE)
+
+                        if(inimigos[i].vivo==FALSE){
                             DrawTexture(inimigoDead, (inimigos[i].posicao.x),  (inimigos[i].posicao.y), RAYWHITE);
+                            explodeInimigo(&inimigos[i], explosaoVerde2, explosaoVerde3, explosaoVerde4, explosaoVerde5, explosaoVerde6, explosaoVerde7);
+                        } //testando
 
-                        //Tiro dos inimigos
-                        administraTiroInimigos( &inimigos[i], screenWidth, screenHeight, obstaculos, nroBlocos, &personagem);
-
-
-
+                        else {
+                            administraTiroInimigos( &inimigos[i],  screenWidth, screenHeight, obstaculos,  nroBlocos,  &personagem);                                DrawTexture(inimigos[i].textura, (inimigos[i].posicao.x),  (inimigos[i].posicao.y), RAYWHITE);
+                        }
                     }
                     break;
                 }
@@ -757,14 +759,14 @@ int main(void) {
                     DrawRectangle(0,0,screenWidth,screenHeight,BLACK);
 
                     for (int j = 0; j < nroBlocos; j++ ) {
-                        //Desenhar apenas Blocos nao destruidos
-                        if(!obstaculos[j].destruido){
-                            int xvec = obstaculos[j].posicao.x;
-                            int yvec =  obstaculos[j].posicao.y;
+                        int xvec = obstaculos[j].posicao.x;
+                        int yvec =  obstaculos[j].posicao.y;
+                        if (!obstaculos[j].destruido)
                             DrawTexture(brickTexture, xvec, yvec, WHITE);
-                        }
+                        if(obstaculos[j].destruido ==TRUE)
+                            explodeObstaculo(&obstaculos[j], expObst1, expObst2, expObst3, expObst4, expObst5, expObst6, expObst7);
                     }
-                    
+
                     //DrawRectangleRec
 
                     administraPowerUp(&powerUp, &personagem, obstaculos, nroBlocos, screenHeight, screenWidth);
@@ -774,20 +776,21 @@ int main(void) {
 
                     //desenhando inimigos na tela
                     for (int i = 0; i<nroInimigos; i++) {
-                        if(inimigos[i].vivo==TRUE)
-                            DrawTexture(inimigos[i].textura, (inimigos[i].posicao.x),  (inimigos[i].posicao.y), RAYWHITE);
-                        if(inimigos[i].vivo==FALSE)
+
+                        if(inimigos[i].vivo==FALSE){
                             DrawTexture(inimigoDead, (inimigos[i].posicao.x),  (inimigos[i].posicao.y), RAYWHITE);
+                            explodeInimigo(&inimigos[i], explosaoVerde2, explosaoVerde3, explosaoVerde4, explosaoVerde5, explosaoVerde6, explosaoVerde7);
+                        } //testando
 
-                        //Tiro dos inimigos
-                        administraTiroInimigos( &inimigos[i], screenWidth, screenHeight, obstaculos, nroBlocos, &personagem);
-
+                        else {
+                            administraTiroInimigos( &inimigos[i],  screenWidth, screenHeight, obstaculos,  nroBlocos,  &personagem);                                DrawTexture(inimigos[i].textura, (inimigos[i].posicao.x),  (inimigos[i].posicao.y), RAYWHITE);
+                        }
                     }
                     break;
                 }
 
                 case CONTINUAR:{
-                    
+
                     ClearBackground(RAYWHITE);
                     DrawRectangle(0,0,screenWidth,screenHeight,BLACK);
 
@@ -826,12 +829,12 @@ int main(void) {
 
                     DrawTextEx(arcade, "Rafael Morschbacher", (Vector2){(alignCenterFont("Rafael Morschbacher",0,30, arcade)),350 }, 30, 1,WHITE);
                     DrawTextEx(arcade, "Juliana de Vargas", (Vector2){(alignCenterFont("Juliana de Vargas",0,30, arcade)),380 }, 30, 1,WHITE);
-                    
+
                     for(int i = 0; i < 40; i++){
-                        int xvec = i*25; 
+                        int xvec = i*25;
                          DrawTexture(brickTexture, xvec, 10, WHITE);
                     }
-                    
+
 
                     for (int j = 0; j < nroBlocos; j++ ) {
                         int xvec = obstaculos[j].posicao.x;
@@ -843,7 +846,7 @@ int main(void) {
                     DrawTexture(personagem.textura, (personagem.posicao.x ), (personagem.posicao.y ), RAYWHITE);
 
                     DrawTextEx(arcade, "Pressione Delete para voltar ao menu", (Vector2){10,10 }, 15, 1,WHITE);
-                    
+
                     break;
                 }
 
@@ -853,7 +856,7 @@ int main(void) {
                     DrawTextEx(arcade, "Pressione Delete para voltar ao menu", (Vector2){10,20 }, 15, 1,WHITE);
                     DrawRectangle(100, 50, 800, 550, GRAY);
                     DrawRectangle(125, 75, 750, 500, BLACK);
-                    
+
 
 
                      u = 0; //escreve menu
@@ -871,13 +874,13 @@ int main(void) {
                             break;
                         case 4: DrawTextEx(arcade, fase[3], (Vector2){(alignCenterFont(fase[3],2,40, arcade)),(400) }, 40, 1,YELLOW);
                             break;
-                        
+
                         default: break;
                     }
                     break;
                 }
                 case SCORES: {
-                    
+
                     ClearBackground(RAYWHITE);
                     DrawRectangle(0, 0, screenWidth, screenHeight, BLACK);
                     DrawTextEx(arcade, "Pressione Delete para voltar ao menu", (Vector2){10,10 }, 15, 1,WHITE);
@@ -929,7 +932,7 @@ int main(void) {
                     break;
                 }
 
-    
+
                 default: break;
             }
 
@@ -943,8 +946,8 @@ int main(void) {
     fclose (Level2p);
     fclose (Level3p);
     fclose (Level4p);
-    fclose (savePointer); 
-    fclose (sobreP); 
+    fclose (savePointer);
+    fclose (sobreP);
 
     CloseWindow();
     return 0;
