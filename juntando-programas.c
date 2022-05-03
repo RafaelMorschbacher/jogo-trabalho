@@ -249,6 +249,7 @@ int main(void) {
                 movendoPersonagem (&personagem, &nroBlocos, &nroInimigos,  screenHeight, inimigos, obstaculos,  personagemRight,  personagemLeft,  personagemUp,  personagemDown);
 
                 if (IsKeyPressed(KEY_S)) {
+                    rewind(savePointer); 
                     salvarJogo(&personagem, inimigos, obstaculos, &nroInimigos, &nroBlocos, &inimigosMortos, &inimigosEmTela, &maxInimigos);
                 }
 
@@ -263,7 +264,8 @@ int main(void) {
                 if (inimigosMortos >= 15 && inimigosEmTela == 0) {
                     fimDeJogo = TRUE;
                 }
-                if (fimDeJogo == TRUE)  {    //para passagem de fases
+                if (fimDeJogo == TRUE)  {  
+                    aux =1;  //para passagem de fases
                     if(faseUnica) {
                         faseUnica = FALSE;
                         currentScreen = MENU;
@@ -298,6 +300,7 @@ int main(void) {
 
 
                 if (IsKeyPressed(KEY_S)) {
+                    rewind(savePointer); 
                     salvarJogo(&personagem, inimigos, obstaculos, &nroInimigos, &nroBlocos, &inimigosMortos, &inimigosEmTela, &maxInimigos);
                 }
 
@@ -313,6 +316,7 @@ int main(void) {
                     fimDeJogo = TRUE;
 
                 if (fimDeJogo == TRUE)  {    //para passagem de fases
+                    aux1 = 1; 
                     if(faseUnica) {
                         faseUnica = FALSE;
                         currentScreen = MENU;
@@ -346,6 +350,7 @@ int main(void) {
 
 
                 if (IsKeyPressed(KEY_S)) {
+                    rewind(savePointer); 
                     salvarJogo(&personagem, inimigos, obstaculos, &nroInimigos, &nroBlocos, &inimigosMortos, &inimigosEmTela, &maxInimigos);
                 }
 
@@ -362,6 +367,7 @@ int main(void) {
                     fimDeJogo = TRUE;
 
                 if (fimDeJogo == TRUE)  {    //para passagem de fases
+                    aux2 = 1; 
                     if(faseUnica) {
                         faseUnica = FALSE;
                         currentScreen = MENU;
@@ -397,6 +403,7 @@ int main(void) {
 
 
                 if (IsKeyPressed(KEY_S)) {
+                    rewind(savePointer); 
                     salvarJogo(&personagem, inimigos, obstaculos, &nroInimigos, &nroBlocos, &inimigosMortos, &inimigosEmTela, &maxInimigos);
                 }
 
@@ -413,6 +420,7 @@ int main(void) {
                     fimDeJogo = TRUE;
 
                 if (fimDeJogo == TRUE)  {    //para passagem de fases
+                    aux3 = 1; 
                     if(faseUnica) {
                         faseUnica = FALSE;
                         currentScreen = MENU;
@@ -427,12 +435,14 @@ int main(void) {
             case CONTINUAR: {
             
                 if (auxC) {
+                    rewind(savePointer); 
                     inimigosMortos = 0;  
                     nroBlocos = nroInimigos = 0;
                     maxInimigos =MAX_INIMIGOS;
                     fimDeJogo = FALSE;
                     personagem.posicao.x = 0;
                     personagem.posicao.y = 0;
+                    personagem.vidas = 3; 
                     lerJogo(&personagem,inimigos, obstaculos, &nroInimigos, &nroBlocos, &inimigosMortos, &inimigosEmTela, &maxInimigos); 
                     recorde = 0; 
                 }
@@ -452,6 +462,7 @@ int main(void) {
                 movendoPersonagem (&personagem, &nroBlocos, &nroInimigos,  screenHeight, inimigos, obstaculos,  personagemRight,  personagemLeft,  personagemUp,  personagemDown);
 
                 if (IsKeyPressed(KEY_S)) {
+                    rewind(savePointer); 
                     salvarJogo(&personagem, inimigos, obstaculos, &nroInimigos, &nroBlocos, &inimigosMortos, &inimigosEmTela, &maxInimigos);
                 }
 
@@ -474,6 +485,7 @@ int main(void) {
                     fimDeJogo = TRUE;
 
                 if (fimDeJogo == TRUE)  {    //para passagem de fases
+                    auxC = 1; 
                     if(faseUnica) {
                         faseUnica = FALSE;
                         currentScreen = MENU;
