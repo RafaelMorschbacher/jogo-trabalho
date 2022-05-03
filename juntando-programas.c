@@ -1,5 +1,6 @@
 
 #include "bibjogo.h"
+#include "bibjogo.c"
 
 
 #define screenHeight 650
@@ -70,7 +71,7 @@ int main(void) {
     FILE *sobreP; // lembrar de colocar if else com problema pra abrir arquivo ou nao
     sobreP = fopen("../levels/sobre.txt", "r");
 
-    
+
 
 
 
@@ -213,7 +214,7 @@ int main(void) {
 
             case FASE1: {
 
-                
+
                 if (aux) {
                     rewind(Level1p);
                     currentScreen = NOME;
@@ -249,7 +250,7 @@ int main(void) {
                 if (inimigosMortos >= 15 && inimigosEmTela == 0) {
                     fimDeJogo = TRUE;
                 }
-                if (fimDeJogo == TRUE)  {  
+                if (fimDeJogo == TRUE)  {
                     aux = 1;  //para passagem de fases
 
                     if(faseUnica) {
@@ -419,15 +420,15 @@ int main(void) {
 
 
                 if (auxC) {
-                    inimigosMortos = 0;  
+                    inimigosMortos = 0;
                     nroBlocos = nroInimigos = 0;
                     maxInimigos =MAX_INIMIGOS;
                     fimDeJogo = FALSE;
                     personagem.posicao.x = 0;
                     personagem.posicao.y = 0;
-                    personagem.vidas = 3; 
-                    lerJogo(&personagem,inimigos, obstaculos, &nroInimigos, &nroBlocos, &inimigosMortos, &inimigosEmTela, &maxInimigos); 
-                    recorde = 0; 
+                    personagem.vidas = 3;
+                    lerJogo(&personagem,inimigos, obstaculos, &nroInimigos, &nroBlocos, &inimigosMortos, &inimigosEmTela, &maxInimigos);
+                    recorde = 0;
 
 
                 }
@@ -438,7 +439,7 @@ int main(void) {
                //ler jogo antigo
                 FILE *savePointer;
                 savePointer = fopen("../levels/continuar.bin", "rb");
-   
+
                 criandoMapa (savePointer, &positionX, &positionY, &tipo, obstaculos, &nroBlocos, &personagem);
                 fclose (savePointer);
 
@@ -822,6 +823,7 @@ int main(void) {
                     for(int i = 0; i < 40; i++){
                         int xvec = i*25;
                          DrawTexture(brickTexture, xvec, 10, WHITE);
+
                     }
 
 
@@ -830,6 +832,8 @@ int main(void) {
                         int yvec =  obstaculos[j].posicao.y;
                         if (!obstaculos[j].destruido)
                             DrawTexture(brickTexture, xvec, yvec, WHITE);
+                        if(obstaculos[j].destruido ==TRUE)
+                            explodeObstaculo(&obstaculos[j], expObst1, expObst2, expObst3, expObst4, expObst5, expObst6, expObst7);
                     }
                     administraTiro(&personagem, screenWidth, screenHeight, obstaculos , nroBlocos,  inimigos, nroInimigos, &maxInimigos, &inimigosMortos, &inimigosEmTela);
                     DrawTexture(personagem.textura, (personagem.posicao.x ), (personagem.posicao.y ), RAYWHITE);
