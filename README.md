@@ -1,5 +1,5 @@
 # jogo-trabalho
-Trabalho final de algoritmos e programação: jogo BATTLE INF.
+Trabalho final de algoritmos e programação: jogo BATTLE INF. <br>
 Linguagem: C
 Biblioteca utilizada: Raylib
 Breve descrição do trabalho e das structs:
