@@ -10,9 +10,9 @@ O jogo conta com 4 fases, e o jogador pode salvar sua pontuação para competir 
 As estruturas utilizadas no jogo são as seguintes:
 
 OBSTACULO: 
-  Rectangle posicao: é um dado do tipo Rectangle, que indica as dimensões e a posição dos blocos no mapa. 
-  int destruido: Booleano (0 ou 1) que indica se o player ja destruiu a parede em questão. Nesse caso, ela não aparece mais no mapa.
-  int contadorAnimacao: Contador auxiliar para realizar a troca dos frames da animação de explosão, só é incrementada quando o obstáculo é explodido.
+  Rectangle posicao: é um dado do tipo Rectangle, que indica as dimensões e a posição dos blocos no mapa. <br>
+  int destruido: Booleano (0 ou 1) que indica se o player ja destruiu a parede em questão. Nesse caso, ela não aparece mais no mapa.<br>
+  int contadorAnimacao: Contador auxiliar para realizar a troca dos frames da animação de explosão, só é incrementada quando o obstáculo é explodido.<br>
 
 PERSONAGEM: (player)
   Rectangle posicao: posicao e dimensões do personagem
