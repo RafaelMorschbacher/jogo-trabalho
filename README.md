@@ -35,7 +35,7 @@ INIMIGO:<br>
     int orientacao: Se o inimigo está indo para cima baixo, esq ou dir<br>
     int colisao: TRUE (1) ou FALSE (0) para checao colisao com outros personagens ou obstaculos<br>
     char cor: inimigos vermelhos ou verdes (variação estética)<br>
-    int vivo: Booleano se está vivo ou se já foi abatido pelo jogador<br><br><br>
+    int vivo: Booleano se está vivo ou se já foi abatido pelo jogador<br>
     TIRO tiro: atributos do tiro do player<br><br>
     int contadorAnimacao: Contador auxiliar para realizar a troca dos frames da animação de explosão, só é incrementada quando o inimigo é abatido.<br>
     
