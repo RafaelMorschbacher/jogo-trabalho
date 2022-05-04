@@ -416,8 +416,6 @@ int main(void) {
             }
 
             case CONTINUAR: {
-
-
                 if (auxC) {
                     inimigosMortos = 0;
                     nroBlocos = nroInimigos = 0;
@@ -428,33 +426,26 @@ int main(void) {
                     personagem.vidas = 3;
                     lerJogo(&personagem,inimigos, obstaculos, &nroInimigos, &nroBlocos, &inimigosMortos, &inimigosEmTela, &maxInimigos);
                     recorde = 0;
-
-
                 }
 
                 Rectangle auxPersonagem;
                 auxPersonagem.x = personagem.posicao.x;
                 auxPersonagem.y = personagem.posicao.y;
-               //ler jogo antigo
+               
                 FILE *savePointer;
                 savePointer = fopen("../levels/continuar.bin", "rb");
 
                 criandoMapa (savePointer, &positionX, &positionY, &tipo, obstaculos, &nroBlocos, &personagem);
+                
                 fclose (savePointer);
 
-                if (auxC) {
-                    personagem.posicao.x = auxPersonagem.x;
-                    personagem.posicao.y = auxPersonagem.y;
-                }
+                
+                personagem.posicao.x = auxPersonagem.x;
+                personagem.posicao.y = auxPersonagem.y;
+                
                 criandoInimigos(&inimigosEmTela,tempo, &auxC, &nroInimigos, &nroBlocos,&corInimigo, inimigos,inimigoRedDown,inimigoGreenDown,obstaculos,&personagem);
                 movendoInimigos (screenHeight, &nroInimigos, &nroBlocos, &colisaoInimigoCenario, &colisaoDoInimigo, inimigos, &personagem,  obstaculos, &corInimigo,  inimigoRedUp,  inimigoRedDown,  inimigoRedLeft,  inimigoRedRight,  inimigoGreenUp,  inimigoGreenDown,  inimigoGreenLeft,  inimigoGreenRight);
                 movendoPersonagem (&personagem, &nroBlocos, &nroInimigos,  screenHeight, inimigos, obstaculos,  personagemRight,  personagemLeft,  personagemUp,  personagemDown);
-
-               // if (IsKeyPressed(KEY_S)) {
-              //      rewind(savePointer);
-             //       salvarJogo(&personagem, inimigos, obstaculos, &nroInimigos, &nroBlocos, &inimigosMortos, &inimigosEmTela, &maxInimigos);
-             //   }
-
 
 
                 if (personagem.vidas == -1)  {
