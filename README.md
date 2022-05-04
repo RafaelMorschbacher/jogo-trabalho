@@ -36,12 +36,12 @@ INIMIGO:<br>
     int colisao: TRUE (1) ou FALSE (0) para checao colisao com outros personagens ou obstaculos<br>
     char cor: inimigos vermelhos ou verdes (variação estética)<br>
     int vivo: Booleano se está vivo ou se já foi abatido pelo jogador<br>
-    TIRO tiro: atributos do tiro do player<br><br>
+    TIRO tiro: atributos do tiro do player<br>
     int contadorAnimacao: Contador auxiliar para realizar a troca dos frames da animação de explosão, só é incrementada quando o inimigo é abatido.<br>
     
 POWER-UP:<br>
     Rectangle posicao: Posição e dimensões do powerup<br>
-    int ativo: Se o efeito do powerup está ativado<br><br>
+    int ativo: Se o efeito do powerup está ativado<br>
     int cooldown: intervalo após a utilização até ele respawnar em outro ponto aleatório do mapa.<br>
     Texture2D textura;<br>
     
