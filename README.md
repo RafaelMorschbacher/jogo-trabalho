@@ -3,8 +3,10 @@ Trabalho final de algoritmos e programação: jogo BATTLE INF.
 Linguagem: C
 Biblioteca utilizada: Raylib
 Breve descrição do trabalho e das structs:
-O jogo battle inf é um jogo de batalha entre tanques de guerra, com cenário destrutível pelo player e pelos inimigos. Os inimigos spawnam aleatóriamente, sendo no máximo 5 inimigos em tela por vez. O jogador acumula pontos ao destruir tanques inimigos e perde pontos ao explodir paredes do cenário. Além disso, o jogador pode coletar power-ups que spawnam aleatóriamente pelo cenário para aumentar sua velocidade por alguns segundos.
+O jogo battle inf é um jogo de batalha entre tanques de guerra, com cenário destrutível pelo player e pelos inimigos. Os inimigos spawnam aleatóriamente, sendo no máximo 5 inimigos em tela por vez. 
+O jogador acumula pontos ao destruir tanques inimigos e perde pontos ao explodir paredes do cenário. Além disso, o jogador pode coletar power-ups que spawnam aleatóriamente pelo cenário para aumentar sua velocidade por alguns segundos.
 O jogo conta com 4 fases, e o jogador pode salvar sua pontuação para competir com outros jogadores. Os 5 melhores jogadores tem suas pontuações exibidas em um scoreboard.
+
 As estruturas utilizadas no jogo são as seguintes:
 
 OBSTACULO: 
@@ -37,8 +39,19 @@ INIMIGO:
     TIRO tiro: atributos do tiro do player
     int contadorAnimacao: Contador auxiliar para realizar a troca dos frames da animação de explosão, só é incrementada quando o inimigo é abatido.
     
-POWE-UP:
+POWER-UP:
     Rectangle posicao: Posição e dimensões do powerup
     int ativo: Se o efeito do powerup está ativado
     int cooldown: intervalo após a utilização até ele respawnar em outro ponto aleatório do mapa.
     Texture2D textura;
+    
+TIRO: (mesma struct usada pelo personagem e pelos inimigos)
+    Rectangle posicao;
+    Texture2D textura;
+    int atirando: Booleano, se o tiro está em movimento, já foi disparado e ainda não atingiu nada.
+    int velocidade;
+    int inclinacao: Se o tiro está indo para cima baixo, esq ou dir
+    
+ HIGHSCORE: (usada para guardar a pontuação de um jogador no arquivo de high scores)
+    int pontos;
+    char nome[20];
