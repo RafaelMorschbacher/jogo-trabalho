@@ -39,16 +39,16 @@ INIMIGO:<br>
     TIRO tiro: atributos do tiro do player<br><br>
     int contadorAnimacao: Contador auxiliar para realizar a troca dos frames da animação de explosão, só é incrementada quando o inimigo é abatido.<br>
     
-POWER-UP:<br><br><br><br>
-    Rectangle posicao: Posição e dimensões do powerup<br><br><br>
+POWER-UP:<br>
+    Rectangle posicao: Posição e dimensões do powerup<br>
     int ativo: Se o efeito do powerup está ativado<br><br>
     int cooldown: intervalo após a utilização até ele respawnar em outro ponto aleatório do mapa.<br>
     Texture2D textura;<br>
     
-TIRO: (mesma struct usada pelo personagem e pelos inimigos)<br><br><br>
-    Rectangle posicao;<br><br>
+TIRO: (mesma struct usada pelo personagem e pelos inimigos)<br>
+    Rectangle posicao;<br>
     Texture2D textura;<br>
-    int atirando: Booleano, se o tiro está em movimento, já foi disparado e ainda não atingiu nada.
+    int atirando: Booleano, se o tiro está em movimento, já foi disparado e ainda não atingiu nada.<br>
     int velocidade;<br>
     int inclinacao: Se o tiro está indo para cima baixo, esq ou dir<br>
     
