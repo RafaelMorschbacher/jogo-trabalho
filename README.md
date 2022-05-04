@@ -9,49 +9,49 @@ O jogo conta com 4 fases, e o jogador pode salvar sua pontuação para competir 
 
 As estruturas utilizadas no jogo são as seguintes:
 
-OBSTACULO: 
+OBSTACULO: <br>
   Rectangle posicao: é um dado do tipo Rectangle, que indica as dimensões e a posição dos blocos no mapa. <br>
   int destruido: Booleano (0 ou 1) que indica se o player ja destruiu a parede em questão. Nesse caso, ela não aparece mais no mapa.<br>
   int contadorAnimacao: Contador auxiliar para realizar a troca dos frames da animação de explosão, só é incrementada quando o obstáculo é explodido.<br>
 
-PERSONAGEM: (player)
-  Rectangle posicao: posicao e dimensões do personagem
-  Texture2D textura
-  int velocidadeBase: velocidade com que o personagem spawna
-  int velocidadeAtual: velocidade que pode ser a base ou incrementada (pelo powerup)
-  int inclinacao: para qual direcao o personagem esta virado (cima, baixo, esq, dir)
-  int vidas: Número de tiros que o personagem ainda pode tomar
-  int pontos[4]: cada item do array é uma fase (pontuação)
-  int fase: fase atual que está sendo jogada
-  char nome[20]: nickname do player
-  TIRO tiro: atributos do tiro do player
+PERSONAGEM: (player)<br>
+  Rectangle posicao: posicao e dimensões do personagem<br>
+  Texture2D textura<br>
+  int velocidadeBase: velocidade com que o personagem spawna<br>
+  int velocidadeAtual: velocidade que pode ser a base ou incrementada (pelo powerup)<br>
+  int inclinacao: para qual direcao o personagem esta virado (cima, baixo, esq, dir)<br>
+  int vidas: Número de tiros que o personagem ainda pode tomar<br>
+  int pontos[4]: cada item do array é uma fase (pontuação)<br>
+  int fase: fase atual que está sendo jogada<br>
+  char nome[20]: nickname do player<br>
+  TIRO tiro: atributos do tiro do player<br>
   
-INIMIGO:
-    char modo: pode ser Patrulha (movimentos aleatórios em retas) ou Perseguição (persegue o personagem)
-    char sentidoDesloc: Sentido de deslocamento (Aleatorio ou seguindo personagem)
-    Rectangle posicao: Posição do inimigo
-    Texture2D textura;
-    float velocidade;
-    int orientacao: Se o inimigo está indo para cima baixo, esq ou dir
-    int colisao: TRUE (1) ou FALSE (0) para checao colisao com outros personagens ou obstaculos
-    char cor: inimigos vermelhos ou verdes (variação estética)
-    int vivo: Booleano se está vivo ou se já foi abatido pelo jogador
-    TIRO tiro: atributos do tiro do player
-    int contadorAnimacao: Contador auxiliar para realizar a troca dos frames da animação de explosão, só é incrementada quando o inimigo é abatido.
+INIMIGO:<br>
+    char modo: pode ser Patrulha (movimentos aleatórios em retas) ou Perseguição (persegue o personagem)<br>
+    char sentidoDesloc: Sentido de deslocamento (Aleatorio ou seguindo personagem)<br>
+    Rectangle posicao: Posição do inimigo<br>
+    Texture2D textura;<br>
+    float velocidade;<br>
+    int orientacao: Se o inimigo está indo para cima baixo, esq ou dir<br>
+    int colisao: TRUE (1) ou FALSE (0) para checao colisao com outros personagens ou obstaculos<br>
+    char cor: inimigos vermelhos ou verdes (variação estética)<br>
+    int vivo: Booleano se está vivo ou se já foi abatido pelo jogador<br><br><br>
+    TIRO tiro: atributos do tiro do player<br><br>
+    int contadorAnimacao: Contador auxiliar para realizar a troca dos frames da animação de explosão, só é incrementada quando o inimigo é abatido.<br>
     
-POWER-UP:
-    Rectangle posicao: Posição e dimensões do powerup
-    int ativo: Se o efeito do powerup está ativado
-    int cooldown: intervalo após a utilização até ele respawnar em outro ponto aleatório do mapa.
-    Texture2D textura;
+POWER-UP:<br><br><br><br>
+    Rectangle posicao: Posição e dimensões do powerup<br><br><br>
+    int ativo: Se o efeito do powerup está ativado<br><br>
+    int cooldown: intervalo após a utilização até ele respawnar em outro ponto aleatório do mapa.<br>
+    Texture2D textura;<br>
     
-TIRO: (mesma struct usada pelo personagem e pelos inimigos)
-    Rectangle posicao;
-    Texture2D textura;
+TIRO: (mesma struct usada pelo personagem e pelos inimigos)<br><br><br>
+    Rectangle posicao;<br><br>
+    Texture2D textura;<br>
     int atirando: Booleano, se o tiro está em movimento, já foi disparado e ainda não atingiu nada.
-    int velocidade;
-    int inclinacao: Se o tiro está indo para cima baixo, esq ou dir
+    int velocidade;<br>
+    int inclinacao: Se o tiro está indo para cima baixo, esq ou dir<br>
     
  HIGHSCORE: (usada para guardar a pontuação de um jogador no arquivo de high scores)
-    int pontos;
-    char nome[20];
+    int pontos;<br>
+    char nome[20];<br>
