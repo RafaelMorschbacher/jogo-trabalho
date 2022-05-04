@@ -52,6 +52,6 @@ TIRO: (mesma struct usada pelo personagem e pelos inimigos)<br>
     int velocidade;<br>
     int inclinacao: Se o tiro está indo para cima baixo, esq ou dir<br>
     
- HIGHSCORE: (usada para guardar a pontuação de um jogador no arquivo de high scores)
+ HIGHSCORE: (usada para guardar a pontuação de um jogador no arquivo de high scores)<br>
     int pontos;<br>
     char nome[20];<br>
