@@ -1,13 +1,13 @@
 # jogo-trabalho
 Trabalho final de algoritmos e programação: jogo BATTLE INF. <br>
-Linguagem: C
-Biblioteca utilizada: Raylib
-Breve descrição do trabalho e das structs:
-O jogo battle inf é um jogo de batalha entre tanques de guerra, com cenário destrutível pelo player e pelos inimigos. Os inimigos spawnam aleatóriamente, sendo no máximo 5 inimigos em tela por vez. 
-O jogador acumula pontos ao destruir tanques inimigos e perde pontos ao explodir paredes do cenário. Além disso, o jogador pode coletar power-ups que spawnam aleatóriamente pelo cenário para aumentar sua velocidade por alguns segundos.
-O jogo conta com 4 fases, e o jogador pode salvar sua pontuação para competir com outros jogadores. Os 5 melhores jogadores tem suas pontuações exibidas em um scoreboard.
+Linguagem: C <br>
+Biblioteca utilizada: Raylib<br>
+Breve descrição do trabalho e das structs:<br>
+O jogo battle inf é um jogo de batalha entre tanques de guerra, com cenário destrutível pelo player e pelos inimigos. Os inimigos spawnam aleatóriamente, sendo no máximo 5 inimigos em tela por vez. <br>
+O jogador acumula pontos ao destruir tanques inimigos e perde pontos ao explodir paredes do cenário. Além disso, o jogador pode coletar power-ups que spawnam aleatóriamente pelo cenário para aumentar sua velocidade por alguns segundos.<br>
+O jogo conta com 4 fases, e o jogador pode salvar sua pontuação para competir com outros jogadores. Os 5 melhores jogadores tem suas pontuações exibidas em um scoreboard.<br>
 
-As estruturas utilizadas no jogo são as seguintes:
+As estruturas utilizadas no jogo são as seguintes:<br>
 
 OBSTACULO: <br>
   Rectangle posicao: é um dado do tipo Rectangle, que indica as dimensões e a posição dos blocos no mapa. <br>
