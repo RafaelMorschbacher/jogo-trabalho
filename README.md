@@ -55,3 +55,8 @@ TIRO: (mesma struct usada pelo personagem e pelos inimigos)<br>
  HIGHSCORE: (usada para guardar a pontuação de um jogador no arquivo de high scores)<br>
     int pontos;<br>
     char nome[20];<br>
+
+
+COMO ABRIR?
+VS CODE: Abrir a pasta jogo-trabalho, e rodar utilizando o MAKE FILE
+CODEBLOCS: Criar projeto com .h e .c. 

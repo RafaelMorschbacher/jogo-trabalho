@@ -18,7 +18,7 @@ int main(void) {
     char fase[4][10] = {"FASE 1","FASE 2", "FASE 3", "FASE 4"};
 
     //variaveis obstaculos
-    float positionX = 0;                  //coordenada x de um objeto na tela
+    float positionX = 0;                  //coordenada x de Aum objeto na tela
     float positionY = 1;                  //coordenada y de um objeto na tela
     int nroBlocos = 0;
     OBSTACULO obstaculos[600] ={0}; //posX, posY, largura, altura
@@ -120,8 +120,7 @@ int main(void) {
     Texture2D inimigoGreenLeft = LoadTexture("../assets/inimigo-verde_left30x30.png");
     Texture2D inimigoGreenRight = LoadTexture("../assets/inimigo-verde_right30x30.png");
 
-    //Textuta explosão (Inimigo)
-    Texture2D explosaoVerde1 = LoadTexture("../assets/inimigo-verde/explosao-verde-1.png");
+    //Textura explosão (Inimigo)
     Texture2D explosaoVerde2 = LoadTexture("../assets/inimigo-verde/explosao-verde-2.png");
     Texture2D explosaoVerde3 = LoadTexture("../assets/inimigo-verde/explosao-verde-3.png");
     Texture2D explosaoVerde4 = LoadTexture("../assets/inimigo-verde/explosao-verde-4.png");
@@ -217,6 +216,7 @@ int main(void) {
                 if (aux) {
                     rewind(Level1p);
                     currentScreen = NOME;
+                    inimigosEmTela =0; 
                     inimigosMortos = 0;
                     positionX = 0;
                     positionY = 1;
@@ -246,7 +246,8 @@ int main(void) {
                     currentScreen = MENU;
                 }
 
-                if (inimigosMortos >= 15 && inimigosEmTela == 0) {
+                printf("mortos, %i em tela %i\n", inimigosMortos, inimigosEmTela); 
+                if (inimigosMortos >= 5 && inimigosEmTela == 0) {
                     fimDeJogo = TRUE;
                 }
                 if (fimDeJogo == TRUE)  {
@@ -267,6 +268,7 @@ int main(void) {
 
                 if (aux1) {
                     rewind(Level2p);
+                    inimigosEmTela =0; 
                     inimigosMortos = 0;
                     positionX = 0;
                     positionY = 1;
@@ -297,7 +299,7 @@ int main(void) {
                     currentScreen = MENU;
                 }
 
-                if (inimigosMortos >= 15 && !inimigosEmTela)
+                if (inimigosMortos >= 10 && !inimigosEmTela)
                     fimDeJogo = TRUE;
 
                 if (fimDeJogo == TRUE)  {    //para passagem de fases
@@ -317,6 +319,7 @@ int main(void) {
                  if (aux2) {
                     rewind(Level3p);
                     inimigosMortos = 0;
+                    inimigosEmTela =0; 
                     positionX = 0;
                     positionY = 1;
                     nroBlocos = nroInimigos = 0;
@@ -367,6 +370,7 @@ int main(void) {
                 if (aux3) {
                     rewind(Level4p);
                     inimigosMortos = 0;
+                    inimigosEmTela =0; 
                     positionX = 0;
                     positionY = 1;
                     nroBlocos = nroInimigos = 0;
@@ -417,6 +421,17 @@ int main(void) {
 
             case CONTINUAR: {
                 if (auxC) {
+                    personagem.posicao.width = 25;
+                    personagem.posicao.height = 25;
+                    personagem.velocidadeBase = VELOCIDADE_INICIAL;
+                    personagem.velocidadeAtual = personagem.velocidadeBase;
+                    personagem.textura = personagemUp;
+                    personagem.vidas = 3;
+                    personagem.fase = 0;
+                    personagem.tiro.posicao.height = 10;
+                    personagem.tiro.posicao.width = 10;
+                    personagem.tiro.velocidade = 10;
+                    strcpy(personagem.nome, "\0");
                     inimigosMortos = 0;
                     nroBlocos = nroInimigos = 0;
                     maxInimigos =MAX_INIMIGOS;
@@ -424,6 +439,7 @@ int main(void) {
                     personagem.posicao.x = 0;
                     personagem.posicao.y = 0;
                     personagem.vidas = 3;
+                    inimigosEmTela =0; 
                     lerJogo(&personagem,inimigos, obstaculos, &nroInimigos, &nroBlocos, &inimigosMortos, &inimigosEmTela, &maxInimigos);
                     recorde = 0;
                 }
@@ -869,14 +885,14 @@ int main(void) {
                     DrawTextEx(arcade, "Pressione Delete para voltar ao menu", (Vector2){10,10 }, 15, 1,WHITE);
                     DrawTextEx(arcade, "HIGHSCORES", (Vector2){(alignCenterFont("HIGHSCORES",0,70, arcade)),(100) }, 70, 1,WHITE);
 
-                    u = 0; //escreve menu
+                    u = 0; 
                     for (int i = 0; i < 5; i++) {
                         DrawTextEx(arcade, recordistas[i].nome, (Vector2){200,(250 + u) }, 40, 1,WHITE);
                         u+= 50.0;
                     }
                     char score[20];
 
-                    u = 0; //escreve menu
+                    u = 0; 
                     for (int i = 0; i < 5; i++) {
                         sprintf(score, "%i", recordistas[i].pontos);
                         DrawTextEx(arcade, score, (Vector2){675,(250 + u) }, 40, 1,WHITE);
