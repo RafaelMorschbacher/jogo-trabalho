@@ -57,6 +57,6 @@ TIRO: (mesma struct usada pelo personagem e pelos inimigos)<br>
     char nome[20];<br>
 
 
-COMO ABRIR?
-VS CODE: Abrir a pasta jogo-trabalho, e rodar utilizando o MAKE FILE
+COMO ABRIR? <br>
+VS CODE: Abrir a pasta jogo-trabalho, e rodar utilizando o MAKE FILE<br>
 CODEBLOCS: Criar projeto com .h e .c. 
