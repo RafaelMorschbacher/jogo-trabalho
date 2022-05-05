@@ -246,7 +246,7 @@ int main(void) {
                     currentScreen = MENU;
                 }
 
-                printf("mortos, %i em tela %i\n", inimigosMortos, inimigosEmTela); 
+                
                 if (inimigosMortos >= 5 && inimigosEmTela == 0) {
                     fimDeJogo = TRUE;
                 }
